@@ -11,6 +11,7 @@ namespace ConsoleAppTest
 {
     class Program
     {
+        //test library
         static void Main(string[] args)
         {
             GameManager gm = new GameManager();
