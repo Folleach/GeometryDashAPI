@@ -81,8 +81,6 @@ namespace GeometryDashAPI.Parser
 
         public static string PlistToString(Plist plist)
         {
-            float a = 1.1f;
-            string aa = $"asd{a.ToString()}";
             string head = "<?xml version=\"1.0\"?><plist version=\"1.0\" gjver=\"2.0\"><dict>";
             string end = "</dict></plist>";
             return $"{head}{PTS(plist)}{end}";
