@@ -47,6 +47,7 @@
     <Compile Include="Data\GameManager.cs" />
     <Compile Include="Data\LocalLevels.cs" />
     <Compile Include="GameConvert.cs" />
+    <Compile Include="Level\Models\LevelCreatorModel.cs" />
     <Compile Include="Parser\Plist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

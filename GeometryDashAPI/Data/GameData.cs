@@ -24,7 +24,7 @@ namespace GeometryDashAPI.Data
             this.Load();
         }
 
-        public void Load()
+        public virtual void Load()
         {
             if (!File.Exists(this.GameDataFile))
                 throw new FileNotFoundException();
@@ -39,9 +39,10 @@ namespace GeometryDashAPI.Data
             File.WriteAllText("plist_out.txt", resultPlist);
 #endif
             this.DataPlist = new Plist(Encoding.ASCII.GetBytes(resultPlist));
+            GC.Collect();
         }
 
-        public void Save(string fullName = null)
+        public virtual void Save(string fullName = null)
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
             byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(this.DataPlist)));

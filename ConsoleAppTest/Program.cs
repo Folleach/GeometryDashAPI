@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeometryDashAPI.Data;
 using GeometryDashAPI.Data.Enums;
+using GeometryDashAPI.Level.Models;
 
 namespace ConsoleAppTest
 {
@@ -14,9 +15,13 @@ namespace ConsoleAppTest
         //test library
         static void Main(string[] args)
         {
-            GameManager gm = new GameManager();
-            Console.WriteLine(gm.DataPlist["bootups"]);
-            Console.ReadKey();
+            LocalLevels gm = new LocalLevels();
+            gm.GetLevelByName("test").NormalProgress = 55;
+            gm.GetLevelByName("test").PracticeProgress = 54;
+            gm.GetLevelByName("test").TotalAttempts = 117;
+            gm.GetLevelByName("test").TotalJumps = 999;
+            gm.Save();
+            Console.WriteLine("a");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace GeometryDashAPI.Data
         }
         public int PlayerID
         {
-            get => DataPlist["playerUserID"];
+            get => DataPlist.ContainsKey("playerUserID") ? DataPlist["playerUserID"] : 0;
             set => DataPlist["playerUserID"] = value;
         }
         public int Bootups
