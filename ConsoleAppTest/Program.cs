@@ -3,25 +3,34 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GeometryDashAPI.Data;
 using GeometryDashAPI.Data.Enums;
 using GeometryDashAPI.Level.Models;
+using GeometryDashAPI.Memory;
 
 namespace ConsoleAppTest
 {
+    //test library
     class Program
-    {
-        //test library
+    {        
         static void Main(string[] args)
         {
-            LocalLevels gm = new LocalLevels();
-            gm.GetLevelByName("test").NormalProgress = 55;
-            gm.GetLevelByName("test").PracticeProgress = 54;
-            gm.GetLevelByName("test").TotalAttempts = 117;
-            gm.GetLevelByName("test").TotalJumps = 999;
-            gm.Save();
-            Console.WriteLine("a");
+            GameProcess process = new GameProcess();
+            Console.WriteLine("Wait start GeometryDash");
+            while (true)
+            {
+                if (process.Initialize(Access.PROCESS_VM_READ))
+                    break;
+                Thread.Sleep(10);
+            }
+            Console.WriteLine("read...");
+            while (true)
+            {
+                float posX = process.Read<float>(process.Game.MainModule, new int[] { 0x003222D0, 0x164, 0x224, 0x4E8, 0xB4, 0x67C });
+                Thread.Sleep(1);
+            }
         }
     }
 }
