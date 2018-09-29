@@ -11,14 +11,13 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
+ConsoleAppTest/*
 [Dd]ebugPublic/
-[Rr]elease/
+[Dd]ebug/
 [Rr]eleases/
 x64/
 x86/
 bld/
-[Bb]in/
 [Oo]bj/
 [Ll]og/
 
