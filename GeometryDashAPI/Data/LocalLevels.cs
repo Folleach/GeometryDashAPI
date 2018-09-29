@@ -1,5 +1,5 @@
 ﻿using GeometryDashAPI.Data.Enums;
-using GeometryDashAPI.Level.Models;
+using GeometryDashAPI.Data.Models;
 using System.Collections.Generic;
 
 namespace GeometryDashAPI.Data

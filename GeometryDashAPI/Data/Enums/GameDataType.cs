@@ -1,6 +1,6 @@
 ﻿namespace GeometryDashAPI.Data.Enums
 {
-    public enum GameDataType
+    public enum GameDataType : byte
     {
         GameManager, LocalLevels
     }

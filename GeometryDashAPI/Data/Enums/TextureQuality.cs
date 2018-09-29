@@ -1,6 +1,6 @@
 ﻿namespace GeometryDashAPI.Data.Enums
 {
-    public enum TextureQuality
+    public enum TextureQuality : byte
     {
         Auto,
         Low,

@@ -10,22 +10,13 @@ namespace GeometryDashAPI.Parser
 {
     public class Plist : Dictionary<string, dynamic>
     {
-        private static CultureInfo Culture;
-
         public Plist()
         {
-            this.InitializeCulture();
         }
 
-        public Plist(byte[] bytes) : this()
+        public Plist(byte[] bytes)
         {
             this.Load(new MemoryStream(bytes));
-        }
-
-        private void InitializeCulture()
-        {
-            Culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
-            Culture.NumberFormat.CurrencyDecimalSeparator = ".";
         }
 
         private void Load(MemoryStream stream)
@@ -62,7 +53,7 @@ namespace GeometryDashAPI.Parser
                     return int.Parse(val.Value);
                 case "real":
                 case "r":
-                    return float.Parse(val.Value, NumberStyles.Any, Culture);
+                    return float.Parse(val.Value, NumberStyles.Any, Culture.FormatProvider);
                 case "true":
                 case "t":
                     return true;

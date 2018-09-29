@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeometryDashAPI.Level.Models
+namespace GeometryDashAPI.Data.Models
 {
     public class LevelCreatorModel
     {
         public Dictionary<string, dynamic> DataLevel { get; protected set; }
-        public string KeyInDict { get; private set; }
+        internal string KeyInDict { get; private set; }
 
         private const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
@@ -30,6 +30,11 @@ namespace GeometryDashAPI.Level.Models
         {
             get => DataLevel["k5"];
             set => DataLevel["k5"] = value;
+        }
+        public bool Verified
+        {
+            get => DataLevel.ContainsKey("k14") ? DataLevel["k14"] : false;
+            set => DataLevel["k14"] = value;
         }
         public int TotalAttempts
         {
@@ -61,6 +66,21 @@ namespace GeometryDashAPI.Level.Models
         {
             get => DataLevel.ContainsKey("k48") ? DataLevel["k48"] : 0;
             set => DataLevel["k48"] = value;
+        }
+        public bool CollectCoin1
+        {
+            get => DataLevel.ContainsKey("k61") ? DataLevel["k61"] : false;
+            set => DataLevel["k61"] = value;
+        }
+        public bool CollectCoin2
+        {
+            get => DataLevel.ContainsKey("k62") ? DataLevel["k62"] : false;
+            set => DataLevel["k62"] = value;
+        }
+        public bool CollectCoin3
+        {
+            get => DataLevel.ContainsKey("k63") ? DataLevel["k63"] : false;
+            set => DataLevel["k63"] = value;
         }
 
         public LevelCreatorModel(string key, Dictionary<string, dynamic> dict)
