@@ -12,6 +12,8 @@ namespace GeometryDashAPI.Levels
                 case "1":
                 case "8":
                     return 1; //Block
+                case "901":
+                    return 2; //Move trigger
                 default:
                     throw new Exception(ExceptionMessages.BlockTypeNotSupported(id));
             }

@@ -10,5 +10,10 @@ namespace GeometryDashAPI.Levels
         {
             return (Block[])FindAll(x => x is Block).ToArray();
         }
+
+        public MoveTrigger[] GetMoveTriggers()
+        {
+            return (MoveTrigger[])FindAll(x => x is MoveTrigger).ToArray();
+        }
     }
 }

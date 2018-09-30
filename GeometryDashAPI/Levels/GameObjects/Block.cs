@@ -1,5 +1,6 @@
 ﻿using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.Interfaces;
+using System.Diagnostics;
 using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects
@@ -29,14 +30,17 @@ namespace GeometryDashAPI.Levels.GameObjects
         public Layer ZLayer { get; set; } = Layer.T1;
         public float Scale { get; set; } = 1f;
         public bool GroupParent { get; set; }
+        public bool IsTrigger { get; set; }
 
         public Block(int id)
         {
             this.ID = id;
+            Group = new BlockGroup();
         }
 
         public Block(string[] data)
         {
+            Group = new BlockGroup();
             for (int i = 0; i < data.Length; i += 2)
             {
                 switch (data[i])
@@ -53,7 +57,7 @@ namespace GeometryDashAPI.Levels.GameObjects
                         break;
                     case "6": Rotation = short.Parse(data[i + 1]);
                         break;
-                    case "96": GameConvert.StringToBool(data[i + 1], true);
+                    case "96": Glow = GameConvert.StringToBool(data[i + 1], true);
                         break;
                     case "108": LinkControl = int.Parse(data[i + 1]);
                         break;
@@ -79,7 +83,12 @@ namespace GeometryDashAPI.Levels.GameObjects
                         break;
                     case "34": GroupParent = GameConvert.StringToBool(data[i + 1]);
                         break;
+                    case "36": IsTrigger = GameConvert.StringToBool(data[i + 1]);
+                        break;
                     default:
+#if DEBUG
+                        Debug.WriteLine($"Key: {data[i]}, Value: {data[i + 1]}");
+#endif
                         break;
                 }
             }
@@ -95,7 +104,7 @@ namespace GeometryDashAPI.Levels.GameObjects
                 builder.Append($",5,1");
             if (Rotation != 0)
                 builder.Append($",6,{Rotation}");
-            if (Glow)
+            if (!Glow)
                 builder.Append($",96,1");
             if (LinkControl != 0)
                 builder.Append($",108,{LinkControl}");

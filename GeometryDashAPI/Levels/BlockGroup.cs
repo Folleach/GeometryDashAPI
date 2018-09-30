@@ -7,7 +7,7 @@ namespace GeometryDashAPI.Levels
     {
         public BlockGroup() : base()
         {
-
+            
         }
 
         public BlockGroup(string data) : base()

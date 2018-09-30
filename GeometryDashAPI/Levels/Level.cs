@@ -148,6 +148,9 @@ namespace GeometryDashAPI.Levels
                     case 1:
                         Blocks.Add(new Block(block));
                         break;
+                    case 2:
+                        Blocks.Add(new MoveTrigger(block));
+                        break;
                 }
             }
 #if DEBUG
@@ -173,6 +176,8 @@ namespace GeometryDashAPI.Levels
             {
                 if (element is Block)
                     builder.Append($"{(element as Block).ToString()};");
+                else if (element is MoveTrigger)
+                    builder.Append($"{(element as MoveTrigger).ToString()};");
             }
             byte[] bytes = Crypt.GZipCompress(Encoding.ASCII.GetBytes(builder.ToString()));
             return GameConvert.ToBase64(bytes);

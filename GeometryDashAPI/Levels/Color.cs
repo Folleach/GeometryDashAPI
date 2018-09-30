@@ -1,4 +1,5 @@
 ﻿using GeometryDashAPI.Exceptions;
+using GeometryDashAPI.Levels.Enums;
 using System;
 using System.Globalization;
 using System.Text;
@@ -31,6 +32,11 @@ namespace GeometryDashAPI.Levels
         public Color(short id)
         {
             this.ID = id;
+        }
+
+        public Color(ColorType type)
+        {
+            this.ID = (short)type;
         }
 
         public Color(string data)

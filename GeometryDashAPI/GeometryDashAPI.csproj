@@ -53,6 +53,7 @@
     <Compile Include="Levels\BlockList.cs" />
     <Compile Include="Levels\BlockTypeID.cs" />
     <Compile Include="Levels\Enums\ColorType.cs" />
+    <Compile Include="Levels\Enums\Easing.cs" />
     <Compile Include="Levels\GameObjects\Block.cs" />
     <Compile Include="Levels\BlockGroup.cs" />
     <Compile Include="Levels\Color.cs" />
@@ -60,8 +61,11 @@
     <Compile Include="Levels\Enums\Layer.cs" />
     <Compile Include="Levels\Enums\Mode.cs" />
     <Compile Include="Levels\Enums\Speed.cs" />
+    <Compile Include="Levels\GameObjects\MoveTrigger.cs" />
+    <Compile Include="Levels\GameObjects\Trigger.cs" />
     <Compile Include="Levels\HSV.cs" />
     <Compile Include="Levels\Interfaces\IBlock.cs" />
+    <Compile Include="Levels\Interfaces\ITrigger.cs" />
     <Compile Include="Levels\Level.cs" />
     <Compile Include="Memory\Access.cs" />
     <Compile Include="Memory\GameProcess.cs" />
