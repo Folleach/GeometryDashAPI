@@ -75,6 +75,26 @@ namespace GeometryDashAPI.Data
             get => DataPlist["playerSpider"];
             set => DataPlist["playerSpider"] = value;
         }
+        public int PlayerColor1
+        {
+            get => DataPlist.ContainsKey("playerColor") ? DataPlist["playerColor"] : 0;
+            set => DataPlist["playerColor"] = value;
+        }
+        public int PlayerColor2
+        {
+            get => DataPlist.ContainsKey("playerColor2") ? DataPlist["playerColor2"] : 0;
+            set => DataPlist["playerColor2"] = value;
+        }
+        public int PlayerStreak
+        {
+            get => DataPlist["playerStreak"];
+            set => DataPlist["playerStreak"] = value;
+        }
+        public int PlayerDeathEffect
+        {
+            get => DataPlist["playerDeathEffect"];
+            set => DataPlist["playerDeathEffect"] = value;
+        }
         public int BinaryVersion
         {
             get => DataPlist["binaryVersion"];

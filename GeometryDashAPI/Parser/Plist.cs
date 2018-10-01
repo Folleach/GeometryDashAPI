@@ -106,7 +106,7 @@ namespace GeometryDashAPI.Parser
                     builder.Append($"<d>{PTS(element.Value)}</d>");
                 }
             }
-            return builder.ToString();
+            return builder.ToString().Replace("&", "&amp;");
         }
     }
 }
