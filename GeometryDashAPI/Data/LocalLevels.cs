@@ -8,6 +8,12 @@ namespace GeometryDashAPI.Data
     {
         public List<LevelCreatorModel> Levels { get; set; }
 
+        public int BinaryVersion
+        {
+            get => DataPlist["LLM_02"];
+            set => DataPlist["LLM_02"] = value;
+        }
+
         public LocalLevels() : base(GameDataType.LocalLevels)
         {
             this.LoadList();

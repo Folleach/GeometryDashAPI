@@ -14,6 +14,8 @@ namespace GeometryDashAPI.Levels
         //TODO: Temp property
         public string stringData { get; set; }
 
+        public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
+
         public ColorList Colors { get; private set; }
         public BlockList Blocks { get; private set; }
 

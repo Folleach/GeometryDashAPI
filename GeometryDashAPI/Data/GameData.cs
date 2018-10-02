@@ -31,8 +31,8 @@ namespace GeometryDashAPI.Data
 
             //File > Byte > XOR > ToString > Replace > Base64 > Gzip
             byte[] data = File.ReadAllBytes(this.GameDataFile);
-            string datazip = Encoding.ASCII.GetString(Crypt.XOR(data, 0xB)).Replace("_", "/").Replace("-", "+").Split('\0')[0];
-            string resultPlist = Crypt.GZipDecompress(Convert.FromBase64String(datazip));
+            string datazip = Encoding.ASCII.GetString(Crypt.XOR(data, 0xB)).Split('\0')[0];
+            string resultPlist = Crypt.GZipDecompress(GameConvert.FromBase64(datazip));
 #if DEBUG
             Console.WriteLine("Create plist \"in\" and \"out\" file");
             File.WriteAllText("plist_in.txt", Plist.PlistToString(new Plist(Encoding.ASCII.GetBytes(resultPlist))));
@@ -46,7 +46,7 @@ namespace GeometryDashAPI.Data
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
             byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(this.DataPlist)));
-            string base64 = Convert.ToBase64String(gzipc).Replace('/', '_').Replace('+', '-');
+            string base64 = GameConvert.ToBase64(gzipc);
             if (fullName == null)
                 File.WriteAllBytes(this.GameDataFile,  Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
             else
