@@ -6,6 +6,18 @@ namespace GeometryDashAPI.Memory
 {
     public class GameProcess
     {
+        #region Static
+        public static int GameCount()
+        {
+            return GameCount("GeometryDash");
+        }
+
+        public static int GameCount(string processName)
+        {
+            return Process.GetProcessesByName(processName).Length;
+        }
+        #endregion
+
         [DllImport("kernel32.dll")]
         protected static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
@@ -15,6 +27,8 @@ namespace GeometryDashAPI.Memory
         [DllImport("kernel32.dll")]
         protected static extern bool WriteProcessMemory(int hProcess, int lpBaseAddress, byte[] buffer, int size, out int lpNumberOfBytesWritten);
 
+        public string ProcessName { get; protected set; }
+
         public int BytesRead;
         public int BytesWrite;
 
@@ -23,11 +37,13 @@ namespace GeometryDashAPI.Memory
 
         public bool Initialize(int access)
         {
-            return this.Initialize(access, "GeometryDash");
+            ProcessName = "GeometryDash";
+            return this.Initialize(access, ProcessName);
         }
 
         public bool Initialize(int access, string processName)
         {
+            ProcessName = processName;
             Process[] processes = Process.GetProcessesByName(processName);
             if (processes.Length > 0)
                 Game = Process.GetProcessesByName(processName)[0];
@@ -74,7 +90,7 @@ namespace GeometryDashAPI.Memory
             WriteProcessMemory((int)GameHandle, address, buffer, buffer.Length, out this.BytesWrite);
         }
 
-        private T BytesToStructure<T>(byte[] bytes) where T : struct
+        protected T BytesToStructure<T>(byte[] bytes) where T : struct
         {
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             try
@@ -87,7 +103,7 @@ namespace GeometryDashAPI.Memory
             }
         }
 
-        private byte[] StructureToBytes(object value)
+        protected byte[] StructureToBytes(object value)
         {
             int size = Marshal.SizeOf(value);
             byte[] array = new byte[size];
@@ -96,6 +112,6 @@ namespace GeometryDashAPI.Memory
             Marshal.Copy(ptr, array, 0, size);
             Marshal.FreeHGlobal(ptr);
             return array;
-        }        
+        }
     }
 }

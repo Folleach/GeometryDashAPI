@@ -1,4 +1,5 @@
 ﻿using GeometryDashAPI.Data.Enums;
+using GeometryDashAPI.Memory;
 using GeometryDashAPI.Parser;
 using System;
 using System.IO;
@@ -42,7 +43,7 @@ namespace GeometryDashAPI.Data
             GC.Collect();
         }
 
-        public virtual void Save(string fullName = null)
+        public virtual bool Save(string fullName = null)
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
             byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(this.DataPlist)));
@@ -51,6 +52,17 @@ namespace GeometryDashAPI.Data
                 File.WriteAllBytes(this.GameDataFile,  Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
             else
                 File.WriteAllBytes(fullName, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
+            return true;
+        }
+
+        public virtual bool Save(bool CheckRunningGame, string fullName = null)
+        {
+            if (CheckRunningGame)
+            {
+                if (GameProcess.GameCount() > 0)
+                    return false;
+            }
+            return this.Save(fullName);
         }
     }
 }
