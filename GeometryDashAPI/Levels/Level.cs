@@ -146,10 +146,10 @@ namespace GeometryDashAPI.Levels
                 switch (j)
                 {
                     case 1:
-                        Blocks.Add(new Block(block));
+                        Blocks.Add(new BaseBlock(block));
                         break;
                     case 2:
-                        Blocks.Add(new MoveTrigger(block));
+                        Blocks.Add(new DetailBlock(block));
                         break;
                 }
             }
@@ -174,10 +174,8 @@ namespace GeometryDashAPI.Levels
                 $"kA4,{(byte)PlayerSpeed},kA9,{kA9},kA10,{GameConvert.BoolToString(TwoPlayerMode)},kA11,{kA11};");
             foreach (var element in Blocks)
             {
-                if (element is Block)
-                    builder.Append($"{(element as Block).ToString()};");
-                else if (element is MoveTrigger)
-                    builder.Append($"{(element as MoveTrigger).ToString()};");
+                builder.Append(element.ToString());
+                builder.Append(';');
             }
             byte[] bytes = Crypt.GZipCompress(Encoding.ASCII.GetBytes(builder.ToString()));
             return GameConvert.ToBase64(bytes);

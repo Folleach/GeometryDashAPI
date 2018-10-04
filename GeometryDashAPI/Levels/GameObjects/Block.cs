@@ -1,15 +1,13 @@
 ﻿using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.Interfaces;
-using System.Diagnostics;
 using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects
 {
-    public class Block : IBlock
+    public abstract class Block : IBlock
     {
         const Layer Default_ZLayer = Layer.T1;
         const short Default_ZOrder = 2;
-        const short Default_ColorBase = (short)ColorType.Obj;
 
         public int ID { get; set; }
         public float PositionX { get; set; }
@@ -26,7 +24,6 @@ namespace GeometryDashAPI.Levels.GameObjects
         public bool DontFade { get; set; }
         public bool DontEnter { get; set; }
         public short ZOrder { get; set; } = 2;
-        public short ColorBase { get; set; } = (short)ColorType.Obj;
         public Layer ZLayer { get; set; } = Layer.T1;
         public float Scale { get; set; } = 1f;
         public bool GroupParent { get; set; }
@@ -45,51 +42,65 @@ namespace GeometryDashAPI.Levels.GameObjects
             {
                 switch (data[i])
                 {
-                    case "1": ID = int.Parse(data[i + 1]);
-                        break;
-                    case "2": PositionX = GameConvert.StringToSingle(data[i + 1]);
-                        break;
-                    case "3": PositionY = GameConvert.StringToSingle(data[i + 1]);
-                        break;
-                    case "4": HorizontalReflection = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "5": VerticalReflection = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "6": Rotation = short.Parse(data[i + 1]);
-                        break;
-                    case "96": Glow = GameConvert.StringToBool(data[i + 1], true);
-                        break;
-                    case "108": LinkControl = int.Parse(data[i + 1]);
-                        break;
-                    case "20": EditorL = short.Parse(data[i + 1]);
-                        break;
-                    case "61": EditorL2 = short.Parse(data[i + 1]);
-                        break;
-                    case "103": HighDetal = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "57": Group = new BlockGroup(data[i + 1]);
-                        break;
-                    case "64": DontFade = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "67": DontEnter = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "25": ZOrder = short.Parse(data[i + 1]);
-                        break;
-                    case "21": ColorBase = short.Parse(data[i + 1]);
-                        break;
-                    case "24": ZLayer = (Layer)short.Parse(data[i + 1]);
-                        break;
-                    case "32": Scale = GameConvert.StringToSingle(data[i + 1]);
-                        break;
-                    case "34": GroupParent = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "36": IsTrigger = GameConvert.StringToBool(data[i + 1]);
-                        break;
+                    case "1":
+                        ID = int.Parse(data[i + 1]);
+                        continue;
+                    case "2":
+                        PositionX = GameConvert.StringToSingle(data[i + 1]);
+                        continue;
+                    case "3":
+                        PositionY = GameConvert.StringToSingle(data[i + 1]);
+                        continue;
+                    case "4":
+                        HorizontalReflection = GameConvert.StringToBool(data[i + 1]);
+                        continue;
+                    case "5":
+                        VerticalReflection = GameConvert.StringToBool(data[i + 1]);
+                        continue;
+                    case "6":
+                        Rotation = short.Parse(data[i + 1]);
+                        continue;
+                    case "96":
+                        Glow = GameConvert.StringToBool(data[i + 1], true);
+                        continue;
+                    case "108":
+                        LinkControl = int.Parse(data[i + 1]);
+                        continue;
+                    case "20":
+                        EditorL = short.Parse(data[i + 1]);
+                        continue;
+                    case "61":
+                        EditorL2 = short.Parse(data[i + 1]);
+                        continue;
+                    case "103":
+                        HighDetal = GameConvert.StringToBool(data[i + 1]);
+                        continue;
+                    case "57":
+                        Group = new BlockGroup(data[i + 1]);
+                        continue;
+                    case "64":
+                        DontFade = GameConvert.StringToBool(data[i + 1]);
+                        continue;
+                    case "67":
+                        DontEnter = GameConvert.StringToBool(data[i + 1]);
+                        continue;
+                    case "25":
+                        ZOrder = short.Parse(data[i + 1]);
+                        continue;
+                    case "24":
+                        ZLayer = (Layer)short.Parse(data[i + 1]);
+                        continue;
+                    case "32":
+                        Scale = GameConvert.StringToSingle(data[i + 1]);
+                        continue;
+                    case "34":
+                        GroupParent = GameConvert.StringToBool(data[i + 1]);
+                        continue;
+                    case "36":
+                        IsTrigger = GameConvert.StringToBool(data[i + 1]);
+                        continue;
                     default:
-#if DEBUG
-                        Debug.WriteLine($"Key: {data[i]}, Value: {data[i + 1]}");
-#endif
-                        break;
+                        continue;
                 }
             }
         }
@@ -122,8 +133,6 @@ namespace GeometryDashAPI.Levels.GameObjects
                 builder.Append($",67,1");
             if (ZOrder != Default_ZOrder)
                 builder.Append($",25,{ZOrder}");
-            if (ColorBase != Default_ColorBase)
-                builder.Append($",21,{ColorBase}");
             if (ZLayer != Default_ZLayer)
                 builder.Append($",24,{(short)ZLayer}");
             if (Scale != 1f)
