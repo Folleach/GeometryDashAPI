@@ -108,7 +108,7 @@ namespace GeometryDashAPI.Levels.GameObjects
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"1,{ID},2,{PositionX},3,{PositionY}");
+            builder.Append($"1,{ID},2,{GameConvert.SingleToString(PositionX)},3,{GameConvert.SingleToString(PositionY)}");
             if (HorizontalReflection)
                 builder.Append($",4,1");
             if (VerticalReflection)

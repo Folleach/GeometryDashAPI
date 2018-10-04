@@ -2,9 +2,9 @@
 {
     public class DetailBlock : Block
     {
-        const short Default_ColorDetail = 4;
+        const short Default_ColorDetail = 1;
 
-        public short DetailColor { get; set; } = 4;
+        public short DetailColor { get; set; } = 1;
 
         public DetailBlock(int id) : base(id)
         {

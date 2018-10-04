@@ -13,6 +13,7 @@ namespace GeometryDashAPI.Levels
                 case "8":
                     return 1; //BaseBlock
                 case "1658":
+                case "1888":
                     return 2; //DetailBlock
                 default:
                     throw new Exception(ExceptionMessages.BlockTypeNotSupported(id));
