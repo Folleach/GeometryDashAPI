@@ -14,6 +14,8 @@ namespace GeometryDashAPI.Levels
         //TODO: Temp property
         public string stringData { get; set; }
 
+        public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
+
         public ColorList Colors { get; private set; }
         public BlockList Blocks { get; private set; }
 
@@ -38,6 +40,12 @@ namespace GeometryDashAPI.Levels
         public Level()
         {
             this.Initialize();
+        }
+
+        public Level(string data)
+        {
+            this.Initialize();
+            this.Load(DefaultLevelString);
         }
 
         public Level(LevelCreatorModel model)
@@ -141,17 +149,7 @@ namespace GeometryDashAPI.Levels
             for (int i = 1; i < blocksData.Length - 1; i++)
             {
                 string[] block = blocksData[i].Split(',');
-                int j = BlockTypeID.GetTypeByID(block[1]);
-
-                switch (j)
-                {
-                    case 1:
-                        Blocks.Add(new BaseBlock(block));
-                        break;
-                    case 2:
-                        Blocks.Add(new DetailBlock(block));
-                        break;
-                }
+                Blocks.Add(BlockTypeID.InitializeByID(int.Parse(block[1]), block));
             }
 #if DEBUG
             sw.Stop();

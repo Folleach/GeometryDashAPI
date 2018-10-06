@@ -62,8 +62,10 @@
     <Compile Include="Levels\Enums\Layer.cs" />
     <Compile Include="Levels\Enums\Mode.cs" />
     <Compile Include="Levels\Enums\Speed.cs" />
+    <Compile Include="Levels\GameObjects\ColorBlock.cs" />
     <Compile Include="Levels\GameObjects\DetailBlock.cs" />
     <Compile Include="Levels\GameObjects\MoveTrigger.cs" />
+    <Compile Include="Levels\GameObjects\TextBlock.cs" />
     <Compile Include="Levels\GameObjects\Trigger.cs" />
     <Compile Include="Levels\HSV.cs" />
     <Compile Include="Levels\Interfaces\IBlock.cs" />
