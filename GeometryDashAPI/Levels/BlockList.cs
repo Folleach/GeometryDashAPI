@@ -1,4 +1,5 @@
-﻿using GeometryDashAPI.Levels.GameObjects;
+﻿using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Levels.Interfaces;
 using System.Collections.Generic;
 

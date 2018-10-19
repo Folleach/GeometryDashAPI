@@ -1,6 +1,6 @@
 ﻿namespace GeometryDashAPI.Levels.Enums
 {
-    public enum Speed : byte
+    public enum SpeedType : byte
     {
         Orange = 1,
         Default = 0,

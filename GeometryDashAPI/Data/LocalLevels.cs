@@ -50,6 +50,11 @@ namespace GeometryDashAPI.Data
             return this.Levels.FindAll(x => x.Name == levelName);
         }
 
+        public bool LevelExist(string levelName)
+        {
+            return this.Levels.Exists(x => x.Name == levelName);
+        }
+
         public void Remove(LevelCreatorModel level)
         {
             this.Levels.Remove(level);

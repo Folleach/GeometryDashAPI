@@ -19,7 +19,6 @@ namespace GeometryDashAPI.Levels.Interfaces
         bool DontFade { get; set; }
         bool DontEnter { get; set; }
         short ZOrder { get; set; }
-        short ColorBase { get; set; }
         Layer ZLayer { get; set; }
         float Scale { get; set; }
         bool GroupParent { get; set; }

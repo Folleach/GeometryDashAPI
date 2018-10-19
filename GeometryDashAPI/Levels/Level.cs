@@ -1,7 +1,7 @@
 ﻿using GeometryDashAPI.Data.Models;
 using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
-using GeometryDashAPI.Levels.GameObjects;
+using GeometryDashAPI.Levels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,8 +19,16 @@ namespace GeometryDashAPI.Levels
         public ColorList Colors { get; private set; }
         public BlockList Blocks { get; private set; }
 
+        #region Property
+        public int CountBlock
+        {
+            get => Blocks.Count;
+        }
+        #endregion
+
+        #region Level property
         public Mode GameMode { get; set; } = Mode.Cube;
-        public Speed PlayerSpeed { get; set; } = Speed.Default;
+        public SpeedType PlayerSpeed { get; set; } = SpeedType.Default;
         public bool Dual { get; set; }
         public bool TwoPlayerMode { get; set; }
         public bool Mini { get; set; }
@@ -36,17 +44,24 @@ namespace GeometryDashAPI.Levels
         public int kS39 { get; set; }
         public int kA9 { get; set; }
         public int kA11 { get; set; }
+        #endregion
 
+        #region Constructor
         public Level()
         {
             this.Initialize();
         }
-
+        public Level(string data)
+        {
+            this.Initialize();
+            this.Load(DefaultLevelString);
+        }
         public Level(LevelCreatorModel model)
         {
             this.Initialize();
             this.Load(model.LevelString);
         }
+        #endregion
 
         protected virtual void Initialize()
         {
@@ -54,6 +69,17 @@ namespace GeometryDashAPI.Levels
             Blocks = new BlockList();
         }
 
+        public void AddBlock(IBlock block)
+        {
+            this.Blocks.Add(block);
+        }
+
+        public void AddColor(Color color)
+        {
+            this.Colors.AddColor(color);
+        }
+
+        #region Load and save methods
         protected virtual void Load(string compressData)
         {
             string data = Crypt.GZipDecompress(GameConvert.FromBase64(compressData));
@@ -104,7 +130,7 @@ namespace GeometryDashAPI.Levels
                         Dual = GameConvert.StringToBool(levelProperties[i + 1], false);
                         break;
                     case "kA4":
-                        PlayerSpeed = (Speed)int.Parse(levelProperties[i + 1]);
+                        PlayerSpeed = (SpeedType)int.Parse(levelProperties[i + 1]);
                         break;
                     case "kA9":
                         kA9 = int.Parse(levelProperties[i + 1]);
@@ -122,7 +148,6 @@ namespace GeometryDashAPI.Levels
             this.LoadBlocks(splitData);
             GC.Collect();
         }
-
         protected virtual void LoadColors(string colorsData)
         {
             foreach (string colorData in colorsData.Split('|'))
@@ -133,7 +158,6 @@ namespace GeometryDashAPI.Levels
                 this.Colors.AddColor(new Color(colorData));
             }
         }
-
         protected virtual void LoadBlocks(string[] blocksData)
         {
 #if DEBUG
@@ -143,17 +167,7 @@ namespace GeometryDashAPI.Levels
             for (int i = 1; i < blocksData.Length - 1; i++)
             {
                 string[] block = blocksData[i].Split(',');
-                int j = BlockTypeID.GetTypeByID(block[1]);
-
-                switch (j)
-                {
-                    case 1:
-                        Blocks.Add(new Block(block));
-                        break;
-                    case 2:
-                        Blocks.Add(new MoveTrigger(block));
-                        break;
-                }
+                Blocks.Add(BlockTypeID.InitializeByID(int.Parse(block[1]), block));
             }
 #if DEBUG
             sw.Stop();
@@ -161,7 +175,6 @@ namespace GeometryDashAPI.Levels
             Debug.WriteLine($"Block load time: {sw.ElapsedMilliseconds} milliseconds");
 #endif
         }
-
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
@@ -176,13 +189,12 @@ namespace GeometryDashAPI.Levels
                 $"kA4,{(byte)PlayerSpeed},kA9,{kA9},kA10,{GameConvert.BoolToString(TwoPlayerMode)},kA11,{kA11};");
             foreach (var element in Blocks)
             {
-                if (element is Block)
-                    builder.Append($"{(element as Block).ToString()};");
-                else if (element is MoveTrigger)
-                    builder.Append($"{(element as MoveTrigger).ToString()};");
+                builder.Append(element.ToString());
+                builder.Append(';');
             }
             byte[] bytes = Crypt.GZipCompress(Encoding.ASCII.GetBytes(builder.ToString()));
             return GameConvert.ToBase64(bytes);
         }
+        #endregion
     }
 }

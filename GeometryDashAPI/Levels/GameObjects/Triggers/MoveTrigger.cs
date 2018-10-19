@@ -1,6 +1,7 @@
 ﻿using GeometryDashAPI.Levels.Enums;
+using GeometryDashAPI.Levels.GameObjects.Default;
 
-namespace GeometryDashAPI.Levels.GameObjects
+namespace GeometryDashAPI.Levels.GameObjects.Triggers
 {
     public class MoveTrigger : Trigger
     {
