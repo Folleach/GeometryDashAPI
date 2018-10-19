@@ -1,5 +1,7 @@
 ﻿using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.GameObjects;
+using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Levels.Interfaces;
 using System;
 
@@ -19,6 +21,12 @@ namespace GeometryDashAPI.Levels
                     return new DetailBlock(data);
                 case 914:
                     return new TextBlock(data);
+                case 200:
+                case 201:
+                case 202:
+                case 203:
+                case 1334:
+                    return new SpeedBlock(data);
                 default:
                     throw new Exception(ExceptionMessages.BlockTypeNotSupported(id.ToString()));
             }

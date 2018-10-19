@@ -1,10 +1,13 @@
-﻿using System;
+﻿using GeometryDashAPI.Levels.GameObjects.Default;
+using System;
 using System.Text;
 
-namespace GeometryDashAPI.Levels.GameObjects
+namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
     public class TextBlock : DetailBlock
     {
+        public override short Default_ZOrder { get; protected set; } = 1;
+
         public string Text { get; set; } = "A";
 
         public TextBlock() : base(914)

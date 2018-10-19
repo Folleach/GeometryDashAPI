@@ -1,4 +1,4 @@
-﻿namespace GeometryDashAPI.Levels.GameObjects
+﻿namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     public class DetailBlock : Block
     {

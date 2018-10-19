@@ -1,7 +1,7 @@
 ﻿using GeometryDashAPI.Levels.Interfaces;
 using System.Text;
 
-namespace GeometryDashAPI.Levels.GameObjects
+namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     public abstract class Trigger : Block, ITrigger
     {

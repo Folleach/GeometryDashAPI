@@ -1,18 +1,20 @@
 ﻿using GeometryDashAPI.Levels.Enums;
 
-namespace GeometryDashAPI.Levels.GameObjects
+namespace GeometryDashAPI.Levels.GameObjects.Default
 {
-    public class BaseBlock : Block
+    public class ColorBlock : Block
     {
         const short Default_ColorBase = (short)ColorType.Obj;
+        const short Default_ColorDetail = 1;
 
-        public short ColorBase { get; set; } = (short)ColorType.Obj;
+        public short ColorBase { get; set; } = 1;
+        public short ColorDetail { get; set; } = 1;
 
-        public BaseBlock(int id) : base(id)
+        public ColorBlock(int id) : base(id)
         {
         }
 
-        public BaseBlock(string[] data) : base(data)
+        public ColorBlock(string[] data) : base(data)
         {
             for (int i = 0; i < data.Length; i += 2)
             {
@@ -20,6 +22,9 @@ namespace GeometryDashAPI.Levels.GameObjects
                 {
                     case "21":
                         ColorBase = short.Parse(data[i + 1]);
+                        continue;
+                    case "22":
+                        ColorDetail = short.Parse(data[i + 1]);
                         continue;
                     default:
                         continue;
@@ -29,8 +34,10 @@ namespace GeometryDashAPI.Levels.GameObjects
 
         public override string ToString()
         {
-            if (ColorBase != Default_ColorBase)
+            if (ColorBase != Default_ColorDetail)
                 return $"{base.ToString()},21,{ColorBase}";
+            if (ColorDetail != Default_ColorDetail)
+                return $"{base.ToString()},22,{ColorDetail}";
             return base.ToString();
         }
     }

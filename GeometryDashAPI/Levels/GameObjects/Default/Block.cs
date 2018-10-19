@@ -2,12 +2,12 @@
 using GeometryDashAPI.Levels.Interfaces;
 using System.Text;
 
-namespace GeometryDashAPI.Levels.GameObjects
+namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     public abstract class Block : IBlock
     {
-        const Layer Default_ZLayer = Layer.T1;
-        const short Default_ZOrder = 2;
+        public virtual Layer Default_ZLayer { get; protected set; } = Layer.T1;
+        public virtual short Default_ZOrder { get; protected set; } = 2;
 
         public int ID { get; set; }
         public float PositionX { get; set; }
@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Levels.GameObjects
         public bool HorizontalReflection { get; set; }
         public bool VerticalReflection { get; set; }
         public short Rotation { get; set; }
-        public bool Glow { get; set; } = true; //Reverse (0 = true; false = 1)
+        public bool Glow { get; set; } = true; //Reverse (0 = true; 1 = false)
         public int LinkControl { get; set; }
         public short EditorL { get; set; }
         public short EditorL2 { get; set; }
@@ -31,12 +31,20 @@ namespace GeometryDashAPI.Levels.GameObjects
 
         public Block(int id)
         {
+            this.SetDefault();
             this.ID = id;
             Group = new BlockGroup();
         }
 
+        private void SetDefault()
+        {
+            this.ZLayer = Default_ZLayer;
+            this.ZOrder = Default_ZOrder;
+        }
+
         public Block(string[] data)
         {
+            this.SetDefault();
             Group = new BlockGroup();
             for (int i = 0; i < data.Length; i += 2)
             {
