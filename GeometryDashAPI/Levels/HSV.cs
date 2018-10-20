@@ -10,6 +10,10 @@
         public bool DeltaSaturation { get; set; }
         public bool DeltaBrightness { get; set; }
 
+        public HSV()
+        {
+        }
+
         public HSV(string data)
         {
             string[] dataArray = data.Split(Separator);

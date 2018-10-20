@@ -27,6 +27,11 @@ namespace GeometryDashAPI.Levels
                 case 203:
                 case 1334:
                     return new SpeedBlock(data);
+                case 35:
+                case 67:
+                case 140:
+                case 1332:
+                    return new JumpPlate(data);
                 default:
                     throw new Exception(ExceptionMessages.BlockTypeNotSupported(id.ToString()));
             }

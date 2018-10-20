@@ -33,12 +33,20 @@ namespace GeometryDashAPI.Levels
         {
             this.ID = id;
         }
-
         public Color(ColorType type)
         {
             this.ID = (short)type;
         }
-
+        public Color(short id, byte r, byte g, byte b)
+        {
+            this.ID = id;
+            this.SetColor(r, g, b);
+        }
+        public Color(ColorType type, byte r, byte g, byte b)
+        {
+            this.ID = (short)type;
+            this.SetColor(r, g, b);
+        }
         public Color(string data)
         {
             string[] properties = data.Split('_');
@@ -100,6 +108,13 @@ namespace GeometryDashAPI.Levels
             }
         }
 
+        public void SetColor(byte r, byte g, byte b)
+        {
+            Red = r;
+            Green = g;
+            Blue = b;
+        }
+
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
@@ -120,7 +135,7 @@ namespace GeometryDashAPI.Levels
 
             if (TargetChannelID != 0)
             {
-                builder.Append($"{Sp}9{Sp}{TargetChannelID}{Sp}10{Sp}{ColorHSV.ToString()}");
+                builder.Append($"{Sp}9{Sp}{TargetChannelID}{Sp}10{Sp}{(ColorHSV == null ? new HSV().ToString() : ColorHSV.ToString())}");
                 if (CopyOpacity)
                     builder.Append($"{Sp}17{Sp}1");
             }
