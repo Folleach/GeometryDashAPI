@@ -18,6 +18,7 @@ namespace GeometryDashAPI.Memory
         }
         #endregion
 
+        #region Dll import
         [DllImport("kernel32.dll")]
         protected static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
@@ -26,6 +27,7 @@ namespace GeometryDashAPI.Memory
 
         [DllImport("kernel32.dll")]
         protected static extern bool WriteProcessMemory(int hProcess, int lpBaseAddress, byte[] buffer, int size, out int lpNumberOfBytesWritten);
+        #endregion
 
         public string ProcessName { get; protected set; }
 
@@ -34,6 +36,10 @@ namespace GeometryDashAPI.Memory
 
         public Process Game;
         public IntPtr GameHandle;
+
+        public GameProcess()
+        {
+        }
 
         public bool Initialize(int access)
         {
@@ -55,12 +61,22 @@ namespace GeometryDashAPI.Memory
 
         public IntPtr GetModuleAddress(string moduleFullName)
         {
-            foreach (ProcessModule modules in Game.Modules)
+            foreach (ProcessModule module in Game.Modules)
             {
-                if (moduleFullName == modules.ModuleName)
-                    return modules.BaseAddress;
+                if (moduleFullName == module.ModuleName)
+                    return module.BaseAddress;
             }
             return (IntPtr)(-1);
+        }
+
+        public ProcessModule GetModule(string moduleFullName)
+        {
+            foreach (ProcessModule module in Game.Modules)
+            {
+                if (moduleFullName == module.ModuleName)
+                    return module;
+            }
+            return null;
         }
 
         public T Read<T>(int address) where T : struct
