@@ -5,10 +5,10 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
     public enum JumpPlateID
     {
-        Orange = 35,
+        Yellow = 35,
         Purple = 140,
         Red = 1332,
-        Blue = 67
+        LightBlue = 67
     }
 
     public class JumpPlate : Block

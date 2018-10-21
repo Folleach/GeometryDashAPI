@@ -2,7 +2,7 @@
 {
     public enum SpeedType : byte
     {
-        Orange = 1,
+        Yellow = 1,
         Default = 0,
         Green = 2,
         Purple = 3,

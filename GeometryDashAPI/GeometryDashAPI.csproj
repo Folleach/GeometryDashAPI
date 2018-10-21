@@ -65,6 +65,7 @@
     <Compile Include="Levels\GameObjects\Default\ColorBlock.cs" />
     <Compile Include="Levels\GameObjects\Default\DetailBlock.cs" />
     <Compile Include="Levels\GameObjects\Specific\JumpPlate.cs" />
+    <Compile Include="Levels\GameObjects\Specific\JumpSphere.cs" />
     <Compile Include="Levels\GameObjects\Specific\SpeedBlock.cs" />
     <Compile Include="Levels\GameObjects\Triggers\MoveTrigger.cs" />
     <Compile Include="Levels\GameObjects\Specific\TextBlock.cs" />

@@ -32,6 +32,15 @@ namespace GeometryDashAPI.Levels
                 case 140:
                 case 1332:
                     return new JumpPlate(data);
+                case 36:
+                case 141:
+                case 1333:
+                case 84:
+                case 1022:
+                case 1330:
+                case 1704:
+                case 1751:
+                    return new JumpSphere(data);
                 default:
                     throw new Exception(ExceptionMessages.BlockTypeNotSupported(id.ToString()));
             }
