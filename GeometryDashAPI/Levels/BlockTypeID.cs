@@ -2,6 +2,7 @@
 using GeometryDashAPI.Levels.GameObjects;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Levels.GameObjects.Specific;
+using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Levels.Interfaces;
 using System;
 
@@ -41,6 +42,8 @@ namespace GeometryDashAPI.Levels
                 case 1704:
                 case 1751:
                     return new JumpSphere(data);
+                case 1006:
+                    return new PulseTrigger(data);
                 default:
                     throw new Exception(ExceptionMessages.BlockTypeNotSupported(id.ToString()));
             }

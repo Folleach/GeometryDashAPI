@@ -147,6 +147,8 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
                 builder.Append($",32,{GameConvert.SingleToString(Scale)}");
             if (GroupParent)
                 builder.Append($",34,1");
+            if (IsTrigger)
+                builder.Append(",36,1");
             return builder.ToString();
         }
     }

@@ -66,6 +66,11 @@ namespace GeometryDashAPI.Data.Models
             get => DataLevel.ContainsKey("k48") ? DataLevel["k48"] : 0;
             set => DataLevel["k48"] = value;
         }
+        public int BinaryVersion
+        {
+            get => DataLevel["k50"];
+            set => DataLevel["k50"] = value;
+        }
         public bool CollectCoin1
         {
             get => DataLevel.ContainsKey("k61") ? DataLevel["k61"] : false;
@@ -86,6 +91,11 @@ namespace GeometryDashAPI.Data.Models
         {
             this.KeyInDict = key;
             this.DataLevel = dict;
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

@@ -10,6 +10,11 @@
         public bool DeltaSaturation { get; set; }
         public bool DeltaBrightness { get; set; }
 
+        public bool IsDefault
+        {
+            get => Hue == 0 && Saturation == 1f && Brightness == 1f && !DeltaSaturation && !DeltaBrightness;
+        }
+
         public HSV()
         {
         }

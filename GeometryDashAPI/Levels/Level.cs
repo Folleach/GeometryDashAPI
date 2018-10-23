@@ -27,7 +27,7 @@ namespace GeometryDashAPI.Levels
         #endregion
 
         #region Level property
-        public Mode GameMode { get; set; } = Mode.Cube;
+        public GameMode GameMode { get; set; } = GameMode.Cube;
         public SpeedType PlayerSpeed { get; set; } = SpeedType.Default;
         public bool Dual { get; set; }
         public bool TwoPlayerMode { get; set; }
@@ -121,7 +121,7 @@ namespace GeometryDashAPI.Levels
                         kS39 = int.Parse(levelProperties[i + 1]);
                         break;
                     case "kA2":
-                        GameMode = (Mode)int.Parse(levelProperties[i + 1]);
+                        GameMode = (GameMode)int.Parse(levelProperties[i + 1]);
                         break;
                     case "kA3":
                         Mini = GameConvert.StringToBool(levelProperties[i + 1], false);

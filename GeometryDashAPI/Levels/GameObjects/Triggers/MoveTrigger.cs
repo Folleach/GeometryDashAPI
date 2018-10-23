@@ -23,19 +23,19 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
                 switch (data[i])
                 {
                     case "51": TargetGroupID = int.Parse(data[i + 1]);
-                        break;
+                        continue;
                     case "28": MoveX = int.Parse(data[i + 1]);
-                        break;
+                        continue;
                     case "29": MoveY = int.Parse(data[i + 1]);
-                        break;
-                    case "10": GameConvert.StringToSingle(data[i + 1]);
-                        break;
+                        continue;
+                    case "10": Time = GameConvert.StringToSingle(data[i + 1]);
+                        continue;
                     case "30": EasingType = (Easing)byte.Parse(data[i + 1]);
-                        break;
-                    case "85": GameConvert.StringToSingle(data[i + 1]);
-                        break;
+                        continue;
+                    case "85": EasingTime = GameConvert.StringToSingle(data[i + 1]);
+                        continue;
                     default:
-                        break;
+                        continue;
                 }
             }
         }
