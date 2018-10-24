@@ -47,7 +47,9 @@
     <Compile Include="Data\GameData.cs" />
     <Compile Include="Data\GameManager.cs" />
     <Compile Include="Data\LocalLevels.cs" />
+    <Compile Include="Exceptions\BlockLoadException.cs" />
     <Compile Include="Exceptions\ExceptionMessages.cs" />
+    <Compile Include="Exceptions\PropertyNotSupportedException.cs" />
     <Compile Include="GameConvert.cs" />
     <Compile Include="Data\Models\LevelCreatorModel.cs" />
     <Compile Include="Levels\BlockList.cs" />

@@ -103,7 +103,7 @@ namespace GeometryDashAPI.Levels
                         //TODO: Added to class
                         break;
                     default:
-                        throw new Exception(ExceptionMessages.PropertyNotSupported(properties[i], properties[i + 1]));
+                        throw new PropertyNotSupportedException(ExceptionMessages.PropertyNotSupported(properties[i], properties[i + 1]));
                 }
             }
         }

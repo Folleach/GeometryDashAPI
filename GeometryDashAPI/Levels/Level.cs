@@ -142,7 +142,7 @@ namespace GeometryDashAPI.Levels
                         kA11 = int.Parse(levelProperties[i + 1]);
                         break;
                     default:
-                        throw new Exception(ExceptionMessages.PropertyNotSupported(levelProperties[i], levelProperties[i + 1]));
+                        throw new PropertyNotSupportedException(ExceptionMessages.PropertyNotSupported(levelProperties[i], levelProperties[i + 1]));
                 }
             }
             this.LoadBlocks(splitData);

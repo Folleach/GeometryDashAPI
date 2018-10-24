@@ -4,7 +4,6 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Levels.Interfaces;
-using System;
 
 namespace GeometryDashAPI.Levels
 {
@@ -45,7 +44,7 @@ namespace GeometryDashAPI.Levels
                 case 1006:
                     return new PulseTrigger(data);
                 default:
-                    throw new Exception(ExceptionMessages.BlockTypeNotSupported(id.ToString()));
+                    throw new BlockLoadException($"Load block with ID {id} not support in this version API", data);
             }
         }
     }
