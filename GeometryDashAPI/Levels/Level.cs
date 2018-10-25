@@ -16,6 +16,8 @@ namespace GeometryDashAPI.Levels
 
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
+        public BindingBlockID BlockBinding { get; set; }
+
         public ColorList Colors { get; private set; }
         public BlockList Blocks { get; private set; }
 
@@ -47,24 +49,26 @@ namespace GeometryDashAPI.Levels
         #endregion
 
         #region Constructor
-        public Level()
+        public Level(BindingBlockID blockBinding = null)
         {
-            this.Initialize();
-        }
-        public Level(string data)
-        {
-            this.Initialize();
+            this.Initialize(blockBinding);
             this.Load(DefaultLevelString);
         }
-        public Level(LevelCreatorModel model)
+        public Level(string data, BindingBlockID blockBinding = null)
         {
-            this.Initialize();
+            this.Initialize(blockBinding);
+            this.Load(data);
+        }
+        public Level(LevelCreatorModel model, BindingBlockID blockBinding = null)
+        {
+            this.Initialize(blockBinding);
             this.Load(model.LevelString);
         }
         #endregion
 
-        protected virtual void Initialize()
+        protected virtual void Initialize(BindingBlockID blockBinding)
         {
+            BlockBinding = blockBinding;
             Colors = new ColorList();
             Blocks = new BlockList();
         }
@@ -142,7 +146,7 @@ namespace GeometryDashAPI.Levels
                         kA11 = int.Parse(levelProperties[i + 1]);
                         break;
                     default:
-                        throw new PropertyNotSupportedException(ExceptionMessages.PropertyNotSupported(levelProperties[i], levelProperties[i + 1]));
+                        throw new PropertyNotSupportedException(levelProperties[i], levelProperties[i + 1]);
                 }
             }
             this.LoadBlocks(splitData);
@@ -164,10 +168,11 @@ namespace GeometryDashAPI.Levels
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 #endif
+            BlockTypeID idTypes = new BlockTypeID(BlockBinding);
             for (int i = 1; i < blocksData.Length - 1; i++)
             {
                 string[] block = blocksData[i].Split(',');
-                Blocks.Add(BlockTypeID.InitializeByID(int.Parse(block[1]), block));
+                Blocks.Add(idTypes.InitializeByID(int.Parse(block[1]), block));
             }
 #if DEBUG
             sw.Stop();

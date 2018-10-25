@@ -6,7 +6,8 @@ namespace GeometryDashAPI.Exceptions
     [Serializable]
     internal class PropertyNotSupportedException : Exception
     {
-        public PropertyNotSupportedException()
+        public PropertyNotSupportedException(string key, string value = null)
+            : base(value == null ? $"Property '{key}' not supported." : $"Property '{key}' not supported. Value: {value}")
         {
         }
 
