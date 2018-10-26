@@ -53,7 +53,7 @@ namespace GeometryDashAPI.Levels
                 case 1006:
                     return new PulseTrigger(data);
                 default:
-                    throw new BlockLoadException($"Load block with ID {id} not support in this version API", data);
+                    throw new BlockLoadException(id, data);
             }
         }
     }

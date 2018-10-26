@@ -10,7 +10,7 @@ namespace GeometryDashAPI.Levels
     {
         const char Sp = '_';
 
-        public short ID { get; set; }
+        public short ID { get; internal set; }
         public byte Red { get; set; } = 255;
         public byte Green { get; set; } = 255;
         public byte Blue { get; set; } = 255;

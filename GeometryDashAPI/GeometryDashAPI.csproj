@@ -51,6 +51,7 @@
     <Compile Include="Exceptions\ConstructorNotFoundException.cs" />
     <Compile Include="Exceptions\NotImplementIBlockException.cs" />
     <Compile Include="Exceptions\PropertyNotSupportedException.cs" />
+    <Compile Include="Exceptions\UnableSetException.cs" />
     <Compile Include="GameConvert.cs" />
     <Compile Include="Data\Models\LevelCreatorModel.cs" />
     <Compile Include="Levels\BindingBlockID.cs" />

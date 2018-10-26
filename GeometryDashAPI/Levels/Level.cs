@@ -184,10 +184,9 @@ namespace GeometryDashAPI.Levels
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("kS38,");
-            foreach (KeyValuePair<short, Color> color in Colors)
-            {
-                builder.Append($"{color.Value.ToString()}|");
-            }
+            IEnumerable<Color> colorList = Colors.ToList();
+            foreach (Color color in colorList)
+                builder.Append($"{color.ToString()}|");
             builder.Append($",kA13,{kA13},kA15,{kA15},kA16,{kA16},kA14,{kA14},kA6,{Background}," +
                 $"kA7,{Ground},kA17,{kA17},kA18,{Fonts},kS39,{kS39},kA2,{(byte)GameMode}," +
                 $"kA3,{GameConvert.BoolToString(Mini)},kA8,{GameConvert.BoolToString(Dual)}," +

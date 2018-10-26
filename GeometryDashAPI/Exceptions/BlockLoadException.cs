@@ -8,8 +8,8 @@ namespace GeometryDashAPI.Exceptions
     {
         public string[] BlockData;
 
-        public BlockLoadException(string id, string[] data)
-            : base($"Type '{id}' not supported.")
+        public BlockLoadException(int id, string[] data)
+            : base($"Load block with ID {id} not support in this version API")
         {
             this.BlockData = data;
         }
