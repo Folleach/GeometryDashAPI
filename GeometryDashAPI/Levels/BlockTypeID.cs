@@ -52,6 +52,12 @@ namespace GeometryDashAPI.Levels
                     return new JumpSphere(data);
                 case 1006:
                     return new PulseTrigger(data);
+                case 1329:
+                    return new Coin(data);
+                case 1586:
+                    return new SquareParticle(data);
+                case 1700:
+                    return new CircleParticle(data);
                 default:
                     throw new BlockLoadException(id, data);
             }

@@ -2,7 +2,7 @@
 {
     public class DetailBlock : Block
     {
-        const short Default_ColorDetail = 1;
+        public virtual short Default_ColorDetail { get; protected set; } = 1;
 
         public short ColorDetail { get; set; } = 1;
 

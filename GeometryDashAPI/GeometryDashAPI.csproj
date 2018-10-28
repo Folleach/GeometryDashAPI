@@ -71,9 +71,12 @@
     <Compile Include="Levels\Enums\SpeedType.cs" />
     <Compile Include="Levels\GameObjects\Default\ColorBlock.cs" />
     <Compile Include="Levels\GameObjects\Default\DetailBlock.cs" />
+    <Compile Include="Levels\GameObjects\Specific\CircleParticle.cs" />
+    <Compile Include="Levels\GameObjects\Specific\Coin.cs" />
     <Compile Include="Levels\GameObjects\Specific\JumpPlate.cs" />
     <Compile Include="Levels\GameObjects\Specific\JumpSphere.cs" />
     <Compile Include="Levels\GameObjects\Specific\SpeedBlock.cs" />
+    <Compile Include="Levels\GameObjects\Specific\SquareParticle.cs" />
     <Compile Include="Levels\GameObjects\Triggers\MoveTrigger.cs" />
     <Compile Include="Levels\GameObjects\Specific\TextBlock.cs" />
     <Compile Include="Levels\GameObjects\Default\Trigger.cs" />

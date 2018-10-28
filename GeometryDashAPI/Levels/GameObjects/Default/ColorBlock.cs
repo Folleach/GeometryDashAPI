@@ -4,10 +4,10 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     public class ColorBlock : Block
     {
-        const short Default_ColorBase = (short)ColorType.Obj;
-        const short Default_ColorDetail = 1;
+        public virtual short Default_ColorBase { get; protected set; } = (short)ColorType.Obj;
+        public virtual short Default_ColorDetail { get; protected set; } = 1;
 
-        public short ColorBase { get; set; } = 1;
+        public short ColorBase { get; set; } = (short)ColorType.Obj;
         public short ColorDetail { get; set; } = 1;
 
         public ColorBlock(int id) : base(id)
@@ -34,7 +34,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
 
         public override string ToString()
         {
-            if (ColorBase != Default_ColorDetail)
+            if (ColorBase != Default_ColorBase)
                 return $"{base.ToString()},21,{ColorBase}";
             if (ColorDetail != Default_ColorDetail)
                 return $"{base.ToString()},22,{ColorDetail}";
