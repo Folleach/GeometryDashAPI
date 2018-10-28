@@ -86,6 +86,25 @@ namespace GeometryDashAPI.Data.Models
             get => DataLevel.ContainsKey("k63") ? DataLevel["k63"] : false;
             set => DataLevel["k63"] = value;
         }
+        public bool CustomMusic
+        {
+            get => DataLevel.ContainsKey("k45");
+        }
+        public int MusicID
+        {
+            get => CustomMusic ? DataLevel["k45"] : DataLevel.ContainsKey("k8") ? DataLevel ["k8"] : 0;
+        }
+
+        public void SetMusicID(bool custom, int id)
+        {
+            if (custom)
+                DataLevel["k45"] = id;
+            else
+            {
+                DataLevel["k8"] = id;
+                DataLevel.Remove("k45");
+            }
+        }
 
         public LevelCreatorModel(string key, Dictionary<string, dynamic> dict)
         {

@@ -1,6 +1,5 @@
 ﻿using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
-using System;
 using System.Globalization;
 using System.Text;
 
