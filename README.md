@@ -1,13 +1,13 @@
 # GeometryDashAPI
 Library for working with game data.<br>
-Currently under development.
+Currently under development and experimenting.
 #### Such as:
 - Levels (Colors, blocks and other).
 - Game data in files.
 - Game process.
 
 ### Download and use
-1. Download binary file on the way: "[GeometryDashAPI/bin/Release/GeometryDashAPI.dll](https://github.com/Folleach/GeometryDashAPI/tree/master/GeometryDashAPI/bin/Release)".
+1. Download binary file on the way: "[GeometryDashAPI/bin/Release/netstandard2.0/GeometryDashAPI.dll](https://github.com/Folleach/GeometryDashAPI/tree/master/GeometryDashAPI/bin/Release/netstandard2.0)".
 2. Add a link to the file to the project.
 3. Use.
 
