@@ -120,5 +120,9 @@ namespace GeometryDashAPI.Data
         public GameManager() : base(GameDataType.GameManager)
         {
         }
+
+        public GameManager(string fullName) : base(fullName)
+        {
+        }
     }
 }

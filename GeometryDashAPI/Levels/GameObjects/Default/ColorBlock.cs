@@ -1,4 +1,5 @@
 ﻿using GeometryDashAPI.Levels.Enums;
+using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects.Default
 {
@@ -34,11 +35,13 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
 
         public override string ToString()
         {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(base.ToString());
             if (ColorBase != Default_ColorBase)
-                return $"{base.ToString()},21,{ColorBase}";
+                builder.Append($",21,{ColorBase}");
             if (ColorDetail != Default_ColorDetail)
-                return $"{base.ToString()},22,{ColorDetail}";
-            return base.ToString();
+                builder.Append($",22,{ColorDetail}");
+            return builder.ToString();
         }
     }
 }

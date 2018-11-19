@@ -19,6 +19,11 @@ namespace GeometryDashAPI.Data
             this.LoadList();
         }
 
+        public LocalLevels(string fullName) : base(fullName)
+        {
+            this.LoadList();
+        }
+
         public override void Load()
         {
             base.Load();

@@ -10,7 +10,7 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            LocalLevels levels = new LocalLevels();
+            LocalLevels levels = new LocalLevels("C:\\a.dat");
             Level level = new Level(levels.GetLevelByName("Temp"));
             foreach (IBlock element in level.Blocks)
                 Console.WriteLine(element.ID);
