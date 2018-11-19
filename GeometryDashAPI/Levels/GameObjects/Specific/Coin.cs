@@ -1,10 +1,4 @@
-﻿using GeometryDashAPI.Levels.Enums;
-using GeometryDashAPI.Levels.GameObjects.Default;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
