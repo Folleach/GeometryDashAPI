@@ -1,5 +1,5 @@
 ﻿using GeometryDashAPI.Exceptions;
-using GeometryDashAPI.Levels.Interfaces;
+using GeometryDashAPI.Levels.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

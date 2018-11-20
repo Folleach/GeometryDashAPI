@@ -1,8 +1,8 @@
 ﻿using GeometryDashAPI.Exceptions;
+using GeometryDashAPI.Levels.GameObjects;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Levels.GameObjects.Triggers;
-using GeometryDashAPI.Levels.Interfaces;
 
 namespace GeometryDashAPI.Levels
 {

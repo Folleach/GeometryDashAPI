@@ -1,5 +1,4 @@
 ﻿using GeometryDashAPI.Levels.Enums;
-using GeometryDashAPI.Levels.Interfaces;
 using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects.Default

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.IO.Compression;
+using System.Text;
 
 namespace GeometryDashAPI
 {
@@ -9,10 +10,16 @@ namespace GeometryDashAPI
         {
             byte[] result = new byte[data.Length];
             for (int i = 0; i < data.Length; i++)
-            {
                 result[i] = (byte)(data[i] ^ key);
-            }
             return result;
+        }
+
+        public static string XOR(string text, string key)
+        {
+            var result = new StringBuilder();
+            for (int c = 0; c < text.Length; c++)
+                result.Append((char)(text[c] ^ key[c % key.Length]));
+            return result.ToString();
         }
 
         public static string GZipDecompress(byte[] data)

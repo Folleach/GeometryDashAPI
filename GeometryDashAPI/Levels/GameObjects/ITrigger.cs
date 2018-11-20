@@ -1,4 +1,4 @@
-﻿namespace GeometryDashAPI.Levels.Interfaces
+﻿namespace GeometryDashAPI.Levels.GameObjects
 {
     public interface ITrigger
     {

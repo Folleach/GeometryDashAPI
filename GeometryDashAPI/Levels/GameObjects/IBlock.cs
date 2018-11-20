@@ -1,6 +1,6 @@
 ﻿using GeometryDashAPI.Levels.Enums;
 
-namespace GeometryDashAPI.Levels.Interfaces
+namespace GeometryDashAPI.Levels.GameObjects
 {
     public interface IBlock
     {

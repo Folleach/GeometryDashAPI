@@ -1,5 +1,4 @@
-﻿using GeometryDashAPI.Levels.Interfaces;
-using System.Text;
+﻿using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects.Default
 {

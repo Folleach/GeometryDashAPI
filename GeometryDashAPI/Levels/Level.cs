@@ -1,10 +1,9 @@
 ﻿using GeometryDashAPI.Data.Models;
 using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
-using GeometryDashAPI.Levels.Interfaces;
+using GeometryDashAPI.Levels.GameObjects;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace GeometryDashAPI.Levels
@@ -12,7 +11,7 @@ namespace GeometryDashAPI.Levels
     public class Level
     {
         //TODO: Temp property
-        public string stringData { get; set; }
+        public string LoadableString { get; set; }
 
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
@@ -21,14 +20,14 @@ namespace GeometryDashAPI.Levels
         public ColorList Colors { get; private set; }
         public BlockList Blocks { get; private set; }
 
-        #region Property
+        #region Properties
         public int CountBlock
         {
             get => Blocks.Count;
         }
         #endregion
 
-        #region Level property
+        #region Level properties
         public GameMode GameMode { get; set; } = GameMode.Cube;
         public SpeedType PlayerSpeed { get; set; } = SpeedType.Default;
         public bool Dual { get; set; }
@@ -87,7 +86,7 @@ namespace GeometryDashAPI.Levels
         protected virtual void Load(string compressData)
         {
             string data = Crypt.GZipDecompress(GameConvert.FromBase64(compressData));
-            stringData = data;
+            LoadableString = data;
             string[] splitData = data.Split(';');
             string[] levelProperties = splitData[0].Split(',');
             for (int i = 0; i < levelProperties.Length; i += 2)

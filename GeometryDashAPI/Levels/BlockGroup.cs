@@ -5,9 +5,13 @@ namespace GeometryDashAPI.Levels
 {
     public class BlockGroup : List<int>
     {
+        public bool IsEmpty
+        {
+            get => Count == 0;
+        }
+
         public BlockGroup() : base()
         {
-            
         }
 
         public BlockGroup(string data) : base()
