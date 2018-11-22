@@ -5,7 +5,10 @@ VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryDashAPI", "GeometryDashAPI\GeometryDashAPI.csproj", "{E1137CDE-1E78-4763-A7EB-0588188AC462}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples", "Examples\Examples.csproj", "{ACD13AC8-6299-45B6-8E2E-9C1D7F3CD41D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples", "Examples\Examples.csproj", "{ACD13AC8-6299-45B6-8E2E-9C1D7F3CD41D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E1137CDE-1E78-4763-A7EB-0588188AC462} = {E1137CDE-1E78-4763-A7EB-0588188AC462}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

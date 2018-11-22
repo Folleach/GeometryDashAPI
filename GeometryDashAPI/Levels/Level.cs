@@ -4,6 +4,7 @@ using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace GeometryDashAPI.Levels
@@ -15,6 +16,8 @@ namespace GeometryDashAPI.Levels
 
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
+        public List<int> WhitelistID { get; set; }
+        public List<string> BlocksWithoutLoad { get; set; }
         public BindingBlockID BlockBinding { get; set; }
 
         public ColorList Colors { get; private set; }
@@ -48,25 +51,28 @@ namespace GeometryDashAPI.Levels
         #endregion
 
         #region Constructor
-        public Level(BindingBlockID blockBinding = null)
+        public Level(BindingBlockID blockBinding = null, List<int> whitelistID = null)
         {
-            this.Initialize(blockBinding);
+            this.Initialize(blockBinding, whitelistID);
             this.Load(DefaultLevelString);
         }
-        public Level(string data, BindingBlockID blockBinding = null)
+        public Level(string data, BindingBlockID blockBinding = null, List<int> whitelistID = null)
         {
-            this.Initialize(blockBinding);
+            this.Initialize(blockBinding, whitelistID);
             this.Load(data);
         }
-        public Level(LevelCreatorModel model, BindingBlockID blockBinding = null)
+        public Level(LevelCreatorModel model, BindingBlockID blockBinding = null, List<int> whitelistID = null)
         {
-            this.Initialize(blockBinding);
+            this.Initialize(blockBinding, whitelistID);
             this.Load(model.LevelString);
         }
         #endregion
 
-        protected virtual void Initialize(BindingBlockID blockBinding)
+        protected virtual void Initialize(BindingBlockID blockBinding, List<int> whitelistID)
         {
+            WhitelistID = whitelistID;
+            if (whitelistID != null)
+                BlocksWithoutLoad = new List<string>();
             BlockBinding = blockBinding;
             Colors = new ColorList();
             Blocks = new BlockList();
@@ -171,7 +177,14 @@ namespace GeometryDashAPI.Levels
             for (int i = 1; i < blocksData.Length - 1; i++)
             {
                 string[] block = blocksData[i].Split(',');
-                Blocks.Add(idTypes.InitializeByID(int.Parse(block[1]), block));
+                int id = int.Parse(block[1]);
+                if (WhitelistID != null)
+                    if (!WhitelistID.Exists(x => x == id))
+                    {
+                        BlocksWithoutLoad.Add(blocksData[i]);
+                        continue;
+                    }
+                Blocks.Add(idTypes.InitializeByID(id, block));
             }
 #if DEBUG
             sw.Stop();
@@ -190,11 +203,18 @@ namespace GeometryDashAPI.Levels
                 $"kA7,{Ground},kA17,{kA17},kA18,{Fonts},kS39,{kS39},kA2,{(byte)GameMode}," +
                 $"kA3,{GameConvert.BoolToString(Mini)},kA8,{GameConvert.BoolToString(Dual)}," +
                 $"kA4,{(byte)PlayerSpeed},kA9,{kA9},kA10,{GameConvert.BoolToString(TwoPlayerMode)},kA11,{kA11};");
-            foreach (var element in Blocks)
+            foreach (IBlock element in Blocks)
             {
                 builder.Append(element.ToString());
                 builder.Append(';');
             }
+
+            if (BlocksWithoutLoad != null)
+                foreach (string element in BlocksWithoutLoad)
+                {
+                    builder.Append(element);
+                    builder.Append(';');
+                }
             byte[] bytes = Crypt.GZipCompress(Encoding.ASCII.GetBytes(builder.ToString()));
             return GameConvert.ToBase64(bytes);
         }

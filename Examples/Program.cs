@@ -1,7 +1,8 @@
 ﻿using GeometryDashAPI.Data;
 using GeometryDashAPI.Levels;
-using GeometryDashAPI.Levels.Interfaces;
+using GeometryDashAPI.Levels.GameObjects;
 using System;
+using System.Collections.Generic;
 
 namespace Examples
 {
@@ -10,10 +11,15 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            LocalLevels levels = new LocalLevels("C:\\a.dat");
-            Level level = new Level(levels.GetLevelByName("Temp"));
+            LocalLevels levels = new LocalLevels();
+            List<int> whitelist = new List<int>();
+            whitelist.Add(1329);
+            var a = levels.GetLevelByName("Temp");
+            Level level = new Level(a, null, whitelist);
             foreach (IBlock element in level.Blocks)
-                Console.WriteLine(element.ID);
+                element.PositionY += 30;
+            levels.GetLevelByName("Temp").LevelString = level.ToString();
+            levels.Save();
             Console.ReadKey();
         }
     }
