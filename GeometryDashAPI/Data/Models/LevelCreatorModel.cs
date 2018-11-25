@@ -35,6 +35,11 @@ namespace GeometryDashAPI.Data.Models
             get => DataLevel.ContainsKey("k14") ? DataLevel["k14"] : false;
             set => DataLevel["k14"] = value;
         }
+        public int Version
+        {
+            get => DataLevel["k16"];
+            set => DataLevel["k16"] = value;
+        }
         public int TotalAttempts
         {
             get => DataLevel.ContainsKey("k18") ? DataLevel["k18"] : 0;
@@ -60,6 +65,11 @@ namespace GeometryDashAPI.Data.Models
         {
             get => DataLevel.ContainsKey("k36") ? DataLevel["k36"] : 0;
             set => DataLevel["k36"] = value;
+        }
+        public int Revision
+        {
+            get => DataLevel.ContainsKey("k46") ? DataLevel["k46"] : 0;
+            set => DataLevel["k46"] = value;
         }
         public int CountObject
         {
@@ -114,7 +124,7 @@ namespace GeometryDashAPI.Data.Models
 
         public override string ToString()
         {
-            return Name;
+            return $"{Name}";
         }
     }
 }
