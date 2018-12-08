@@ -24,10 +24,8 @@ namespace GeometryDashAPI.Levels
         public BlockList Blocks { get; private set; }
 
         #region Properties
-        public int CountBlock
-        {
-            get => Blocks.Count;
-        }
+        public int CountBlock { get => Blocks.Count; }
+        public int CountColor { get => Colors.Count; }
         #endregion
 
         #region Level properties
@@ -40,7 +38,7 @@ namespace GeometryDashAPI.Levels
         public byte Background { get; set; }
         public byte Ground { get; set; }
 
-        public int kA13 { get; set; }
+        public float kA13 { get; set; }
         public int kA15 { get; set; }
         public int kA16 { get; set; }
         public string kA14 { get; set; }
@@ -103,7 +101,7 @@ namespace GeometryDashAPI.Levels
                         this.LoadColors(levelProperties[i + 1]);
                         break;
                     case "kA13":
-                        kA13 = int.Parse(levelProperties[i + 1]);
+                        kA13 = GameConvert.StringToSingle(levelProperties[i + 1]);
                         break;
                     case "kA15":
                         kA15 = int.Parse(levelProperties[i + 1]);

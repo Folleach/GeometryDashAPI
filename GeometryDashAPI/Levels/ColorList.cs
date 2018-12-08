@@ -28,6 +28,10 @@ namespace GeometryDashAPI.Levels
             get => this[(short)type];
             set => this[(short)type] = value;
         }
+        public int Count
+        {
+            get => Colors.Count;
+        }
 
         public void SetID(short target, short to)
         {

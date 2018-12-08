@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace GeometryDashAPI.Memory
 {
@@ -97,6 +98,14 @@ namespace GeometryDashAPI.Memory
                 pointers[i] = this.Read<IntPtr>((int)IntPtr.Add(pointers[i - 1], offsets[i]));
 
             return this.Read<T>((int)IntPtr.Add(pointers[offsets.Length - 2], offsets[offsets.Length - 1]));
+        }
+
+        public string ReadString(int address, int length)
+        {
+            byte[] buffer = new byte[length];
+            ReadProcessMemory((int)GameHandle, address, buffer, length, ref this.BytesRead);
+
+            return Encoding.ASCII.GetString(buffer);
         }
 
         public void Write<T>(int address, T value)
