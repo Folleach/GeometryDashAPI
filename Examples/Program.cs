@@ -13,12 +13,8 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            GameProcess game = new GameProcess();
-            game.Initialize(Access.PROCESS_VM_READ);
-            while (true)
-            {
-                Console.WriteLine(game.ReadString(0x10E34F8C, 4));
-            }
+            PercentReaderExample.Invoke();
+            Console.ReadKey();
         }
     }
 }
