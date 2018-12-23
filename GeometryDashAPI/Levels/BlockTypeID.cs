@@ -58,6 +58,10 @@ namespace GeometryDashAPI.Levels
                     return new SquareParticle(data);
                 case 1700:
                     return new CircleParticle(data);
+                case 1611:
+                    return new CountTrigger(data);
+                case 1811:
+                    return new InstantCountTrigger(data);
                 default:
                     throw new BlockLoadException(id, data);
             }
