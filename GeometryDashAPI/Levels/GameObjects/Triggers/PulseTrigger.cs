@@ -45,43 +45,61 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
             IsTrigger = true;
         }
 
-        public PulseTrigger(string[] data) : base(data)
+        public PulseTrigger(string[] data)
         {
             for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public override void LoadProperty(byte key, string value)
+        {
+            switch (key)
             {
-                switch (data[i])
-                {
-                    case "51": TargetID = int.Parse(data[i + 1]);
-                        continue;
-                    case "7": Red = byte.Parse(data[i + 1]);
-                        continue;
-                    case "8": Green = byte.Parse(data[i + 1]);
-                        continue;
-                    case "9": Blue = byte.Parse(data[i + 1]);
-                        continue;
-                    case "48": PulseMode = (PulseModeType)byte.Parse(data[i + 1]);
-                        continue;
-                    case "52": TargetType = (TargetType)byte.Parse(data[i + 1]);
-                        continue;
-                    case "86": Exclusive = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "45": FadeIn = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    case "46": Hold = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    case "47": FadeOut = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    case "65": MainOnly = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "66": DetailOnly = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "49": ValueHSV = new HSV(data[i + 1]);
-                        continue;
-                    case "50": ColorID = short.Parse(data[i + 1]);
-                        continue;
-                    default:
-                        continue;
-                }
+                case 51:
+                    TargetID = int.Parse(value);
+                    return;
+                case 7:
+                    Red = byte.Parse(value);
+                    return;
+                case 8:
+                    Green = byte.Parse(value);
+                    return;
+                case 9:
+                    Blue = byte.Parse(value);
+                    return;
+                case 48:
+                    PulseMode = (PulseModeType)byte.Parse(value);
+                    return;
+                case 52:
+                    TargetType = (TargetType)byte.Parse(value);
+                    return;
+                case 86:
+                    Exclusive = GameConvert.StringToBool(value);
+                    return;
+                case 45:
+                    FadeIn = GameConvert.StringToSingle(value);
+                    return;
+                case 46:
+                    Hold = GameConvert.StringToSingle(value);
+                    return;
+                case 47:
+                    FadeOut = GameConvert.StringToSingle(value);
+                    return;
+                case 65:
+                    MainOnly = GameConvert.StringToBool(value);
+                    return;
+                case 66:
+                    DetailOnly = GameConvert.StringToBool(value);
+                    return;
+                case 49:
+                    ValueHSV = new HSV(value);
+                    return;
+                case 50:
+                    ColorID = short.Parse(value);
+                    return;
+                default:
+                    base.LoadProperty(key, value);
+                    return;
             }
         }
 

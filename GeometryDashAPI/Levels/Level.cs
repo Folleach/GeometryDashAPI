@@ -153,7 +153,6 @@ namespace GeometryDashAPI.Levels
                 }
             }
             this.LoadBlocks(splitData);
-            GC.Collect();
         }
         protected virtual void LoadColors(string colorsData)
         {
@@ -167,28 +166,21 @@ namespace GeometryDashAPI.Levels
         }
         protected virtual void LoadBlocks(string[] blocksData)
         {
-#if DEBUG
-            Stopwatch sw = new Stopwatch();
-            sw.Restart();
-#endif
             BlockTypeID idTypes = new BlockTypeID(BlockBinding);
+            string[] tmpBlock;
+            int id;
             for (int i = 1; i < blocksData.Length - 1; i++)
             {
-                string[] block = blocksData[i].Split(',');
-                int id = int.Parse(block[1]);
+                tmpBlock = blocksData[i].Split(',');
+                id = int.Parse(tmpBlock[1]);
                 if (WhitelistID != null)
                     if (!WhitelistID.Exists(x => x == id))
                     {
                         BlocksWithoutLoad.Add(blocksData[i]);
                         continue;
                     }
-                Blocks.Add(idTypes.InitializeByID(id, block));
+                Blocks.Add(idTypes.InitializeByID(id, tmpBlock));
             }
-#if DEBUG
-            sw.Stop();
-            Debug.WriteLine($"Block load time: {sw.ElapsedTicks} ticks");
-            Debug.WriteLine($"Block load time: {sw.ElapsedMilliseconds} milliseconds");
-#endif
         }
         public override string ToString()
         {

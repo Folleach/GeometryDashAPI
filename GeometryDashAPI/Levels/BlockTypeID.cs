@@ -63,7 +63,7 @@ namespace GeometryDashAPI.Levels
                 case 1811:
                     return new InstantCountTrigger(data);
                 default:
-                    throw new BlockLoadException(id, data);
+                    return new Block(data);
             }
         }
     }

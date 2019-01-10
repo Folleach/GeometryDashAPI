@@ -10,18 +10,22 @@
         {
         }
 
-        public DetailBlock(string[] data) : base(data)
+        public DetailBlock(string[] data)
         {
             for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public override void LoadProperty(byte key, string value)
+        {
+            switch (key)
             {
-                switch (data[i])
-                {
-                    case "21":
-                        ColorDetail = short.Parse(data[i + 1]);
-                        continue;
-                    default:
-                        continue;
-                }
+                case 21:
+                    ColorDetail = short.Parse(value);
+                    return;
+                default:
+                    base.LoadProperty(key, value);
+                    return;
             }
         }
 

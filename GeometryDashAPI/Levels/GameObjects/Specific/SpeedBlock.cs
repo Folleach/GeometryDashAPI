@@ -29,19 +29,22 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
         {
         }
 
-        public SpeedBlock(string[] data) : base(data)
+        public SpeedBlock(string[] data)
         {
-            
             for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public override void LoadProperty(byte key, string value)
+        {
+            switch (key)
             {
-                switch (data[i])
-                {
-                    case "13":
-                        Used = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    default:
-                        continue;
-                }
+                case 13:
+                    Used = GameConvert.StringToBool(value);
+                    return;
+                default:
+                    base.LoadProperty(key, value);
+                    return;
             }
         }
 

@@ -16,27 +16,37 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         {
         }
 
-        public MoveTrigger(string[] data) : base(data)
+        public MoveTrigger(string[] data)
         {
             for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public override void LoadProperty(byte key, string value)
+        {
+            switch (key)
             {
-                switch (data[i])
-                {
-                    case "51": TargetGroupID = int.Parse(data[i + 1]);
-                        continue;
-                    case "28": MoveX = int.Parse(data[i + 1]);
-                        continue;
-                    case "29": MoveY = int.Parse(data[i + 1]);
-                        continue;
-                    case "10": Time = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    case "30": EasingType = (Easing)byte.Parse(data[i + 1]);
-                        continue;
-                    case "85": EasingTime = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    default:
-                        continue;
-                }
+                case 51:
+                    TargetGroupID = int.Parse(value);
+                    return;
+                case 28:
+                    MoveX = int.Parse(value);
+                    return;
+                case 29:
+                    MoveY = int.Parse(value);
+                    return;
+                case 10:
+                    Time = GameConvert.StringToSingle(value);
+                    return;
+                case 30:
+                    EasingType = (Easing)byte.Parse(value);
+                    return;
+                case 85:
+                    EasingTime = GameConvert.StringToSingle(value);
+                    return;
+                default:
+                    base.LoadProperty(key, value);
+                    return;
             }
         }
 

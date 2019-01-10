@@ -34,11 +34,7 @@ namespace GeometryDashAPI.Data
             byte[] data = File.ReadAllBytes(this.GameDataFile);
             string datazip = Encoding.ASCII.GetString(Crypt.XOR(data, 0xB)).Split('\0')[0];
             string resultPlist = Crypt.GZipDecompress(GameConvert.FromBase64(datazip));
-#if DEBUG
-            Console.WriteLine("Create plist \"in\" and \"out\" file");
-            File.WriteAllText("plist_in.txt", Plist.PlistToString(new Plist(Encoding.ASCII.GetBytes(resultPlist))));
-            File.WriteAllText("plist_out.txt", resultPlist);
-#endif
+
             this.DataPlist = new Plist(Encoding.ASCII.GetBytes(resultPlist));
             GC.Collect();
         }

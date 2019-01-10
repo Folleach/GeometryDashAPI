@@ -105,6 +105,17 @@ namespace GeometryDashAPI.Data.Models
             get => CustomMusic ? DataLevel["k45"] : DataLevel.ContainsKey("k8") ? DataLevel ["k8"] : 0;
         }
 
+        public float CameraPositionX
+        {
+            get => DataLevel.ContainsKey("kI1") ? DataLevel["kI1"] : 0;
+            set => DataLevel["kI1"] = value;
+        }
+        public float CameraPositionY
+        {
+            get => DataLevel.ContainsKey("kI2") ? DataLevel["kI2"] : 0;
+            set => DataLevel["kI2"] = value;
+        }
+
         public void SetMusicID(bool custom, int id)
         {
             if (custom)

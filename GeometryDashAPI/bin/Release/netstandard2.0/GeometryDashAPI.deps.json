@@ -18,7 +18,10 @@
       },
       "Microsoft.CSharp/4.5.0": {
         "runtime": {
-          "lib/netstandard2.0/Microsoft.CSharp.dll": {}
+          "lib/netstandard2.0/Microsoft.CSharp.dll": {
+            "assemblyVersion": "4.0.4.0",
+            "fileVersion": "4.6.26515.6"
+          }
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},

@@ -1,9 +1,10 @@
 ﻿using GeometryDashAPI.Levels.Enums;
+using System.Collections.Generic;
 using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects.Default
 {
-    public abstract class Block : IBlock
+    public class Block : IBlock
     {
         public virtual Layer Default_ZLayer { get; protected set; } = Layer.T1;
         public virtual short Default_ZOrder { get; protected set; } = 2;
@@ -28,6 +29,12 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         public bool GroupParent { get; set; }
         public bool IsTrigger { get; set; }
 
+        public Dictionary<byte, string> OtherProperties;
+
+        public Block()
+        {
+        }
+        
         public Block(int id)
         {
             this.SetDefault();
@@ -35,81 +42,86 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
             Group = new BlockGroup();
         }
 
+        public Block(string[] data)
+        {
+            for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public virtual void LoadProperty(byte key, string value)
+        {
+            switch (key)
+            {
+                case 1:
+                    ID = int.Parse(value);
+                    return;
+                case 2:
+                    PositionX = GameConvert.StringToSingle(value);
+                    return;
+                case 3:
+                    PositionY = GameConvert.StringToSingle(value);
+                    return;
+                case 4:
+                    HorizontalReflection = GameConvert.StringToBool(value);
+                    return;
+                case 5:
+                    VerticalReflection = GameConvert.StringToBool(value);
+                    return;
+                case 6:
+                    Rotation = short.Parse(value);
+                    return;
+                case 96:
+                    Glow = GameConvert.StringToBool(value, true);
+                    return;
+                case 108:
+                    LinkControl = int.Parse(value);
+                    return;
+                case 20:
+                    EditorL = short.Parse(value);
+                    return;
+                case 61:
+                    EditorL2 = short.Parse(value);
+                    return;
+                case 103:
+                    HighDetal = GameConvert.StringToBool(value);
+                    return;
+                case 57:
+                    Group = new BlockGroup(value);
+                    return;
+                case 64:
+                    DontFade = GameConvert.StringToBool(value);
+                    return;
+                case 67:
+                    DontEnter = GameConvert.StringToBool(value);
+                    return;
+                case 25:
+                    ZOrder = short.Parse(value);
+                    return;
+                case 24:
+                    ZLayer = (Layer)short.Parse(value);
+                    return;
+                case 32:
+                    Scale = GameConvert.StringToSingle(value);
+                    return;
+                case 34:
+                    GroupParent = GameConvert.StringToBool(value);
+                    return;
+                case 36:
+                    IsTrigger = GameConvert.StringToBool(value);
+                    return;
+                default:
+                    if (OtherProperties == null)
+                        OtherProperties = new Dictionary<byte, string>();
+                    if (!OtherProperties.ContainsKey(key))
+                        OtherProperties.Add(key, value);
+                    return;
+            }
+        }
+
         private void SetDefault()
         {
             this.ZLayer = Default_ZLayer;
             this.ZOrder = Default_ZOrder;
-        }
-
-        public Block(string[] data)
-        {
-            this.SetDefault();
-            Group = new BlockGroup();
-            for (int i = 0; i < data.Length; i += 2)
-            {
-                switch (data[i])
-                {
-                    case "1":
-                        ID = int.Parse(data[i + 1]);
-                        continue;
-                    case "2":
-                        PositionX = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    case "3":
-                        PositionY = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    case "4":
-                        HorizontalReflection = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "5":
-                        VerticalReflection = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "6":
-                        Rotation = short.Parse(data[i + 1]);
-                        continue;
-                    case "96":
-                        Glow = GameConvert.StringToBool(data[i + 1], true);
-                        continue;
-                    case "108":
-                        LinkControl = int.Parse(data[i + 1]);
-                        continue;
-                    case "20":
-                        EditorL = short.Parse(data[i + 1]);
-                        continue;
-                    case "61":
-                        EditorL2 = short.Parse(data[i + 1]);
-                        continue;
-                    case "103":
-                        HighDetal = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "57":
-                        Group = new BlockGroup(data[i + 1]);
-                        continue;
-                    case "64":
-                        DontFade = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "67":
-                        DontEnter = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "25":
-                        ZOrder = short.Parse(data[i + 1]);
-                        continue;
-                    case "24":
-                        ZLayer = (Layer)short.Parse(data[i + 1]);
-                        continue;
-                    case "32":
-                        Scale = GameConvert.StringToSingle(data[i + 1]);
-                        continue;
-                    case "34":
-                        GroupParent = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "36":
-                        IsTrigger = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    default:
-                        continue;
-                }
-            }
         }
 
         public override string ToString()
@@ -148,6 +160,11 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
                 builder.Append($",34,1");
             if (IsTrigger)
                 builder.Append(",36,1");
+
+            if (OtherProperties != null)
+                foreach (KeyValuePair<byte, string> element in OtherProperties)
+                    builder.Append($",{element.Key},{element.Value}");
+
             return builder.ToString();
         }
     }

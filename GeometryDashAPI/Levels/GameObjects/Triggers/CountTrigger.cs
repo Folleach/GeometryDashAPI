@@ -15,25 +15,34 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         {
         }
 
-        public CountTrigger(string[] data) : base(data)
+        public CountTrigger(string[] data)
         {
             for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public override void LoadProperty(byte key, string value)
+        {
+            switch (key)
             {
-                switch (data[i])
-                {
-                    case "51": TargetGroupID = int.Parse(data[i + 1]);
-                        continue;
-                    case "56": ActivateGroup = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    case "77": TargetCount = int.Parse(data[i + 1]);
-                        continue;
-                    case "80": ItemID = int.Parse(data[i + 1]);
-                        continue;
-                    case "104": MultiActivate = GameConvert.StringToBool(data[i + 1]);
-                        continue;
-                    default:
-                        continue;
-                }
+                case 51:
+                    TargetGroupID = int.Parse(value);
+                    return;
+                case 56:
+                    ActivateGroup = GameConvert.StringToBool(value);
+                    return;
+                case 77:
+                    TargetCount = int.Parse(value);
+                    return;
+                case 80:
+                    ItemID = int.Parse(value);
+                    return;
+                case 104:
+                    MultiActivate = GameConvert.StringToBool(value);
+                    return;
+                default:
+                    base.LoadProperty(key, value);
+                    return;
             }
         }
 

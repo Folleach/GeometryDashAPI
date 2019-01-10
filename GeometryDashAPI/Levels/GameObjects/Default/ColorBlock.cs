@@ -11,26 +11,35 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         public short ColorBase { get; set; } = (short)ColorType.Obj;
         public short ColorDetail { get; set; } = 1;
 
+        public ColorBlock()
+        {
+        }
+
         public ColorBlock(int id) : base(id)
         {
         }
 
-        public ColorBlock(string[] data) : base(data)
+        public ColorBlock(string[] data)
         {
             for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public override void LoadProperty(byte key, string value)
+        {
+            switch (key)
             {
-                switch (data[i])
-                {
-                    case "21":
-                        ColorBase = short.Parse(data[i + 1]);
-                        continue;
-                    case "22":
-                        ColorDetail = short.Parse(data[i + 1]);
-                        continue;
-                    default:
-                        continue;
-                }
+                case 21:
+                    ColorBase = short.Parse(value);
+                    return;
+                case 22:
+                    ColorDetail = short.Parse(value);
+                    return;
+                default:
+                    base.LoadProperty(key, value);
+                    return;
             }
+            
         }
 
         public override string ToString()

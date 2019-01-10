@@ -8,28 +8,38 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         public bool SpawnTrigger { get; set; }
         public bool MultiTrigger { get; set; }
 
+        public Trigger()
+        {
+        }
+
         public Trigger(int id) : base(id)
         {
         }
 
-        public Trigger(string[] data) : base(data)
+        public Trigger(string[] data)
         {
             for (int i = 0; i < data.Length; i += 2)
+                LoadProperty(byte.Parse(data[i]), data[i + 1]);
+        }
+
+        public override void LoadProperty(byte key, string value)
+        {
+            switch (key)
             {
-                switch (data[i])
-                {
-                    case "11": TouchTrigger = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "62":
-                        SpawnTrigger = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    case "87":
-                        MultiTrigger = GameConvert.StringToBool(data[i + 1]);
-                        break;
-                    default:
-                        break;
-                }
+                case 11:
+                    TouchTrigger = GameConvert.StringToBool(value);
+                    break;
+                case 62:
+                    SpawnTrigger = GameConvert.StringToBool(value);
+                    break;
+                case 87:
+                    MultiTrigger = GameConvert.StringToBool(value);
+                    break;
+                default:
+                    base.LoadProperty(key, value);
+                    return;
             }
+            
         }
 
         public override string ToString()
