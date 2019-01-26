@@ -17,13 +17,6 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            LocalLevels local = new LocalLevels();
-            while (true)
-            {
-                local.Load();
-                LevelCreatorModel a = local.GetLevelByName("test");
-                local.Save();
-            }
         }
     }
 }

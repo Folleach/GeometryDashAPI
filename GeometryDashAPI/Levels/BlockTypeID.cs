@@ -47,6 +47,8 @@ namespace GeometryDashAPI.Levels
                 case 84:
                 case 1022:
                 case 1330:
+                case 1346:
+                    return new RotateTrigger(data);
                 case 1704:
                 case 1751:
                     return new JumpSphere(data);
