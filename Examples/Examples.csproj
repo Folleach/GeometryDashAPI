@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="GeometryDashAPI">
-      <HintPath>..\GeometryDashAPI\bin\Debug\netstandard2.0\GeometryDashAPI.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\GeometryDashAPI\GeometryDashAPI.csproj" />
   </ItemGroup>
 
 </Project>
