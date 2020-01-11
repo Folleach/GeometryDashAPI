@@ -1,35 +1,18 @@
 using GeometryDashAPI.Server.Enums;
-using GeometryDashAPI.Server.Models;
-using System;
 using System.Collections.Generic;
 
 namespace GeometryDashAPI.Server
 {
-    public class GetLevelsQuery {
+    public class GetLevelsQuery
+    {
         #region fields
-        public string String { get; set; } = "-";
-        public OfficialSong OfficialSong
-        {
-            get => OfficialSong;
-            set
-            {
-                CustomSongID = 0;
-                OfficialSong = value;
-            }
-        }
+        public string QueryString { get; set; } = "-";
+        public bool IsOfficialSong { get; private set; }
+        public int SongID { get; private set; }
         public SearchType SearchType { get; set; } = SearchType.MostLiked;
         public List<LengthType> Lengths { get; set; } = new List<LengthType>();
         public List<Difficult> Difficults { get; set; } = new List<Difficult>();
         public DemonDifficult DemonDifficult { get; set; }
-        public int CustomSongID
-        {
-            get => CustomSongID;
-            set
-            {
-                OfficialSong = OfficialSong.NotChoosen;
-                CustomSongID = value;
-            }
-        }
         public int Page { get; set; } = 0;
         public int Total { get; set; } = 11;
         public int Feautured { get; set; } = -1;
@@ -42,11 +25,6 @@ namespace GeometryDashAPI.Server
         #endregion
 
         List<Property> Properties = new List<Property>();
-
-        int BoolToNum(bool value)
-        {
-            return value ? 1 : 0;
-        }
 
         public GetLevelsQuery(SearchType searchType)
         {
@@ -69,27 +47,39 @@ namespace GeometryDashAPI.Server
             else
                 lengthsString = "-";
 
-            Properties.Add(new Property("str", String));
+            Properties.Add(new Property("str", QueryString));
             Properties.Add(new Property("diff", difficultsString));
             Properties.Add(new Property("len", lengthsString));
             Properties.Add(new Property("page", Page));
             Properties.Add(new Property("type", (int)SearchType));
-            Properties.Add(new Property("uncomplited", BoolToNum(Uncomplited)));
-            Properties.Add(new Property("onlyComplited", BoolToNum(Complited)));
+            Properties.Add(new Property("uncomplited", GameConvert.BoolToString(Uncomplited)));
+            Properties.Add(new Property("onlyComplited", GameConvert.BoolToString(Complited)));
             Properties.Add(new Property("total", Total));
-            Properties.Add(new Property("original", BoolToNum(Original)));
-            Properties.Add(new Property("twoPlayer", BoolToNum(TwoPlayer)));
-            Properties.Add(new Property("coins", BoolToNum(HasCoins)));
-            Properties.Add(new Property("epic", BoolToNum(Epic)));
+            Properties.Add(new Property("original", GameConvert.BoolToString(Original)));
+            Properties.Add(new Property("twoPlayer", GameConvert.BoolToString(TwoPlayer)));
+            Properties.Add(new Property("coins", GameConvert.BoolToString(HasCoins)));
+            Properties.Add(new Property("epic", GameConvert.BoolToString(Epic)));
 
             foreach (Difficult diff in Difficults)
                 if (diff == Difficult.Demon)
                     Properties.Add(new Property("demonFilter", (int)DemonDifficult));
             
-            if(Feautured>=0)
+            if (Feautured >= 0)
                 Properties.Add(new Property("featured", Feautured));
 
             return Properties;
+        }
+
+        public void SetSong(int id)
+        {
+            IsOfficialSong = false;
+            SongID = id;
+        }
+
+        public void SetSong(OfficialSong song)
+        {
+            IsOfficialSong = true;
+            SongID = (int)song;
         }
     }
 }
