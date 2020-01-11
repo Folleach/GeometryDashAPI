@@ -31,7 +31,7 @@ namespace Examples
         private static async void F()
         {
             GameServer server = new GameServer();
-            PlayerInfoArray players = server.GetTop(TopType.Creaotrs, 100);
+            Console.WriteLine(server.GetLevels(new GetLevelsQuery(SearchType.MostLiked)).ToString());
             Console.ReadKey();
         }
     }
