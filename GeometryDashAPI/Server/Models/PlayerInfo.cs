@@ -12,11 +12,6 @@ namespace GeometryDashAPI.Server.Models
 
         Dictionary<string, string> WithoutLoaded = new Dictionary<string, string>();
 
-        public PlayerInfo()
-        {
-
-        }
-
         public PlayerInfo(string data)
         {
             string[] splitData = data.Split(':');

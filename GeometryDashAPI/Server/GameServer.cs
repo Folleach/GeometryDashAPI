@@ -105,6 +105,24 @@ namespace GeometryDashAPI.Server
             players.Load(response);
             return players;
         }
+
+        public List<LevelInfo> GetLevels(GetLevelsQuery getLevelsQuery)
+        {
+            List<Property> properties = new List<Property>(getLevelsQuery.BuildQuery());
+
+            properties.Add(new Property("gameVersion", 21));
+            properties.Add(new Property("binaryVersion", 35));
+            properties.Add(new Property("gdw", 0));
+            properties.Add(new Property("secret", "Wmfd2893gb7"));
+
+            string response = Get("/database/getGJLevels21.php", properties.ToArray());
+            //Console.WriteLine(response);
+
+            LevelInfoArray levels = new LevelInfoArray();
+            levels.Load(response);
+            return levels;
+        }
+
         #endregion
     }
 }
