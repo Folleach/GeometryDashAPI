@@ -4,19 +4,19 @@ using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace GeometryDashAPI.Levels
 {
     public class Level
     {
-        //TODO: Temp property
-        public string LoadableString { get; set; }
+        /// <summary>
+        /// The temporal property
+        /// </summary>
+        public string LoadedString { get; private set; }
 
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
-        public List<int> WhitelistID { get; set; }
         public List<string> BlocksWithoutLoad { get; set; }
         public BindingBlockID BlockBinding { get; set; }
 
@@ -38,7 +38,7 @@ namespace GeometryDashAPI.Levels
         public byte Background { get; set; }
         public byte Ground { get; set; }
 
-        public float kA13 { get; set; }
+        public float MusicOffset { get; set; }
         public int kA15 { get; set; }
         public int kA16 { get; set; }
         public string kA14 { get; set; }
@@ -49,28 +49,28 @@ namespace GeometryDashAPI.Levels
         #endregion
 
         #region Constructor
-        public Level(BindingBlockID blockBinding = null, List<int> whitelistID = null)
+        public Level(BindingBlockID blockBinding = null)
         {
-            this.Initialize(blockBinding, whitelistID);
+            this.Initialize(blockBinding);
             this.Load(DefaultLevelString);
         }
-        public Level(string data, BindingBlockID blockBinding = null, List<int> whitelistID = null)
+
+        public Level(string data, BindingBlockID blockBinding = null)
         {
-            this.Initialize(blockBinding, whitelistID);
+            this.Initialize(blockBinding);
             this.Load(data);
         }
-        public Level(LevelCreatorModel model, BindingBlockID blockBinding = null, List<int> whitelistID = null)
+
+        public Level(LevelCreatorModel model, BindingBlockID blockBinding = null)
         {
-            this.Initialize(blockBinding, whitelistID);
+            this.Initialize(blockBinding);
             this.Load(model.LevelString);
         }
         #endregion
 
-        protected virtual void Initialize(BindingBlockID blockBinding, List<int> whitelistID)
+        protected virtual void Initialize(BindingBlockID blockBinding)
         {
-            WhitelistID = whitelistID;
-            if (whitelistID != null)
-                BlocksWithoutLoad = new List<string>();
+            BlocksWithoutLoad = new List<string>();
             BlockBinding = blockBinding;
             Colors = new ColorList();
             Blocks = new BlockList();
@@ -90,7 +90,7 @@ namespace GeometryDashAPI.Levels
         protected virtual void Load(string compressData)
         {
             string data = Crypt.GZipDecompress(GameConvert.FromBase64(compressData));
-            LoadableString = data;
+            LoadedString = data;
             string[] splitData = data.Split(';');
             string[] levelProperties = splitData[0].Split(',');
             for (int i = 0; i < levelProperties.Length; i += 2)
@@ -101,7 +101,7 @@ namespace GeometryDashAPI.Levels
                         this.LoadColors(levelProperties[i + 1]);
                         break;
                     case "kA13":
-                        kA13 = GameConvert.StringToSingle(levelProperties[i + 1]);
+                        MusicOffset = GameConvert.StringToSingle(levelProperties[i + 1]);
                         break;
                     case "kA15":
                         kA15 = int.Parse(levelProperties[i + 1]);
@@ -154,57 +154,64 @@ namespace GeometryDashAPI.Levels
             }
             this.LoadBlocks(splitData);
         }
+
         protected virtual void LoadColors(string colorsData)
         {
             foreach (string colorData in colorsData.Split('|'))
             {
                 if (colorData == string.Empty)
                     continue;
-
                 this.Colors.AddColor(new Color(colorData));
             }
         }
+
         protected virtual void LoadBlocks(string[] blocksData)
         {
-            BlockTypeID idTypes = new BlockTypeID(BlockBinding);
             string[] tmpBlock;
             int id;
             for (int i = 1; i < blocksData.Length - 1; i++)
             {
                 tmpBlock = blocksData[i].Split(',');
-                id = int.Parse(tmpBlock[1]);
-                if (WhitelistID != null)
-                    if (!WhitelistID.Exists(x => x == id))
-                    {
-                        BlocksWithoutLoad.Add(blocksData[i]);
-                        continue;
-                    }
-                Blocks.Add(idTypes.InitializeByID(id, tmpBlock));
+                if (tmpBlock[0] != "1" || !int.TryParse(tmpBlock[1], out id))
+                {
+                    //TODO: Find valid block id. I think it won't be necessary
+                    throw new ArgumentException("The block id is not found.");
+                }
+                IBlock candidate = BlockTypeID.InitializeByID(id, tmpBlock, BlockBinding);
+                if (candidate == null)
+                {
+                    BlocksWithoutLoad.Add(blocksData[i]);
+                    continue;
+                }
+                Blocks.Add(candidate);
             }
         }
+
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("kS38,");
-            IEnumerable<Color> colorList = Colors.ToList();
+            List<Color> colorList = Colors.ToList();
             foreach (Color color in colorList)
                 builder.Append($"{color.ToString()}|");
-            builder.Append($",kA13,{kA13},kA15,{kA15},kA16,{kA16},kA14,{kA14},kA6,{Background}," +
+
+            builder.Append($",kA13,{MusicOffset},kA15,{kA15},kA16,{kA16},kA14,{kA14},kA6,{Background}," +
                 $"kA7,{Ground},kA17,{kA17},kA18,{Fonts},kS39,{kS39},kA2,{(byte)GameMode}," +
                 $"kA3,{GameConvert.BoolToString(Mini)},kA8,{GameConvert.BoolToString(Dual)}," +
                 $"kA4,{(byte)PlayerSpeed},kA9,{kA9},kA10,{GameConvert.BoolToString(TwoPlayerMode)},kA11,{kA11};");
-            foreach (IBlock element in Blocks)
+
+            foreach (IBlock block in Blocks)
             {
-                builder.Append(element.ToString());
+                builder.Append(block.ToString());
                 builder.Append(';');
             }
 
-            if (BlocksWithoutLoad != null)
-                foreach (string element in BlocksWithoutLoad)
-                {
-                    builder.Append(element);
-                    builder.Append(';');
-                }
+            foreach (string rawblock in BlocksWithoutLoad)
+            {
+                builder.Append(rawblock);
+                builder.Append(';');
+            }
+
             byte[] bytes = Crypt.GZipCompress(Encoding.ASCII.GetBytes(builder.ToString()));
             return GameConvert.ToBase64(bytes);
         }

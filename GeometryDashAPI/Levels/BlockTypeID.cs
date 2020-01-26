@@ -1,24 +1,16 @@
-﻿using GeometryDashAPI.Exceptions;
-using GeometryDashAPI.Levels.GameObjects;
+﻿using GeometryDashAPI.Levels.GameObjects;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Levels.GameObjects.Triggers;
 
 namespace GeometryDashAPI.Levels
 {
-    public class BlockTypeID
+    public static class BlockTypeID
     {
-        public BindingBlockID BlockBinding { get; set; }
-
-        public BlockTypeID(BindingBlockID blockBinding)
+        public static IBlock InitializeByID(int id, string[] data, BindingBlockID blockBinding)
         {
-            this.BlockBinding = blockBinding;
-        }
-
-        public IBlock InitializeByID(int id, string[] data)
-        {
-            if (BlockBinding != null && BlockBinding.ContainsKey(id))
-                return BlockBinding.Invoke<IBlock>(id, data);
+            if (blockBinding != null && blockBinding.ContainsKey(id))
+                return blockBinding.Invoke<IBlock>(id, data);
 
             switch (id)
             {
@@ -65,7 +57,7 @@ namespace GeometryDashAPI.Levels
                 case 1811:
                     return new InstantCountTrigger(data);
                 default:
-                    return new Block(data);
+                    return null;
             }
         }
     }
