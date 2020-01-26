@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Data
 
         public GameData(GameDataType type)
         {
-            this.GameDataFile = $@"C:\users\{Environment.UserName}\AppData\Local\GeometryDash\CC{type.ToString()}.dat";
+            this.GameDataFile = $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type.ToString()}.dat";
             this.Load();
         }
 
