@@ -80,11 +80,11 @@ namespace GeometryDashAPI.Memory
             return null;
         }
 
-        public T Read<T>(int address) where T : struct
+        public T Read<T>(long address) where T : struct
         {
             int ByteSize = Marshal.SizeOf(typeof(T));
             byte[] buffer = new byte[ByteSize];
-            ReadProcessMemory((int)GameHandle, address, buffer, buffer.Length, ref this.BytesRead);
+            ReadProcessMemory((int)GameHandle, (int)address, buffer, buffer.Length, ref this.BytesRead);
 
             return this.BytesToStructure<T>(buffer);
         }
@@ -95,9 +95,9 @@ namespace GeometryDashAPI.Memory
             IntPtr[] pointers = new IntPtr[offsets.Length - 1];
             pointers[0] = this.Read<IntPtr>((int)IntPtr.Add(module.BaseAddress, offsets[0]));
             for (int i = 1; i < offsets.Length - 1; i++)
-                pointers[i] = this.Read<IntPtr>((int)IntPtr.Add(pointers[i - 1], offsets[i]));
+                pointers[i] = this.Read<IntPtr>(IntPtr.Add(pointers[i - 1], offsets[i]).ToInt64());
 
-            return this.Read<T>((int)IntPtr.Add(pointers[offsets.Length - 2], offsets[offsets.Length - 1]));
+            return this.Read<T>((long)IntPtr.Add(pointers[offsets.Length - 2], offsets[offsets.Length - 1]));
         }
 
         public string ReadString(int address, int length)
