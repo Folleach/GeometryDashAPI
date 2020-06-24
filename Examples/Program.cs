@@ -22,17 +22,17 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Start");
+            Console.WriteLine("Call 'F'");
             F();
-            Console.WriteLine("F called");
+            Console.WriteLine("'F' called");
             Console.ReadKey();
         }
 
         private static async void F()
         {
-            GameServer server = new GameServer();
-            Console.WriteLine(server.GetLevels(new GetLevelsQuery(SearchType.MostLiked)).ToString());
-            Console.ReadKey();
+            var server = new GameServer();
+            var user = server.GetUserByName("Folleach");
+            var acc = server.GetAccountInfo(user.AccountID);
         }
     }
 }

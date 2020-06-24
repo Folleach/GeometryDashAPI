@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace GeometryDashAPI.Server.Enums
+namespace GeometryDashAPI
 {
-    public class TopAttribute : Attribute
+    public class OriginalNameAttribute : Attribute
     {
         public string OriginalName { get; set; }
 
-        public TopAttribute(string originalName)
+        public OriginalNameAttribute(string originalName)
         {
             OriginalName = originalName;
         }

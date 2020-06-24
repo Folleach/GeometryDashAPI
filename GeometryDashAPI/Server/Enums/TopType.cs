@@ -2,9 +2,9 @@
 {
     public enum TopType
     {
-        [Top("top")] Top,
-        [Top("friends")] Friends,
-        [Top("relative")] Global,
-        [Top("creators")] Creaotrs
+        [OriginalName("top")] Top,
+        [OriginalName("friends")] Friends,
+        [OriginalName("relative")] Global,
+        [OriginalName("creators")] Creaotrs
     }
 }

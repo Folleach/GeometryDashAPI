@@ -5,7 +5,7 @@ namespace GeometryDashAPI
 {
     public static class Extensions
     {
-        public static T GetAttribute<T>(this Enum value) where T : Attribute
+        public static T GetAttributeOfSelected<T>(this Enum value) where T : Attribute
         {
             MemberInfo info = value.GetType().GetMember(value.ToString())[0];
             object[] attributes = info.GetCustomAttributes(typeof(T), false);

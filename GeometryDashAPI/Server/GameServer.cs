@@ -1,128 +1,90 @@
 ﻿using GeometryDashAPI.Server.Enums;
 using GeometryDashAPI.Server.Models;
+using GeometryDashAPI.Server.Queries;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GeometryDashAPI.Server
 {
     public class GameServer
     {
-        public Encoding DataEncoding { get; }
+        private Network network = new Network();
 
-        public short GameVersion { get; set; } = 21;
-        public short BinaryVersion { get; set; } = 35;
-        public string Secret { get; set; } = "Wmfd2893gb7";
-        public string UDID { get; set; } = "00000000-ffff-dddd-5555-123456789abc";
-        public int UUID { get; set; } = 1;
+        private OnlineQuery defaultOnlineQuery = new OnlineQuery();
 
-        #region Constructors
-        public GameServer() : this(Encoding.ASCII)
-        {
-        }
-        public GameServer(Encoding encoding)
-        {
-            DataEncoding = encoding;
-        }
-        #endregion
-
-        #region Http
-        public string Get(string path, params Property[] properties)
-        {
-            //Content
-            StringBuilder requestContent = new StringBuilder();
-            bool cont = false;
-            for (int i = 0; i < properties.Length; i++)
-            {
-                if (cont)
-                    requestContent.Append('&');
-                cont = true;
-                requestContent.Append(properties[i].Key);
-                requestContent.Append('=');
-                requestContent.Append(properties[i].Value);
-            }
-            string content = requestContent.ToString();
-            int contentLenght = content.Length;
-            //Head
-            StringBuilder request = new StringBuilder();
-            request.Append($"POST {path} HTTP/1.1\r\n");
-            request.Append("Host: www.boomlings.com\r\n");
-            request.Append("Accept: */*\r\n");
-            request.Append($"Content-Length: {contentLenght}\r\n");
-            request.Append($"Content-Type: application/x-www-form-urlencoded\r\n\r\n");
-            //End head
-            request.Append(content);
-
-            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("www.boomlings.com", 80);
-            socket.Send(DataEncoding.GetBytes(request.ToString()));
-            
-            List<byte> buffer = new List<byte>();
-            byte[] buf;
-            int byteRead = 0;
-            do
-            {
-                buf = new byte[socket.Available];
-                byteRead = socket.Receive(buf);
-                buffer.AddRange(buf);
-            }
-            while (byteRead != 0 || socket.Available != 0);
-
-            //Remove header
-            string response = DataEncoding.GetString(buffer.ToArray());
-            int indexHead = response.IndexOf("\r\n\r\n");
-
-            return response.Remove(0, indexHead + 4);
-        }
-        public async Task<string> GetAsync(string path, params Property[] properties)
-        {
-            string response = "";
-            await Task.Run(() =>
-            {
-                response = Get(path, properties);
-            });
-            return response;
-        }
-        #endregion
-
-        #region Game requests
         public PlayerInfoArray GetTop(TopType type, int count)
         {
-            string response = Get("/database/getGJScores20.php",
-                new Property("gameVersion", 21),
-                new Property("binaryVersion", 35),
-                new Property("gdw", 0),
-                new Property("udid", UDID),
-                new Property("uuid", UUID),
-                new Property("type", type.GetAttribute<TopAttribute>().OriginalName),
-                new Property("count", count),
-                new Property("secret", "Wmfd2893gb7"));
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddToChain(new IdentifierQuery());
+            query.AddProperty(new Property("type", type.GetAttributeOfSelected<OriginalNameAttribute>().OriginalName));
+            query.AddProperty(new Property("count", count));
             PlayerInfoArray players = new PlayerInfoArray();
-            players.Load(response);
+            players.Load(network.Get("/database/getGJScores20.php", query));
             return players;
         }
 
         public List<LevelInfo> GetLevels(GetLevelsQuery getLevelsQuery)
         {
-            List<Property> properties = new List<Property>(getLevelsQuery.BuildQuery());
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddToChain(getLevelsQuery);
 
-            properties.Add(new Property("gameVersion", 21));
-            properties.Add(new Property("binaryVersion", 35));
-            properties.Add(new Property("gdw", 0));
-            properties.Add(new Property("secret", "Wmfd2893gb7"));
-
-            string response = Get("/database/getGJLevels21.php", properties.ToArray());
-            //Console.WriteLine(response);
+            string response = network.Get("/database/getGJLevels21.php", query);
 
             LevelInfoArray levels = new LevelInfoArray();
             levels.Load(response);
             return levels;
         }
 
-        #endregion
+        public LoginInfo Login(string username, string password)
+        {
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddProperty(new Property("udid", Guid.NewGuid()));
+            query.AddProperty(new Property("userName", username));
+            query.AddProperty(new Property("password", password));
+            query.AddProperty(new Property("sID", 76561198946149263));
+            query.AddProperty(new Property("secret", "Wmfv3899gc9"));
+            return LoginInfo.FromResponse(network.Get("/database/accounts/loginGJAccount.php", query));
+        }
+
+        public AccountCommentArray GetAccountComment(int accountID, int page)
+        {
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddProperty(new Property("accountID", accountID));
+            query.AddProperty(new Property("page", page));
+            query.AddProperty(new Property("total", 0));
+            string result = network.Get("/database/getGJAccountComments20.php", query);
+            if (result == "-1")
+                return null;
+            return new AccountCommentArray(result);
+        }
+
+        public UserInfo GetUserByName(string name)
+        {
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddProperty(new Property("str", name));
+            query.AddProperty(new Property("total", 0));
+            query.AddProperty(new Property("page", 0));
+            string result = network.Get("/database/getGJUsers20.php", query);
+            if (result == "-1")
+                return null;
+            return new UserInfo(result.Split('#')[0]);
+        }
+
+        public AccountInfo GetAccountInfo(int accountID)
+        {
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddToChain(new IdentifierQuery());
+            query.AddProperty(new Property("targetAccountID", accountID));
+            string result = network.Get("/database/getGJUserInfo20.php", query);
+            if (result == "-1")
+                return null;
+            return new AccountInfo(result);
+        }
+
     }
 }
