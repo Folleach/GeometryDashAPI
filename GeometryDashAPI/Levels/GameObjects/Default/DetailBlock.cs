@@ -4,6 +4,7 @@
     {
         public virtual short Default_ColorDetail { get; protected set; } = 1;
 
+        [GameProperty("22", 1)]
         public short ColorDetail { get; set; } = 1;
 
         public DetailBlock(int id) : base(id)

@@ -17,7 +17,8 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
         public override Layer Default_ZLayer { get; protected set; } = Layer.B2;
         public override short Default_ZOrder { get; protected set; } = -6;
 
-        public bool Used { get; set; } = true;
+        [GameProperty("13", true)]
+        public bool Using { get; set; } = true;
 
         public SpeedBlockID BlockType
         {
@@ -40,7 +41,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
             switch (key)
             {
                 case 13:
-                    Used = GameConvert.StringToBool(value);
+                    Using = GameConvert.StringToBool(value);
                     return;
                 default:
                     base.LoadProperty(key, value);
@@ -50,7 +51,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
 
         public override string ToString()
         {
-            return $"{base.ToString()},13,{GameConvert.BoolToString(Used)}";
+            return $"{base.ToString()},13,{GameConvert.BoolToString(Using)}";
         }
     }
 }

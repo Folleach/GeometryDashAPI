@@ -1,4 +1,7 @@
-﻿using System;
+﻿using GeometryDashAPI.Levels.GameObjects;
+using System;
+using System.Reflection;
+using Tests.Documentation;
 
 namespace Tests
 {
@@ -6,7 +9,7 @@ namespace Tests
     {
         public static int Main(string[] args)
         {
-            Console.WriteLine("Hello Tests!");
+            new BlocksDocumentation().WriteAllSupportedBlockTo(Assembly.GetAssembly(typeof(IBlock)), Console.Out);
             return 0;
         }
     }

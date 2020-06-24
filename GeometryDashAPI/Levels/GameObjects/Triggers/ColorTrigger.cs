@@ -7,16 +7,22 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 {
     public class ColorTrigger : Trigger
     {
+        [GameProperty("23", 0, true)]
         public short ColorID { get; set; }
+        [GameProperty("7", 255, true)]
         public byte Red { get; set; } = 255;
+        [GameProperty("8", 255, true)]
         public byte Green { get; set; } = 255;
+        [GameProperty("9", 255, true)]
         public byte Blue { get; set; } = 255;
 
+        [GameProperty("10", 0.5f, true)]
         public float FadeTime { get; set; } = 0.5f;
 
         public bool PlayerColor1 { get; set; }
         public bool PlayerColor2 { get; set; }
         public bool Blending { get; set; }
+        [GameProperty("35", 1f, true)]
         public float Opacity { get; set; } = 1f;
         public bool CopyOpacity { get; set; }
 

@@ -8,6 +8,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
     {
         public override short Default_ZOrder { get; protected set; } = 1;
 
+        [GameProperty("31", "A", true)]
         public string Text { get; set; } = "A";
 
         public TextBlock() : base(914)
