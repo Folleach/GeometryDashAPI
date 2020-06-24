@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Server.Models
 
         public AccountInfo(string data)
         {
-            var arr = data.Split(':');
+            string[] arr = data.Split(':');
             for (int i = 0; i < arr.Length; i += 2)
             {
                 switch (arr[i])

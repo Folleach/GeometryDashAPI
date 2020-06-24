@@ -8,7 +8,7 @@
         Trending,
         Recent,
         OnAccaunt = 5,
-        Featured,
+        Featured = 6,
         Magic,
         MapPack = 10,
         Awarded,

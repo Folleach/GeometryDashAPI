@@ -32,7 +32,7 @@ namespace Examples
         {
             var server = new GameServer();
             var user = server.GetUserByName("Folleach");
-            var acc = server.GetAccountInfo(user.AccountID);
+            var acc = server.GetFeatureLevels(1);
         }
     }
 }

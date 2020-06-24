@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GeometryDashAPI.Server.Models
+﻿namespace GeometryDashAPI.Server.Models
 {
     public class UserInfo
     {
@@ -11,7 +7,7 @@ namespace GeometryDashAPI.Server.Models
 
         public UserInfo(string data)
         {
-            var arr = data.Split(':');
+            string[] arr = data.Split(':');
             for (int i = 0; i < arr.Length; i += 2)
             {
                 switch (arr[i])

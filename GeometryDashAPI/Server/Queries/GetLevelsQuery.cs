@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Server
         public List<Difficult> Difficults { get; set; } = new List<Difficult>();
         public DemonDifficult DemonDifficult { get; set; }
         public int Page { get; set; } = 0;
-        public int Total { get; set; } = 11;
+        public int Total { get; set; } = 0;
         public int Feautured { get; set; } = -1;
         public bool Uncomplited { get; set; } = false;
         public bool Complited { get; set; } = false;

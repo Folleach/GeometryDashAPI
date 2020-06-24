@@ -2,7 +2,6 @@
 using GeometryDashAPI.Server.Models;
 using GeometryDashAPI.Server.Queries;
 using System;
-using System.Collections.Generic;
 
 namespace GeometryDashAPI.Server
 {
@@ -24,17 +23,23 @@ namespace GeometryDashAPI.Server
             return players;
         }
 
-        public List<LevelInfo> GetLevels(GetLevelsQuery getLevelsQuery)
+        public LevelInfoPage GetLevels(GetLevelsQuery getLevelsQuery)
         {
             FlexibleQuery query = new FlexibleQuery();
             query.AddToChain(defaultOnlineQuery);
             query.AddToChain(getLevelsQuery);
-
-            string response = network.Get("/database/getGJLevels21.php", query);
-
-            LevelInfoArray levels = new LevelInfoArray();
-            levels.Load(response);
+            LevelInfoPage levels = new LevelInfoPage();
+            levels.Load(network.Get("/database/getGJLevels21.php", query));
             return levels;
+        }
+
+        public LevelInfoPage GetFeatureLevels(int page)
+        {
+            return GetLevels(new GetLevelsQuery(SearchType.Featured)
+            {
+                QueryString = "",
+                Page = page,
+            });
         }
 
         public LoginInfo Login(string username, string password)

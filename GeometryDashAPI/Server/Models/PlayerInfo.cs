@@ -4,6 +4,8 @@ using System.Text;
 
 namespace GeometryDashAPI.Server.Models
 {
+    // For leaderboard (top)
+    // TODO: This is repetition of UserInfo?
     public class PlayerInfo
     {
         public string UserName { get; set; }

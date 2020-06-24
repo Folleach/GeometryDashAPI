@@ -1,23 +1,21 @@
-﻿using System.Collections.Generic;
-using GeometryDashAPI.Server.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace GeometryDashAPI.Server.Models
 {
-    public class LevelInfo
+    public class MusicInfo
     {
         public int ID { get; set; }
         public string Name { get; set; }
 
-        public Dictionary<string, string> WithoutLoaded = new Dictionary<string, string>();
-
-        public LevelInfo()
+        public MusicInfo()
         {
-
         }
 
-        public LevelInfo(string data, Dictionary<int, MusicInfo> music, Dictionary<int, KeyValuePair<string, int>> authors)
+        public MusicInfo(string data)
         {
-            string[] splittedData = data.Split(':');
+            string[] splittedData = data.Split(new string[] { "~|~" }, StringSplitOptions.None);
             for (int i = 0; i < splittedData.Length; i += 2)
             {
                 switch (splittedData[i])
@@ -27,9 +25,6 @@ namespace GeometryDashAPI.Server.Models
                         continue;
                     case "2":
                         Name = splittedData[i + 1];
-                        continue;
-                    default:
-                        WithoutLoaded.Add(splittedData[i], splittedData[i + 1]);
                         continue;
                 }
             }
