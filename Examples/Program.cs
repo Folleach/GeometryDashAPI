@@ -22,17 +22,35 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Call 'F'");
+            Console.WriteLine("Start");
             F();
-            Console.WriteLine("'F' called");
+            Console.WriteLine("F called");
             Console.ReadKey();
         }
 
         private static async void F()
         {
-            var server = new GameServer();
-            var user = server.GetUserByName("Folleach");
-            var acc = server.GetFeatureLevels(1);
+            GameServer server = new GameServer();
+
+            String result = "";
+            foreach (LevelInfo levelInfo in server.GetLevels(new GetLevelsQuery(SearchType.MostLiked)))
+            {
+                string name = "";
+                string author = "";
+                if (levelInfo.songInfo.isSongCustom())
+                {
+                    name = levelInfo.songInfo.Name;
+                    author = levelInfo.songInfo.Author;
+                }
+                else
+                {
+                    name = levelInfo.songInfo.OfficialSong.ToString();
+                }
+                result += $"{levelInfo.Name} by {levelInfo.creatorInfo.UserName}, that uses {name} by {author}\n"; // also probably not the best way too do it
+            }
+            Console.WriteLine(result);
+
+            Console.ReadKey();
         }
     }
 }

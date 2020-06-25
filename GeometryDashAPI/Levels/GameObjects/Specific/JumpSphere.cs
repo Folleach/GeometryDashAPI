@@ -20,7 +20,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
         public override Layer Default_ZLayer { get; protected set; } = Layer.B1;
         public override short Default_ZOrder { get; protected set; } = 12;
 
-        [GameProperty("99", false)]
         public bool MultiActivate { get; set; }
 
         public JumpSphereID BlockType

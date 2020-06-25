@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace GeometryDashAPI
 {
-    public static class GameConvert
+    public class GameConvert
     {
         public static string BoolToString(bool value, bool isReverse = false)
         {
@@ -15,13 +15,13 @@ namespace GeometryDashAPI
         public static bool StringToBool(string value, bool isReverse = false)
         {
             if (isReverse)
-                return value == "0";
-            return value == "1";
+                return value == "1" ? false : true;
+            return value == "1" ? true : false;
         }
 
         public static string SingleToString(float value)
         {
-            return string.Format(Culture.FormatProvider, "{0}", value);
+            return value.ToString().Replace(',', '.');
         }
 
         public static float StringToSingle(string value)

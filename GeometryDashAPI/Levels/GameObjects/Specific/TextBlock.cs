@@ -8,7 +8,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
     {
         public override short Default_ZOrder { get; protected set; } = 1;
 
-        [GameProperty("31", "A", true)]
         public string Text { get; set; } = "A";
 
         public TextBlock() : base(914)
@@ -26,7 +25,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
             switch (key)
             {
                 case 31:
-                    Text = Encoding.ASCII.GetString(GameConvert.FromBase64(value));
+                    Text = Encoding.ASCII.GetString(Convert.FromBase64String(value));
                     return;
                 default:
                     base.LoadProperty(key, value);
@@ -36,7 +35,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
 
         public override string ToString()
         {
-            return $"{base.ToString()},31,{GameConvert.ToBase64(Encoding.ASCII.GetBytes(Text))}";
+            return $"{base.ToString()},31,{Convert.ToBase64String(Encoding.ASCII.GetBytes(Text))}";
         }
     }
 }

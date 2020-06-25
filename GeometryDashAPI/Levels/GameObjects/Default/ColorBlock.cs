@@ -8,9 +8,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         public virtual short Default_ColorBase { get; protected set; } = (short)ColorType.Obj;
         public virtual short Default_ColorDetail { get; protected set; } = 1;
 
-        [GameProperty("21", ColorType.Obj)]
         public short ColorBase { get; set; } = (short)ColorType.Obj;
-        [GameProperty("22", 1)]
         public short ColorDetail { get; set; } = 1;
 
         public ColorBlock()
