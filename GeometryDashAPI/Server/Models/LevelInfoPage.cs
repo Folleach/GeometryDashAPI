@@ -18,6 +18,7 @@ namespace GeometryDashAPI.Server.Models
         }
                 
         private Dictionary<int, MusicInfo> music = new Dictionary<int, MusicInfo>();
+        private Dictionary<int, KeyValuePair<string, int>> authorAssigment = new Dictionary<int, KeyValuePair<string, int>>();
 
         public void Load(string data)
         {
@@ -26,21 +27,32 @@ namespace GeometryDashAPI.Server.Models
                 throw new ArgumentException("No matches with the template");
             Page = new Pagination(buffer[3]);
             Hash = buffer[4];
-            var authorAssigment = GetAuthorAssigment(buffer[1]);
+            ReadAuthorAssigment(buffer[1]);
             ReadMusicInfo(buffer[2]);
 
             string[] levelsData = buffer[0].Split('|');
             foreach (var level in levelsData)
-                Add(new LevelInfo(level, music, authorAssigment));
+            {
+                LevelInfo levelInfo = new LevelInfo(level);
+
+                MusicInfo musicInfo;
+                KeyValuePair<string, int> authorData;
+
+                if (music.TryGetValue(levelInfo.MusicID, out musicInfo))
+                    levelInfo.MusicInfo = musicInfo;
+
+                if (authorAssigment.TryGetValue(levelInfo.AuthorID, out authorData))
+                    levelInfo.AuthorName = authorData.Key;
+
+                Add(levelInfo);
+            }
         }
 
-        private Dictionary<int, KeyValuePair<string, int>> GetAuthorAssigment(string data)
+        private void ReadAuthorAssigment(string data)
         {
             string[] sData = data.Split('|', ':');
-            var result = new Dictionary<int, KeyValuePair<string, int>>();
             for (int i = 0; i < sData.Length; i += 3)
-                result.Add(int.Parse(sData[i]), new KeyValuePair<string, int>(sData[i + 1], int.Parse(sData[i + 2])));
-            return result;
+                authorAssigment.Add(int.Parse(sData[i]), new KeyValuePair<string, int>(sData[i + 1], int.Parse(sData[i + 2])));
         }
 
         private void ReadMusicInfo(string data)

@@ -31,8 +31,26 @@ namespace Examples
         private static async void F()
         {
             var server = new GameServer();
-            var user = server.GetUserByName("Folleach");
-            var acc = server.GetFeatureLevels(1);
+
+            String result = "";
+            foreach (LevelInfo levelInfo in server.GetLevels(new GetLevelsQuery(SearchType.MostLiked)))
+            {
+                string name = "";
+                string author = "";
+                if (levelInfo.MusicInfo.isSongCustom())
+                {
+                    name = levelInfo.MusicInfo.Name;
+                    author = levelInfo.MusicInfo.Author;
+                }
+                else
+                {
+                    name = levelInfo.MusicInfo.OfficialSong.ToString();
+                }
+                result += $"{levelInfo.Name} by {levelInfo.AuthorName}, that uses {name} by {author}\n"; // also probably not the best way too do it
+            }
+            Console.WriteLine(result);
+
+            Console.ReadKey();
         }
     }
 }
