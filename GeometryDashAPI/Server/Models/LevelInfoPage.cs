@@ -30,6 +30,8 @@ namespace GeometryDashAPI.Server.Models
             ReadAuthorAssigment(buffer[1]);
             ReadMusicInfo(buffer[2]);
 
+            var server = new GameServer();
+
             string[] levelsData = buffer[0].Split('|');
             foreach (var level in levelsData)
             {
@@ -40,9 +42,11 @@ namespace GeometryDashAPI.Server.Models
 
                 if (music.TryGetValue(levelInfo.MusicID, out musicInfo))
                     levelInfo.MusicInfo = musicInfo;
+                else
+                    levelInfo.MusicInfo = new MusicInfo(levelInfo.OfficialSong);
 
-                if (authorAssigment.TryGetValue(levelInfo.AuthorID, out authorData))
-                    levelInfo.AuthorName = authorData.Key;
+                if (authorAssigment.TryGetValue(levelInfo.CreatorID, out authorData))
+                    levelInfo.CreatorInfo = server.GetAccountInfo(authorData.Value);
 
                 Add(levelInfo);
             }

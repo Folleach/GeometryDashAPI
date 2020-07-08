@@ -19,9 +19,10 @@ namespace GeometryDashAPI.Server.Models
     public Dictionary<string, string> WithoutLoaded { get; private set; } = new Dictionary<string, string>();
         #endregion
 
+
+
         public MusicInfo()
         {
-
         }
 
         public MusicInfo(string data)
@@ -36,38 +37,35 @@ namespace GeometryDashAPI.Server.Models
 
         public void Load(string data)
         {
-            string[] splitedData = data.Split('|');
+            string[] splitedData = data.Split(new string[] { "~|~" }, StringSplitOptions.None);
 
             for (int i = 0; i < splitedData.Length - 1; i += 2)
             {
-                splitedData[i] = splitedData[i].Replace("~", "");
-                String value = splitedData[i + 1].Replace("~", ""); //i mean, should probably do separate variable for each of those functions in Info classes
-                //Console.WriteLine($"{splitedData[i]} {value}");
                 switch (splitedData[i])
                 {
                     case "1":
-                        ID = int.Parse(value);
+                        ID = int.Parse(splitedData[i + 1]);
                         break;
                     case "2":
-                        Name = value;
+                        Name = splitedData[i + 1];
                         break;
                     case "4":
-                        Author = value;
+                        Author = splitedData[i + 1];
                         break;
                     case "5":
-                        Size = float.Parse(value, CultureInfo.InvariantCulture);
+                        Size = float.Parse(splitedData[i + 1], CultureInfo.InvariantCulture);
                         break;
                     case "10":
-                        Link = value;
+                        Link = splitedData[i + 1];
                         break;
                     default:
-                        WithoutLoaded.Add(splitedData[i], value);
+                        WithoutLoaded.Add(splitedData[i], splitedData[i + 1]);
                         break;
                 }
             }
         }
 
-        public bool isSongCustom()
+        public bool IsSongCustom()
         {
             return OfficialSong == OfficialSong.NotChoosen;
         }

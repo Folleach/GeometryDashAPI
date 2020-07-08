@@ -32,12 +32,12 @@ namespace Examples
         {
             var server = new GameServer();
 
-            String result = "";
+            string result = "";
             foreach (LevelInfo levelInfo in server.GetLevels(new GetLevelsQuery(SearchType.MostLiked)))
             {
                 string name = "";
                 string author = "";
-                if (levelInfo.MusicInfo.isSongCustom())
+                if (levelInfo.MusicInfo.IsSongCustom())
                 {
                     name = levelInfo.MusicInfo.Name;
                     author = levelInfo.MusicInfo.Author;
@@ -46,7 +46,10 @@ namespace Examples
                 {
                     name = levelInfo.MusicInfo.OfficialSong.ToString();
                 }
-                result += $"{levelInfo.Name} by {levelInfo.AuthorName}, that uses {name} by {author}\n"; // also probably not the best way too do it
+                if(levelInfo.CreatorInfo != null)
+                    result += $"{levelInfo.Name} by {levelInfo.CreatorInfo.Name}, which uses {name}" + (author == "" ? "" : $" by {author}") + "\n";
+                else
+                    result += $"{levelInfo.Name} by someone, which uses {name}" + (author == "" ? "" : $" by {author}") + "\n";
             }
             Console.WriteLine(result);
 
