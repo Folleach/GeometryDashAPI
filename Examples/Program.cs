@@ -31,29 +31,8 @@ namespace Examples
         private static async void F()
         {
             var server = new GameServer();
-
-            string result = "";
-            foreach (LevelInfo levelInfo in server.GetLevels(new GetLevelsQuery(SearchType.MostLiked)))
-            {
-                string name = "";
-                string author = "";
-                if (levelInfo.MusicInfo.IsSongCustom())
-                {
-                    name = levelInfo.MusicInfo.Name;
-                    author = levelInfo.MusicInfo.Author;
-                }
-                else
-                {
-                    name = levelInfo.MusicInfo.OfficialSong.ToString();
-                }
-                if(levelInfo.CreatorInfo != null)
-                    result += $"{levelInfo.Name} by {levelInfo.CreatorInfo.Name}, which uses {name}" + (author == "" ? "" : $" by {author}") + "\n";
-                else
-                    result += $"{levelInfo.Name} by someone, which uses {name}" + (author == "" ? "" : $" by {author}") + "\n";
-            }
+            bool result = MessagesSender.SendMessage("USERNAME", "PASSWORD", "Test message", "This message was sent through GeometryDashAPI by Folleach", "zKraX"); //leaking my username, why not?
             Console.WriteLine(result);
-
-            Console.ReadKey();
         }
     }
 }

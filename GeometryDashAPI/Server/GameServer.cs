@@ -1,7 +1,9 @@
-﻿using GeometryDashAPI.Server.Enums;
+﻿using GeometryDashAPI.Exceptions;
+using GeometryDashAPI.Server.Enums;
 using GeometryDashAPI.Server.Models;
 using GeometryDashAPI.Server.Queries;
 using System;
+using System.Text;
 
 namespace GeometryDashAPI.Server
 {
@@ -11,6 +13,7 @@ namespace GeometryDashAPI.Server
 
         private OnlineQuery defaultOnlineQuery = new OnlineQuery();
 
+        private Session  session = new Session();
         public PlayerInfoArray GetTop(TopType type, int count)
         {
             FlexibleQuery query = new FlexibleQuery();
@@ -44,6 +47,8 @@ namespace GeometryDashAPI.Server
 
         public LoginInfo Login(string username, string password)
         {
+            session.Load(username, password);
+
             FlexibleQuery query = new FlexibleQuery();
             query.AddProperty(new Property("udid", Guid.NewGuid()));
             query.AddProperty(new Property("userName", username));
@@ -91,5 +96,21 @@ namespace GeometryDashAPI.Server
             return new AccountInfo(result);
         }
 
+        public bool SendMessage(int accountID, int receiverAccountID, string subject, string body)
+        {
+            if (session.isEmpty)
+                throw new UserNotLoggedInException();
+
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddToChain(new IdentifierQuery());
+            query.AddToChain(new AuthentificationQuery(session));
+            query.AddProperty(new Property("accountID", accountID));
+            query.AddProperty(new Property("toAccountID", receiverAccountID));
+            query.AddProperty(new Property("subject", GameConvert.ToBase64(Encoding.ASCII.GetBytes(subject))));
+            query.AddProperty(new Property("body", GameConvert.ToBase64(Encoding.ASCII.GetBytes(Crypt.XOR(body, "14251")))));
+            string result = network.Get("/database/uploadGJMessage20.php", query);
+            return result == "1";
+        }
     }
 }
