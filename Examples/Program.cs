@@ -31,8 +31,8 @@ namespace Examples
         private static async void F()
         {
             var server = new GameServer();
-            var user = server.GetUserByName("Folleach");
-            var acc = server.GetFeatureLevels(1);
+            bool result = MessagesSender.SendMessage("USERNAME", "PASSWORD", "Test message", "This message was sent through GeometryDashAPI by Folleach", "zKraX"); //leaking my username, why not?
+            Console.WriteLine(result);
         }
     }
 }
