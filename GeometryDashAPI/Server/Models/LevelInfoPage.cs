@@ -21,6 +21,8 @@ namespace GeometryDashAPI.Server.Models
 
         public void Load(string data)
         {
+            if (data == "-1")
+                return;
             string[] buffer = data.Split('#');
             if (buffer.Length != 5)
                 throw new ArgumentException("No matches with the template");

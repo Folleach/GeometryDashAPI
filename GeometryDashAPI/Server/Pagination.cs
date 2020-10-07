@@ -15,5 +15,17 @@ namespace GeometryDashAPI.Server
             RangeIn = int.Parse(data[1]);
             RangeOut = int.Parse(data[2]);
         }
+
+        public Pagination(int total, int rangeIn, int rangeOut)
+        {
+            TotalCount = total;
+            RangeIn = rangeIn;
+            RangeOut = rangeOut;
+        }
+
+        public bool HasPage(int page)
+        {
+            return (RangeOut - RangeIn) / TotalCount <= page;
+        }
     }
 }

@@ -91,5 +91,24 @@ namespace GeometryDashAPI.Server
             return new AccountInfo(result);
         }
 
+        private static readonly GetLevelsQuery myLevelQuery = new GetLevelsQuery(SearchType.OnAccaunt)
+        {
+
+        };
+
+        public LevelInfoPage GetMyLevels(PasswordQuery account, int userId, int page)
+        {
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddToChain(account);
+            query.AddToChain(new GetLevelsQuery(SearchType.OnAccaunt)
+            {
+                QueryString = userId.ToString(),
+                Page = page
+            });
+            LevelInfoPage levels = new LevelInfoPage();
+            levels.Load(network.Get("/database/getGJLevels21.php", query));
+            return levels;
+        }
     }
 }
