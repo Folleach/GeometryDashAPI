@@ -28,11 +28,12 @@ namespace Examples
             Console.ReadKey();
         }
 
-        private static async void F()
+        private static void F()
         {
-            var server = new GameServer();
-            var user = server.GetUserByName("Folleach");
-            var acc = server.GetFeatureLevels(1);
+            var local = new LocalLevels();
+            var w = local.GetLevel("Test", 3);
+            local.Remove(local.GetLevel("test", 0));
+            local.Save();
         }
     }
 }
