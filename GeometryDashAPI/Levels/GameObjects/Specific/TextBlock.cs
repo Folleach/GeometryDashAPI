@@ -1,9 +1,11 @@
-﻿using GeometryDashAPI.Levels.GameObjects.Default;
+﻿using GeometryDashAPI.Levels.Enums;
+using GeometryDashAPI.Levels.GameObjects.Default;
 using System;
 using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
+    [GameObject(Layer.B1, 1)]
     public class TextBlock : DetailBlock
     {
         public override short Default_ZOrder { get; protected set; } = 1;

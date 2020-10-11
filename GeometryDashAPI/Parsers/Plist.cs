@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace GeometryDashAPI.Parser
+namespace GeometryDashAPI.Parsers
 {
     public class Plist : Dictionary<string, dynamic>
     {

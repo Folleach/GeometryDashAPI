@@ -1,6 +1,6 @@
 ﻿using GeometryDashAPI.Data.Enums;
 using GeometryDashAPI.Memory;
-using GeometryDashAPI.Parser;
+using GeometryDashAPI.Parsers;
 using System;
 using System.IO;
 using System.Text;

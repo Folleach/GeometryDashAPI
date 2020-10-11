@@ -25,6 +25,7 @@ namespace Examples
         }
     }
 
+    // TODO: Update this example
     class CustomBlockType
     {
         public static void Invoke()
@@ -32,7 +33,7 @@ namespace Examples
             LocalLevels levels = new LocalLevels();
             BindingBlockID binding = new BindingBlockID();
             binding.Bind(1520, typeof(MyShakeTrigger));
-            Level level = new Level(levels.GetLevelByName("Temp"), binding);
+            // Level level = new Level(levels.GetLevelByName("Temp"), binding);
         }
     }
 }

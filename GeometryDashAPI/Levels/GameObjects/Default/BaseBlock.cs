@@ -9,6 +9,11 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("21", ColorType.Obj)]
         public short ColorBase { get; set; } = (short)ColorType.Obj;
 
+        public BaseBlock()
+        {
+
+        }
+
         public BaseBlock(int id) : base(id)
         {
         }

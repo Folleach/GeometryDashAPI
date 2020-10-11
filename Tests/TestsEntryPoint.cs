@@ -9,7 +9,7 @@ namespace Tests
     {
         public static int Main(string[] args)
         {
-            new BlocksDocumentation().WriteAllSupportedBlockTo(Assembly.GetAssembly(typeof(IBlock)), Console.Out);
+            //new BlocksDocumentation().WriteAllSupportedBlockTo(Assembly.GetAssembly(typeof(IBlock)), Console.Out);
             return 0;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
+using GeometryDashAPI.Parsers;
 using System.Globalization;
 using System.Text;
 
@@ -9,91 +10,95 @@ namespace GeometryDashAPI.Levels
     {
         const char Sp = '_';
 
-        public short ID { get; internal set; }
-        public byte Red { get; set; } = 255;
-        public byte Green { get; set; } = 255;
-        public byte Blue { get; set; } = 255;
-        public byte Red2 { get; set; } = 255;
-        public byte Green2 { get; set; } = 255;
-        public byte Blue2 { get; set; } = 255;
+        [GameProperty("6", 0, true)] public short ID { get; internal set; }
+        [GameProperty("1", 255, true)] public byte Red { get; set; } = 255;
+        [GameProperty("2", 255, true)] public byte Green { get; set; } = 255;
+        [GameProperty("3", 255, true)] public byte Blue { get; set; } = 255;
+        [GameProperty("11", 255, true)] public byte Red2 { get; set; } = 255;
+        [GameProperty("12", 255, true)] public byte Green2 { get; set; } = 255;
+        [GameProperty("13", 255, true)] public byte Blue2 { get; set; } = 255;
 
         /// <summary>
         /// -1 - none, 0 - none, 1 - PlayerColor1, 2 - PlayerColor2
         /// </summary>
-        public sbyte PlayerColor { get; set; }
-        public bool Blending { get; set; }
-        public float Opacity { get; set; } = 1f;
-        public bool CopyOpacity { get; set; }
+        [GameProperty("4", 0, false)] public sbyte PlayerColor { get; set; }
+        [GameProperty("5", false, false)] public bool Blending { get; set; }
+        [GameProperty("7", 1f, true)] public float Opacity { get; set; } = 1f;
+        [GameProperty("17", false, false)] public bool CopyOpacity { get; set; }
 
-        public HSV ColorHSV { get; set; }
-        public int TargetChannelID { get; set; }
-
+        [GameProperty("10", null, true)] public HSV ColorHSV { get; set; }
+        [GameProperty("9", 0, false)] public int TargetChannelID { get; set; }
+        
         public Color(short id)
         {
             this.ID = id;
         }
+
         public Color(ColorType type)
         {
             this.ID = (short)type;
         }
+
         public Color(short id, byte r, byte g, byte b)
         {
             this.ID = id;
             this.SetColor(r, g, b);
         }
+
         public Color(ColorType type, byte r, byte g, byte b)
         {
             this.ID = (short)type;
             this.SetColor(r, g, b);
         }
+
         public Color(string data)
         {
-            string[] properties = data.Split('_');
-            for (int i = 0; i < properties.Length - 1; i += 2)
+            KeyValueSLLParser flow = new KeyValueSLLParser(Sp, data);
+            while (flow.Next())
             {
-                switch (properties[i])
+                switch (flow.Key)
                 {
                     case "1":
-                        Red = byte.Parse(properties[i + 1]);
+                        Red = byte.Parse(flow.Value);
                         break;
                     case "2":
-                        Green = byte.Parse(properties[i + 1]);
+                        Green = byte.Parse(flow.Value);
                         break;
                     case "3":
-                        Blue = byte.Parse(properties[i + 1]);
+                        Blue = byte.Parse(flow.Value);
                         break;
                     case "11":
-                        Red2 = byte.Parse(properties[i + 1]);
+                        Red2 = byte.Parse(flow.Value);
                         break;
                     case "12":
-                        Green2 = byte.Parse(properties[i + 1]);
+                        Green2 = byte.Parse(flow.Value);
                         break;
                     case "13":
-                        Blue2 = byte.Parse(properties[i + 1]);
+                        Blue2 = byte.Parse(flow.Value);
                         break;
                     case "4":
-                        PlayerColor = sbyte.Parse(properties[i + 1]);
+                        PlayerColor = sbyte.Parse(flow.Value);
                         break;
                     case "5":
-                        Blending = GameConvert.StringToBool(properties[i + 1], false);
+                        Blending = GameConvert.StringToBool(flow.Value, false);
                         break;
                     case "6":
-                        ID = short.Parse(properties[i + 1]);
+                        ID = short.Parse(flow.Value);
                         break;
                     case "7":
-                        Opacity = float.Parse(properties[i + 1], NumberStyles.Any, Culture.FormatProvider);
+                        Opacity = float.Parse(flow.Value, NumberStyles.Any, Culture.FormatProvider);
                         break;
                     case "9":
-                        TargetChannelID = int.Parse(properties[i + 1]);
+                        TargetChannelID = int.Parse(flow.Value);
                         break;
                     case "10":
-                        ColorHSV = new HSV(properties[i + 1]);
+                        ColorHSV = new HSV(flow.Value);
                         break;
                     case "15":
                         //TODO: Added to class
                         break;
                     case "17":
-                        CopyOpacity = GameConvert.StringToBool(properties[i + 1]);
+                        CopyOpacity = GameConvert.StringToBool(flow.Value);
                         break;
                     case "18":
                         //TODO: Added to class
@@ -102,7 +107,7 @@ namespace GeometryDashAPI.Levels
                         //TODO: Added to class
                         break;
                     default:
-                        throw new PropertyNotSupportedException(properties[i], properties[i + 1]);
+                        throw new PropertyNotSupportedException(flow.Key, flow.Value);
                 }
             }
         }

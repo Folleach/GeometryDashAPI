@@ -7,6 +7,11 @@
         [GameProperty("22", 1)]
         public short ColorDetail { get; set; } = 1;
 
+        public DetailBlock()
+        {
+
+        }
+
         public DetailBlock(int id) : base(id)
         {
         }
