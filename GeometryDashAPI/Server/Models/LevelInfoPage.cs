@@ -56,7 +56,7 @@ namespace GeometryDashAPI.Server.Models
         {
             string[] sData = data.Split('|', ':');
             for (int i = 0; i < sData.Length; i += 3)
-                authorAssigment.Add(int.Parse(sData[i]), new KeyValuePair<string, int>(sData[i + 1], int.Parse(sData[i + 2])));
+                authorAssigment.Add(int.Parse(sData[i]), new KeyValuePair<string, int>(sData[i + 1], int.Parse(sData[i + 2]))); //won't work if account is unregistered
         }
 
         private void ReadMusicInfo(string data)

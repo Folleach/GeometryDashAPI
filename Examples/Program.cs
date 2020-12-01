@@ -4,6 +4,7 @@ using GeometryDashAPI.Data.Models;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
+using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Memory;
 using GeometryDashAPI.Server;
@@ -30,9 +31,22 @@ namespace Examples
 
         private static async void F()
         {
+            string userName = "username";
+
             var server = new GameServer();
-            bool result = MessagesSender.SendMessage("USERNAME", "PASSWORD", "Test message", "This message was sent through GeometryDashAPI by Folleach", "zKraX"); //leaking my username, why not?
-            Console.WriteLine(result);
+            int myID = server.Login(userName, "password").AccountID;
+
+            var level = server.GetLevels(new GetLevelsQuery(SearchType.Trending))[0];
+            Console.WriteLine($"{level.Name} by { level.CreatorInfo.Name}");
+
+            int commentID = server.PostLevelComment(myID, userName, level.ID, $"Nice job, {level.CreatorInfo.Name}", 0);
+            string response = server.DeleteLevelComment(myID, level.ID, commentID);
+
+            Console.WriteLine(response == "1" ? "success" : "fail");
+
+            var comments = server.GetLevelComments(level.ID, 0, CommentsSortMode.MostLiked, 200).Where((LevelComment com) => com.Comment.ToLower().Contains("like if")).ToList(); //idk why lol
+            if (comments.Count > 0)
+                Console.WriteLine(comments[0].Comment);
         }
     }
 }
