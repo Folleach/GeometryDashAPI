@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace GeometryDashAPI
 {
@@ -44,6 +47,31 @@ namespace GeometryDashAPI
                     srcStream.CopyTo(gzipStream);
                 return outStream.ToArray();
             }
+        }
+
+        public static string GenerateCheck(string[] values, string salt, int key) //combine values->add salt->sha1 hash->XOR->Base64 encode-> return. thanks gdpy (https://github.com/nekitdev/gd.py)
+        {
+            string check = "";
+            foreach (string value in values)
+                check += value;
+            check += salt;
+            byte[] sha1Bytes = SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(check));
+            check = BitConverter.ToString(sha1Bytes).Replace("-", "").ToLower();
+            check = XOR(check, key.ToString());
+            check = GameConvert.ToBase64(Encoding.ASCII.GetBytes(check));
+            return check;
+        }
+
+        public static string GenerateSeed2(string levelString)
+        {
+            int slot = levelString.Length / 50;
+            StringBuilder rawResult = new StringBuilder();
+            for (int i = 0; i < 50; i++)
+                rawResult.Append(levelString[slot * i]);
+            rawResult.Append("xI25fpAapCQg");
+            string res = GameConvert.ToBase64(Encoding.ASCII.GetBytes(rawResult.ToString()));
+            res = Crypt.XOR(res, "41274");
+            return res;
         }
     }
 }
