@@ -1,0 +1,8 @@
+language: csharp
+mono: none
+dotnet: 3.1.405
+solution: ./GeometryDashAPI.sln
+before_script:
+  - dotnet restore ./GeometryDashAPI.sln
+script:  
+  - dotnet test ./GeometryDashAPI.sln
