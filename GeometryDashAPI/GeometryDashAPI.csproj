@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Folleach</Authors>
     <NeutralLanguage>en</NeutralLanguage>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Description>API for game Geometry Dash</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Folleach/GeometryDashAPI</RepositoryUrl>

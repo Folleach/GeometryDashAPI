@@ -30,6 +30,8 @@ namespace Examples
 
         private static void F()
         {
+            var name = new GameServer().DownloadLevel(64144455).Name;
+            Console.WriteLine(name);
             var local = new LocalLevels();
             var w = local.GetLevel("Test", 3);
             local.Remove(local.GetLevel("test", 0));

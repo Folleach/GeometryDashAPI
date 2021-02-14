@@ -33,7 +33,7 @@ namespace GeometryDashAPI.Server.Models
 
             string[] levelsData = buffer[0].Split('|');
             foreach (var level in levelsData)
-                Add(new LevelInfo(level, music, authorAssigment));
+                Add(new LevelInfo(level));
         }
 
         private Dictionary<int, KeyValuePair<string, int>> GetAuthorAssigment(string data)

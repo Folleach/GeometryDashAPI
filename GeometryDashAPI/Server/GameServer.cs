@@ -79,6 +79,19 @@ namespace GeometryDashAPI.Server
             return new UserInfo(result.Split('#')[0]);
         }
 
+        public LevelInfo DownloadLevel(int id)
+        {
+            FlexibleQuery query = new FlexibleQuery();
+            query.AddToChain(defaultOnlineQuery);
+            query.AddProperty(new Property("levelID", id));
+            query.AddProperty(new Property("inc", 0));
+            query.AddProperty(new Property("extras", 0));
+            string result = network.Get("/database/downloadGJLevel22.php", query);
+            if (result == "-1")
+                return null;
+            return new LevelInfo(result);
+        }
+
         public AccountInfo GetAccountInfo(int accountID)
         {
             FlexibleQuery query = new FlexibleQuery();

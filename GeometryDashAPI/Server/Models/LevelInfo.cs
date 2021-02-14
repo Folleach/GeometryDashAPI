@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using GeometryDashAPI.Server.Enums;
 
 namespace GeometryDashAPI.Server.Models
 {
@@ -18,7 +17,7 @@ namespace GeometryDashAPI.Server.Models
 
         }
 
-        public LevelInfo(string data, Dictionary<int, MusicInfo> music, Dictionary<int, KeyValuePair<string, int>> authors)
+        public LevelInfo(string data)
         {
             string[] splittedData = data.Split(':');
             for (int i = 0; i < splittedData.Length; i += 2)
