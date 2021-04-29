@@ -7,6 +7,7 @@ namespace GeometryDashAPI.Server
         public int TotalCount { get; private set; }
         public int RangeIn { get; private set; }
         public int RangeOut { get; private set; }
+        public int CountOnPage => (RangeOut - RangeIn + 1);
 
         public Pagination(string hashData)
         {
@@ -25,7 +26,7 @@ namespace GeometryDashAPI.Server
 
         public bool HasPage(int page)
         {
-            return (RangeOut - RangeIn) / TotalCount <= page;
+            return page * CountOnPage < TotalCount;
         }
     }
 }
