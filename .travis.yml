@@ -6,3 +6,12 @@ before_script:
   - dotnet restore ./GeometryDashAPI.sln
 script:  
   - dotnet test ./GeometryDashAPI.sln
+before_deploy:
+  - dotnet build -c Release ./GeometryDashAPI.sln
+  - dotnet pack -c Release -o ./pack/ ./GeometryDashAPI.sln
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: dotnet nuget push ./pack/GeometryDashAPI*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+  on:
+    branch: master
