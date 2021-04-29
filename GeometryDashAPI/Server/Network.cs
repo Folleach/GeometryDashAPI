@@ -36,8 +36,8 @@ namespace GeometryDashAPI.Server
         private string GetUseWebClient(string path, Parameters properties)
         {
             WebRequest client = WebRequest.Create($"http://boomlings.com{path}");
-            client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-            client.Headers[HttpRequestHeader.Accept] = "*/*";
+            client.ContentType = "application/x-www-form-urlencoded";
+            client.Headers.Add("20", "*/*");
             client.Method = "POST";
             byte[] data = DataEncoding.GetBytes(properties.ToString());
             client.GetRequestStream().Write(data, 0, data.Length);
