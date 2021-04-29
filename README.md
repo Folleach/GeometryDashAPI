@@ -1,15 +1,16 @@
-# GeometryDashAPI
-Library for working with game data.<br>
-#### Such as:
+# GeometryDashAPI [![Build Status](https://travis-ci.org/Folleach/GeometryDashAPI.svg?branch=master)](https://travis-ci.org/Folleach/GeometryDashAPI)
+Library for working with game data.
+
+
+### Such as:
 - Levels (Colors, blocks and other).
 - Game data in files.
 - Game process.
 - Remote server data.
 
-### Download and use
-1. Now you can download this library in the [releases](https://github.com/Folleach/GeometryDashAPI/releases).
-2. Add a link to the file to the project.
-3. Have a happy coding.
+## Download and use
+1. Install from Nuget as `GeometryDashAPI`
+2. The end. You can use it :)
 
-### Examples
+## Examples
 Now you can see examples [here](https://github.com/Folleach/GeometryDashAPI/tree/master/Examples).
