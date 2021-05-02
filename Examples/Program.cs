@@ -12,6 +12,7 @@ using GeometryDashAPI.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace Examples
     {
         static void Main(string[] args)
         {
+            File.WriteAllLines("ok.txt", Enumerable.Range(1, 1000).Select(x => $"[GameProperty(\"{x}\")] public int x{x}" + " { get; set; }"));
             Console.WriteLine("Call 'F'");
             F().Wait();
             Console.WriteLine("'F' called");

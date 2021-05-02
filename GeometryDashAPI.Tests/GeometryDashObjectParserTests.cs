@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using GeometryDashAPI.Tests.TestObjects;
 using NUnit.Framework;
 
@@ -42,6 +43,36 @@ namespace GeometryDashAPI.Tests
             var encoded = GeometryDashApi.GetObjectParser().Encode(decoded);
             
             Assert.AreEqual(raw, encoded);
+        }
+        
+        [Test]
+        public void Decode_SampleContainer_ShouldRecursiveDecodeCorrect()
+        {
+            var expected = new SampleContainer()
+            {
+                Sample1 = new Sample() { X = 1.3 },
+                Sample2 = new Sample() { X = 11 }
+            };
+            const string input = "1~33:1.3~2~33:11";
+            
+            var decoded = GeometryDashApi.GetObjectParser().Decode<SampleContainer>(input);
+            
+            decoded.Should().BeEquivalentTo(expected, options => options.Excluding(x => x.ParserSense));
+        }
+        
+        [Test]
+        public void Decode_SampleContainer_ShouldRecursiveEncodeCorrect()
+        {
+            var input = new SampleContainer()
+            {
+                Sample1 = new Sample() { X = 1.3 },
+                Sample2 = new Sample() { X = 11 }
+            };
+            const string expected = "1~33:1.3~2~33:11";
+            
+            var encoded = GeometryDashApi.GetObjectParser().Encode(input);
+            
+            Assert.AreEqual(expected, encoded);
         }
     }
 }

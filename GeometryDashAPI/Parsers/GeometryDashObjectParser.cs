@@ -26,8 +26,18 @@ namespace GeometryDashAPI.Parser
         
         public T Decode<T>(string raw) where T : GameObject, new()
         {
-            var description = GetDescription(typeof(T));
-            var resultObject = new T();
+            return (T) Decode(typeof(T), raw, new T());
+        }
+
+        public string Encode<T>(T obj) where T : GameObject
+        {
+            return Encode(typeof(T), obj);
+        }
+
+        private object Decode(Type type, string raw, GameObject instance = null)
+        {
+            var description = GetDescription(type);
+            var resultObject = instance ?? (GameObject)Activator.CreateInstance(type);
             var parser = new LLParser(resultObject.ParserSense);
             
             var enumerator = parser.Parse(raw).GetEnumerator();
@@ -42,27 +52,39 @@ namespace GeometryDashAPI.Parser
                     resultObject.WithoutLoaded.Add(key, value);
                     continue;
                 }
+
+                if (property.IsGameObject)
+                {
+                    property.Property.SetValue(resultObject, Decode(property.Property.PropertyType, value));
+                    continue;
+                }
                 property.Property.SetValue(resultObject, GetParser(property.Property.PropertyType)(value));
             }
 
             return resultObject;
         }
 
-        public string Encode<T>(T obj) where T : GameObject
+        private string Encode(Type type, GameObject obj)
         {
             var builder = new StringBuilder();
-            var description = GetDescription(typeof(T));
+            var description = GetDescription(type);
             var needSeparate = false;
-            
+
             foreach (var property in description.Properties.Values)
             {
                 if (needSeparate)
                     builder.Append(obj.ParserSense);
+                needSeparate = true;
                 builder.Append(property.Attribute.Key);
                 builder.Append(obj.ParserSense);
+                
+                if (property.IsGameObject)
+                {
+                    builder.Append(Encode(property.Property.PropertyType, (GameObject)property.Property.GetValue(obj)));
+                    continue;
+                }
                 var parser = objectToStringParsers[property.Property.PropertyType];
                 builder.Append(parser(property.Property.GetValue(obj)));
-                needSeparate = true;
             }
 
             foreach (var item in obj.WithoutLoaded)
@@ -76,7 +98,7 @@ namespace GeometryDashAPI.Parser
 
             return builder.ToString();
         }
-
+        
         private GameTypeDescription GetDescription(Type type)
         {
             if (typesCache.TryGetValue(type, out var description))
