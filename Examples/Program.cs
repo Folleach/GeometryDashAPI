@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Examples
 {
@@ -23,19 +24,15 @@ namespace Examples
         static void Main(string[] args)
         {
             Console.WriteLine("Call 'F'");
-            F();
+            F().Wait();
             Console.WriteLine("'F' called");
             Console.ReadKey();
         }
 
-        private static void F()
+        private static async Task F()
         {
-            var name = new GameServer().DownloadLevel(64144455).Name;
-            Console.WriteLine(name);
-            var local = new LocalLevels();
-            var w = local.GetLevel("Test", 3);
-            local.Remove(local.GetLevel("test", 0));
-            local.Save();
+            var level = await new GameServer().DownloadLevel(64144455);
+            Console.WriteLine(level.Name);
         }
     }
 }

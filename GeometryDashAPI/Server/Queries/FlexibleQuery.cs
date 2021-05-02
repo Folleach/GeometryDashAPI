@@ -16,21 +16,21 @@ namespace GeometryDashAPI.Server.Queries
 
         public void BuildQuery(Parameters parameters)
         {
-            LinkedList<IQuery>.Enumerator chainEnumerator = queriesChain.GetEnumerator();
-            while (chainEnumerator.MoveNext())
-                chainEnumerator.Current.BuildQuery(parameters);
-            foreach (var property in additionalProperties)
-                parameters.Add(property);
+            foreach (var query in queriesChain)
+                query.BuildQuery(parameters);
+            parameters.AddRange(additionalProperties);
         }
 
-        public LinkedListNode<IQuery> AddToChain(IQuery query)
+        public FlexibleQuery AddToChain(IQuery query)
         {
-            return queriesChain.AddLast(query);
+            queriesChain.AddLast(query);
+            return this;
         }
 
-        public LinkedListNode<Property> AddProperty(Property property)
+        public FlexibleQuery AddProperty(Property property)
         {
-            return additionalProperties.AddLast(property);
+            additionalProperties.AddLast(property);
+            return this;
         }
     }
 }

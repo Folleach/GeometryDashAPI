@@ -21,5 +21,7 @@
             parameters.Add(new Property("gdw", GDW));
             parameters.Add(new Property("secret", Secret));
         }
+        
+        public static OnlineQuery Default { get; } = new OnlineQuery();
     }
 }

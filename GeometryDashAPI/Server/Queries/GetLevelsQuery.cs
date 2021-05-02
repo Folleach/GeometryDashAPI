@@ -6,7 +6,6 @@ namespace GeometryDashAPI.Server
 {
     public class GetLevelsQuery : IQuery
     {
-        #region fields
         public string QueryString { get; set; } = "-";
         public bool IsOfficialSong { get; private set; }
         public int SongID { get; private set; }
@@ -23,7 +22,6 @@ namespace GeometryDashAPI.Server
         public bool Epic { get; set; } = false;
         public bool TwoPlayer { get; set; } = false;
         public bool HasCoins { get; set; } = false;
-        #endregion
 
         public GetLevelsQuery(SearchType searchType)
         {
