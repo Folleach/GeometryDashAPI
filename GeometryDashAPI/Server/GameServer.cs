@@ -3,6 +3,7 @@ using GeometryDashAPI.Server.Models;
 using GeometryDashAPI.Server.Queries;
 using System;
 using System.Threading.Tasks;
+using GeometryDashAPI.Parser;
 
 namespace GeometryDashAPI.Server
 {
@@ -89,7 +90,7 @@ namespace GeometryDashAPI.Server
             var result = await network.GetAsync("/database/downloadGJLevel22.php", query);
             if (result == "-1")
                 return null;
-            return new LevelInfo(result);
+            return GeometryDashApi.GetObjectParser().Decode<LevelInfo>(result);
         }
 
         public async Task<AccountInfo> GetAccountInfo(int accountID)

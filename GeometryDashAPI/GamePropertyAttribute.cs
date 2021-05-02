@@ -8,13 +8,13 @@ namespace GeometryDashAPI
     public class GamePropertyAttribute : Attribute
     {
         public string Key { get; private set; }
-        public object Value { get; private set; }
+        public object DefaultValue { get; private set; }
         public bool AlwaysSet { get; private set; }
 
-        public GamePropertyAttribute(string key, object defaultValue, bool alwaysSet = false)
+        public GamePropertyAttribute(string key, object defaultDefaultValue = null, bool alwaysSet = false)
         {
             Key = key;
-            Value = defaultValue;
+            DefaultValue = defaultDefaultValue;
             AlwaysSet = alwaysSet;
         }
     }

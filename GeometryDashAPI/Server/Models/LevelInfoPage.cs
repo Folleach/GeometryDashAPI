@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GeometryDashAPI.Parser;
 using GeometryDashAPI.Server.Enums;
 
 namespace GeometryDashAPI.Server.Models
@@ -33,7 +34,7 @@ namespace GeometryDashAPI.Server.Models
 
             string[] levelsData = buffer[0].Split('|');
             foreach (var level in levelsData)
-                Add(new LevelInfo(level));
+                Add(GeometryDashApi.GetObjectParser().Decode<LevelInfo>(level));
         }
 
         private Dictionary<int, KeyValuePair<string, int>> GetAuthorAssigment(string data)

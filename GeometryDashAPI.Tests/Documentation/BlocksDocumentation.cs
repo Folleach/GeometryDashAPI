@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Tests.Documentation
+namespace GeometryDashAPI.Tests.Documentation
 {
     public class BlocksDocumentation
     {
@@ -42,7 +42,7 @@ namespace Tests.Documentation
             {
                 GamePropertyAttribute defaultProperty = property.GetCustomAttribute<GamePropertyAttribute>();
                 if (defaultProperty != null)
-                    writer.Write($"\t{defaultProperty.Key}\t{defaultProperty.Value?.ToString() ?? "null"}\t{defaultProperty.AlwaysSet}");
+                    writer.Write($"\t{defaultProperty.Key}\t{defaultProperty.DefaultValue?.ToString() ?? "null"}\t{defaultProperty.AlwaysSet}");
                 else
                     writer.Write($"ALERT!\t\t\t");
                 writer.WriteLine($"\t{property.Name}");

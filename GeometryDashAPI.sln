@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples", "Examples\Exampl
 		{E1137CDE-1E78-4763-A7EB-0588188AC462} = {E1137CDE-1E78-4763-A7EB-0588188AC462}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{ADD42DF9-2846-451D-90B4-F7DD82CE1195}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryDashAPI.Tests", "GeometryDashAPI.Tests\GeometryDashAPI.Tests.csproj", "{ADD42DF9-2846-451D-90B4-F7DD82CE1195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

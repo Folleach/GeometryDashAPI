@@ -1,7 +1,7 @@
 ﻿using GeometryDashAPI;
 using NUnit.Framework;
 
-namespace Tests
+namespace GeometryDashAPI.Tests
 {
     [TestFixture]
     public class GameConvertTest

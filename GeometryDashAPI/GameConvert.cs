@@ -28,6 +28,16 @@ namespace GeometryDashAPI
         {
             return float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
+        
+        public static string DoubleToString(double value)
+        {
+            return string.Format(Culture.FormatProvider, "{0}", value);
+        }
+
+        public static double StringToDouble(string value)
+        {
+            return double.Parse(value, NumberStyles.Any, Culture.FormatProvider);
+        }
 
         public static string ToBase64(byte[] data)
         {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Tests
+namespace GeometryDashAPI.Tests
 {
     [TestFixture]
     public class PaginationTests
