@@ -8,15 +8,16 @@ namespace GeometryDashAPI.Server
     {
         public override string ToString()
         {
-            StringBuilder requestContent = new StringBuilder();
-            Enumerator enumerator = base.GetEnumerator();
-            if (enumerator.MoveNext())
-                AppendProperty(requestContent, enumerator.Current);
-            while (enumerator.MoveNext())
+            var requestContent = new StringBuilder();
+            var first = true;
+            foreach (var property in this)
             {
-                requestContent.Append('&');
-                AppendProperty(requestContent, enumerator.Current);
+                if (!first)
+                    requestContent.Append('&');
+                AppendProperty(requestContent, property);
+                first = false;
             }
+            
             return requestContent.ToString();
         }
 
