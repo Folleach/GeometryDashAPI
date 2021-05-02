@@ -33,5 +33,15 @@ namespace GeometryDashAPI.Tests
         {
             Assert.Throws(typeof(Exception), () => GeometryDashApi.GetObjectParser().Decode<Sample>(input));
         }
+        
+        [TestCase("33:1.4")]
+        [TestCase("33:4:11:1")]
+        public void Decode_SampleObject_ShouldEncodeCorrect(string raw)
+        {
+            var decoded = GeometryDashApi.GetObjectParser().Decode<Sample>(raw);
+            var encoded = GeometryDashApi.GetObjectParser().Encode(decoded);
+            
+            Assert.AreEqual(raw, encoded);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Parser
@@ -8,12 +9,19 @@ namespace GeometryDashAPI.Parser
     {
         private readonly Dictionary<Type, GameTypeDescription> typesCache
             = new Dictionary<Type, GameTypeDescription>();
-        private readonly Dictionary<Type, Func<string, object>> baseParsers
+        private readonly Dictionary<Type, Func<string, object>> stringToObjectParsers
             = new Dictionary<Type, Func<string, object>>()
             {
                 { typeof(int), x => int.Parse(x) },
                 { typeof(double), x => GameConvert.StringToDouble(x) },
                 { typeof(string), x => x }
+            };
+        private readonly Dictionary<Type, Func<object, string>> objectToStringParsers
+            = new Dictionary<Type, Func<object, string>>()
+            {
+                { typeof(int), x => x.ToString() },
+                { typeof(double), x => GameConvert.DoubleToString((double)x) },
+                { typeof(string), x => (string)x }
             };
         
         public T Decode<T>(string raw) where T : GameObject, new()
@@ -40,9 +48,33 @@ namespace GeometryDashAPI.Parser
             return resultObject;
         }
 
-        public string Code<T>(T obj) where T : GameObject
+        public string Encode<T>(T obj) where T : GameObject
         {
-            throw new NotImplementedException();
+            var builder = new StringBuilder();
+            var description = GetDescription(typeof(T));
+            var needSeparate = false;
+            
+            foreach (var property in description.Properties.Values)
+            {
+                if (needSeparate)
+                    builder.Append(obj.ParserSense);
+                builder.Append(property.Attribute.Key);
+                builder.Append(obj.ParserSense);
+                var parser = objectToStringParsers[property.Property.PropertyType];
+                builder.Append(parser(property.Property.GetValue(obj)));
+                needSeparate = true;
+            }
+
+            foreach (var item in obj.WithoutLoaded)
+            {
+                if (needSeparate)
+                    builder.Append(obj.ParserSense);
+                builder.Append(item.Key);
+                builder.Append(obj.ParserSense);
+                builder.Append(item.Value);
+            }
+
+            return builder.ToString();
         }
 
         private GameTypeDescription GetDescription(Type type)
@@ -54,7 +86,7 @@ namespace GeometryDashAPI.Parser
 
         private Func<string, object> GetParser(Type forType)
         {
-            if (baseParsers.TryGetValue(forType, out var parser))
+            if (stringToObjectParsers.TryGetValue(forType, out var parser))
                 return parser;
             throw new Exception($"Couldn't parse: {forType}");
         }
