@@ -7,23 +7,31 @@ namespace GeometryDashAPI.Parser
 {
     public class GameTypeDescription
     {
-        public Dictionary<string, PropertyWithAttribute<GamePropertyAttribute>> Properties
-            = new Dictionary<string, PropertyWithAttribute<GamePropertyAttribute>>();
+        public Dictionary<string, AttributeMember<GamePropertyAttribute>> Members
+            = new Dictionary<string, AttributeMember<GamePropertyAttribute>>();
 
         public GameTypeDescription(Type type)
         {
-            foreach (var property in type.GetProperties())
+            foreach (var member in GetPropertiesAndFields(type))
             {
-                var attribute = property.GetCustomAttributes<GamePropertyAttribute>().FirstOrDefault();
+                var attribute = member.GetCustomAttributes<GamePropertyAttribute>().FirstOrDefault();
                 if (attribute == null)
                     continue;
-                AddProperty(property, attribute);
+                AddProperty(member, attribute);
             }
         }
 
-        private void AddProperty(PropertyInfo property, GamePropertyAttribute attribute)
+        private void AddProperty(MemberInfo property, GamePropertyAttribute attribute)
         {
-            Properties.Add(attribute.Key, new PropertyWithAttribute<GamePropertyAttribute>(property, attribute));
+            Members.Add(attribute.Key, new AttributeMember<GamePropertyAttribute>(property, attribute));
+        }
+
+        private IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
+        {
+            foreach (var property in type.GetProperties())
+                yield return property;
+            foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+                yield return field;
         }
     }
 }

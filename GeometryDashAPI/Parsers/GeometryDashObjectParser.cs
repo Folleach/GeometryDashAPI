@@ -47,18 +47,18 @@ namespace GeometryDashAPI.Parser
                 if (!enumerator.MoveNext())
                     throw new Exception("Invalid raw data. Count of components in raw data is odd");
                 var value = enumerator.Current;
-                if (!description.Properties.TryGetValue(key, out var property))
+                if (!description.Members.TryGetValue(key, out var member))
                 {
                     resultObject.WithoutLoaded.Add(key, value);
                     continue;
                 }
 
-                if (property.IsGameObject)
+                if (member.IsGameObject)
                 {
-                    property.Property.SetValue(resultObject, Decode(property.Property.PropertyType, value));
+                    member.SetValue(resultObject, Decode(member.MemberType, value));
                     continue;
                 }
-                property.Property.SetValue(resultObject, GetParser(property.Property.PropertyType)(value));
+                member.SetValue(resultObject, GetParser(member.MemberType)(value));
             }
 
             return resultObject;
@@ -70,21 +70,21 @@ namespace GeometryDashAPI.Parser
             var description = GetDescription(type);
             var needSeparate = false;
 
-            foreach (var property in description.Properties.Values)
+            foreach (var member in description.Members.Values)
             {
                 if (needSeparate)
                     builder.Append(obj.ParserSense);
                 needSeparate = true;
-                builder.Append(property.Attribute.Key);
+                builder.Append(member.Attribute.Key);
                 builder.Append(obj.ParserSense);
                 
-                if (property.IsGameObject)
+                if (member.IsGameObject)
                 {
-                    builder.Append(Encode(property.Property.PropertyType, (GameObject)property.Property.GetValue(obj)));
+                    builder.Append(Encode(member.MemberType, (GameObject)member.GetValue(obj)));
                     continue;
                 }
-                var parser = objectToStringParsers[property.Property.PropertyType];
-                builder.Append(parser(property.Property.GetValue(obj)));
+                var parser = objectToStringParsers[member.MemberType];
+                builder.Append(parser(member.GetValue(obj)));
             }
 
             foreach (var item in obj.WithoutLoaded)

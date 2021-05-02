@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GeometryDashAPI
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class GamePropertyAttribute : Attribute
     {
         public string Key { get; private set; }

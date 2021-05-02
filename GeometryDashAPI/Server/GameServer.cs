@@ -4,6 +4,7 @@ using GeometryDashAPI.Server.Queries;
 using System;
 using System.Threading.Tasks;
 using GeometryDashAPI.Parser;
+using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server
 {
@@ -80,7 +81,7 @@ namespace GeometryDashAPI.Server
             return new UserInfo(result.Split('#')[0]);
         }
 
-        public async Task<LevelInfo> DownloadLevel(int id)
+        public async Task<LevelDto> DownloadLevel(int id)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -90,7 +91,7 @@ namespace GeometryDashAPI.Server
             var result = await network.GetAsync("/database/downloadGJLevel22.php", query);
             if (result == "-1")
                 return null;
-            return GeometryDashApi.GetObjectParser().Decode<LevelInfo>(result);
+            return GeometryDashApi.GetObjectParser().Decode<LevelDto>(result);
         }
 
         public async Task<AccountInfo> GetAccountInfo(int accountID)
