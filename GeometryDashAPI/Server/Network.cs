@@ -17,31 +17,23 @@ namespace GeometryDashAPI.Server
         {
             DataEncoding = encoding;
         }
-
-        public string Get(string path, IQuery query)
-        {
-            return GetUseWebClient(path, query.BuildQuery());
-        }
-
+        
         public async Task<string> GetAsync(string path, IQuery query)
         {
-            string result = null;
-            await Task.Run(() =>
-            {
-                result = Get(path, query);
-            });
-            return result;
+            return await GetUseWebClient(path, query.BuildQuery());
         }
 
-        private string GetUseWebClient(string path, Parameters properties)
+        private async Task<string> GetUseWebClient(string path, Parameters properties)
         {
             WebRequest client = WebRequest.Create($"http://boomlings.com{path}");
             client.ContentType = "application/x-www-form-urlencoded";
             client.Headers.Add("20", "*/*");
             client.Method = "POST";
             byte[] data = DataEncoding.GetBytes(properties.ToString());
-            client.GetRequestStream().Write(data, 0, data.Length);
-            return new StreamReader(client.GetResponse().GetResponseStream()).ReadToEnd();
+            var requestStream = await client.GetRequestStreamAsync();
+            requestStream.Write(data, 0, data.Length);
+            var response = await client.GetResponseAsync();
+            return await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
         }
     }
 }
