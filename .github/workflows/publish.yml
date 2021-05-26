@@ -1,0 +1,38 @@
+name: Publish
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore ./GeometryDashAPI.sln
+    - name: Build
+      run: dotnet build --no-restore ./GeometryDashAPI.sln
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./GeometryDashAPI.sln
+  publish:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore ./GeometryDashAPI.sln
+    - name: Release build
+      run: dotnet build -c Release ./GeometryDashAPI.sln
+    - name: Pack
+      run: dotnet pack -c Release -o ./pack/ ./GeometryDashAPI.sln
+    - name: Push to NuGet
+      run: dotnet nuget push ./pack/GeometryDashAPI*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
