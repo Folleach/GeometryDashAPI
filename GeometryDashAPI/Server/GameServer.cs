@@ -25,17 +25,15 @@ namespace GeometryDashAPI.Server
             return players;
         }
 
-        public async Task<LevelInfoPage> GetLevels(GetLevelsQuery getLevelsQuery)
+        public async Task<LevelPageDto> GetLevels(GetLevelsQuery getLevelsQuery)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
                 .AddToChain(getLevelsQuery);
-            var levels = new LevelInfoPage();
-            levels.Load(await network.GetAsync("/database/getGJLevels21.php", query));
-            return levels;
+            return ObjectParser.Decode<LevelPageDto>(await network.GetAsync("/database/getGJLevels21.php", query));
         }
 
-        public async Task<LevelInfoPage> GetFeatureLevels(int page)
+        public async Task<LevelPageDto> GetFeatureLevels(int page)
         {
             return await GetLevels(new GetLevelsQuery(SearchType.Featured)
             {
@@ -91,7 +89,7 @@ namespace GeometryDashAPI.Server
             var result = await network.GetAsync("/database/downloadGJLevel22.php", query);
             if (result == "-1")
                 return null;
-            return GeometryDashApi.GetObjectParser().Decode<LevelDto>(result);
+            return ObjectParser.Decode<LevelDto>(result);
         }
 
         public async Task<AccountInfo> GetAccountInfo(int accountID)

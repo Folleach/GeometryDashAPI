@@ -1,17 +1,18 @@
 ﻿using System;
 using FluentAssertions;
+using GeometryDashAPI.Parser;
 using GeometryDashAPI.Tests.TestObjects;
 using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests
 {
-    public class GeometryDashObjectParserTests
+    public class ObjectParserTests
     {
         [TestCase("33:1.4", 1.4)]
         [TestCase("11:1:33:4", 4)]
         public void Decode_SampleObject_ShouldDecodeCorrect(string raw, double expected)
         {
-            var actual = GeometryDashApi.GetObjectParser().Decode<Sample>(raw);
+            var actual = ObjectParser.Decode<Sample>(raw);
             
             Assert.AreEqual(expected, actual.X);
         }
@@ -21,7 +22,7 @@ namespace GeometryDashAPI.Tests
         {
             var input = "10:hello:33:9";
 
-            var actual = GeometryDashApi.GetObjectParser().Decode<Sample>(input);
+            var actual = ObjectParser.Decode<Sample>(input);
             
             Assert.AreEqual(9, actual.X);
             Assert.AreEqual(1, actual.WithoutLoaded.Count);
@@ -32,15 +33,15 @@ namespace GeometryDashAPI.Tests
         [TestCase("1")]
         public void Decode_SampleObject_ThrowExceptionIfHaveError(string input)
         {
-            Assert.Throws(typeof(Exception), () => GeometryDashApi.GetObjectParser().Decode<Sample>(input));
+            Assert.Throws(typeof(Exception), () => ObjectParser.Decode<Sample>(input));
         }
         
         [TestCase("33:1.4")]
         [TestCase("33:4:11:1")]
         public void Decode_SampleObject_ShouldEncodeCorrect(string raw)
         {
-            var decoded = GeometryDashApi.GetObjectParser().Decode<Sample>(raw);
-            var encoded = GeometryDashApi.GetObjectParser().Encode(decoded);
+            var decoded = ObjectParser.Decode<Sample>(raw);
+            var encoded = ObjectParser.Encode(decoded);
             
             Assert.AreEqual(raw, encoded);
         }
@@ -55,7 +56,7 @@ namespace GeometryDashAPI.Tests
             };
             const string input = "1~33:1.3~2~33:11";
             
-            var decoded = GeometryDashApi.GetObjectParser().Decode<SampleContainer>(input);
+            var decoded = ObjectParser.Decode<SampleContainer>(input);
             
             decoded.Should().BeEquivalentTo(expected, options => options.Excluding(x => x.ParserSense));
         }
@@ -70,7 +71,7 @@ namespace GeometryDashAPI.Tests
             };
             const string expected = "1~33:1.3~2~33:11";
             
-            var encoded = GeometryDashApi.GetObjectParser().Encode(input);
+            var encoded = ObjectParser.Encode(input);
             
             Assert.AreEqual(expected, encoded);
         }
