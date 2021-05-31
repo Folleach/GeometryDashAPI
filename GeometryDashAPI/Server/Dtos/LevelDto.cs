@@ -26,6 +26,6 @@ namespace GeometryDashAPI.Server.Dtos
         [GameProperty("35")]
         public int SongId { get; set; }
         
-        internal override string ParserSense { get; } = ":";
+        public override string ParserSense { get; } = ":";
     }
 }
