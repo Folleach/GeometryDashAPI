@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace Examples
 {
@@ -25,27 +26,23 @@ namespace Examples
         static void Main(string[] args)
         {
             Console.WriteLine("Call 'F'");
-            F().Wait();
+            F();
             Console.WriteLine("'F' called");
             //Console.ReadKey();
         }
 
-        private static async Task F()
+        private static void F()
         {
             var levels = new LocalLevels();
-            var levelCM = levels.GetLevel("sti");
-            new Level(levelCM.LevelString);
-            new Level(levelCM.LevelString);
-            new Level(levelCM.LevelString);
-            new Level(levelCM.LevelString);
-            new Level(levelCM.LevelString);
-            new Level(levelCM.LevelString);
+            new Level(levels.GetLevel("sti").LevelString);
+            var downloaded = new GameServer().DownloadLevel(69648515).Result.LevelString;
             var stopwatch = Stopwatch.StartNew();
-            var level = new Level(levelCM.LevelString);
+            var level = new Level(downloaded);
             stopwatch.Stop();
-            //levels.GetLevel("str").LevelString = level.ToString();
-            //levels.Save();
-            Console.WriteLine(stopwatch.ElapsedTicks);
+
+            levels.GetLevel("str").LevelString = level.ToString();
+            levels.Save();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);
         }
     }
 }

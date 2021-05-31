@@ -1,30 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
+using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
 {
     public class BlockGroup : List<int>
     {
-        public bool IsEmpty
-        {
-            get => Count == 0;
-        }
-
-        public BlockGroup() : base()
-        {
-        }
-
-        public BlockGroup(string data) : base()
-        {
-            foreach (string id in data.Split('.'))
-                Add(int.Parse(id));
-        }
+        public bool IsEmpty => Count == 0;
 
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
-            bool first = true;
-            foreach (int id in base.ToArray())
+            var builder = new StringBuilder();
+            var first = true;
+            foreach (var id in ToArray())
             {
                 if (first)
                 {
@@ -35,6 +24,23 @@ namespace GeometryDashAPI.Levels
                     builder.Append($".{id}");
             }
             return builder.ToString();
+        }
+
+        public static BlockGroup Parse(string raw)
+        {
+            var result = new BlockGroup();
+            var parser = new LLParser('.', raw);
+            while (true)
+            {
+                var idRaw = parser.Next();
+                if (idRaw == null)
+                    break;
+                if (!int.TryParse(idRaw, out var id))
+                    throw new Exception($"Can't parse group id in: {raw}");
+                result.Add(id);
+            }
+
+            return result;
         }
     }
 }

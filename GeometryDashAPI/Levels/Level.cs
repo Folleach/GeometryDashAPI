@@ -5,6 +5,7 @@ using GeometryDashAPI.Levels.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
@@ -188,9 +189,9 @@ namespace GeometryDashAPI.Levels
                 $"kA3,{GameConvert.BoolToString(Mini)},kA8,{GameConvert.BoolToString(Dual)}," +
                 $"kA4,{(byte)PlayerSpeed},kA9,{kA9},kA10,{GameConvert.BoolToString(TwoPlayerMode)},kA11,{kA11};");
 
-            foreach (IBlock block in Blocks)
+            foreach (Block block in Blocks)
             {
-                builder.Append(block.ToString());
+                builder.Append(ObjectParser.EncodeBlock(block));
                 builder.Append(';');
             }
 

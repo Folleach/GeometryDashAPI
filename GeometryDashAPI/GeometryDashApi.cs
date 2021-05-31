@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using GeometryDashAPI.Levels;
+using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Parser;
 using GeometryDashAPI.Parsers;
 
@@ -21,7 +22,8 @@ namespace GeometryDashAPI
                 { typeof(long), x => long.Parse(x) },
                 { typeof(double), x => GameConvert.StringToDouble(x) },
                 { typeof(float), x => GameConvert.StringToSingle(x) },
-                { typeof(string), x => x }
+                { typeof(string), x => x },
+                { typeof(BlockGroup), BlockGroup.Parse}
             };
         internal static readonly Dictionary<Type, Func<object, string>> ObjectToStringParsers
             = new Dictionary<Type, Func<object, string>>()
@@ -33,7 +35,8 @@ namespace GeometryDashAPI
                 { typeof(long), x => x.ToString() },
                 { typeof(double), x => GameConvert.DoubleToString((double)x) },
                 { typeof(float), x => GameConvert.SingleToString((float)x) },
-                { typeof(string), x => (string)x }
+                { typeof(string), x => (string)x },
+                { typeof(BlockGroup), x => ((BlockGroup)x).ToString()}
             };
         private static readonly Dictionary<Type, GameTypeDescription> TypesDescriptionsCache
             = new Dictionary<Type, GameTypeDescription>();
@@ -65,7 +68,7 @@ namespace GeometryDashAPI
         {
             if (BlockTypes.TryGetValue(blockId, out var type))
                 return type;
-            throw new Exception($"Can't find type for blockId: {blockId}");
+            return typeof(Block);
         }
     }
 }

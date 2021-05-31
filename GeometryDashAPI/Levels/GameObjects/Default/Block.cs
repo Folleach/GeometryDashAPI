@@ -1,4 +1,5 @@
-﻿using GeometryDashAPI.Levels.Enums;
+﻿using System;
+using GeometryDashAPI.Levels.Enums;
 using System.Text;
 
 namespace GeometryDashAPI.Levels.GameObjects.Default
@@ -29,7 +30,12 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("64", false)] public bool DontFade { get; set; }
         [GameProperty("67", false)] public bool DontEnter { get; set; }
         [GameProperty("25", (short)2)] public short ZOrder { get; set; } = 2;
-        [GameProperty("24", Layer.T1)] public Layer ZLayer { get; set; } = Layer.T1;
+        public Layer ZLayer
+        {
+            get => (Layer)zLayer;
+            set => zLayer = (short)value;
+        }
+        [GameProperty("24", Layer.T1)] private short zLayer = (int)Layer.T1;
         [GameProperty("32", 1f)] public float Scale { get; set; } = 1f;
         [GameProperty("34", false)] public bool GroupParent { get; set; }
         [GameProperty("36", false)] public bool IsTrigger { get; set; }
@@ -88,8 +94,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
                     HighDetal = GameConvert.StringToBool(value);
                     return;
                 case 57:
-                    Group = new BlockGroup(value);
-                    return;
+                    throw new Exception("It's obsolete parser.");
                 case 64:
                     DontFade = GameConvert.StringToBool(value);
                     return;
