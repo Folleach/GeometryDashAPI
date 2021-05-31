@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GeometryDashAPI.Parser;
+using GeometryDashAPI.Parsers;
 using GeometryDashAPI.Tests.TestObjects;
 
 namespace GeometryDashAPI.Tests

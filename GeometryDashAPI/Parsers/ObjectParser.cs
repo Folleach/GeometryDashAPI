@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Parser;
 
-namespace GeometryDashAPI.Parser
+namespace GeometryDashAPI.Parsers
 {
-    public class ObjectParser
+    public static class ObjectParser
     {
-        private readonly Dictionary<Type, GameTypeDescription> typesCache
+        private static readonly Dictionary<Type, GameTypeDescription> TypesCache
             = new Dictionary<Type, GameTypeDescription>();
 
         public static T Decode<T>(string raw) where T : GameObject, new()
         {
-            return (T) Decode(typeof(T), raw, new T());
+            var instance = new T();
+            return (T) Decode(typeof(T), Parse(raw, instance.ParserSense), instance);
         }
 
         public static string Encode<T>(T obj) where T : GameObject
@@ -20,35 +22,48 @@ namespace GeometryDashAPI.Parser
             return Encode(typeof(T), obj);
         }
 
-        private static object Decode(Type type, string raw, GameObject instance = null)
+        public static Block DecodeBlock(string raw)
+        {
+            var values = Parse(raw, ",");
+            if (!values.TryGetValue("1", out var rawId))
+                throw new Exception("Raw data doesn't contains id component");
+            if (!int.TryParse(rawId, out var id))
+                throw new Exception("Id is not a number");
+            var type = GeometryDashApi.GetBlockType(id);
+            
+            return (Block)Decode(type, values, (GameObject)Activator.CreateInstance(type));
+        }
+        
+        public static string EncodeBlock<T>(T block) where T : Block
+        {
+            return Encode(typeof(T), block);
+        }
+
+        private static GameObject Decode(Type type, Dictionary<string, string> values, GameObject instance)
         {
             var description = GeometryDashApi.GetDescription(type);
-            var resultObject = instance ?? (GameObject)Activator.CreateInstance(type);
-            var parser = new LLParser(resultObject.ParserSense);
             
-            var enumerator = parser.Parse(raw).GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var item in values)
             {
-                var key = enumerator.Current;
-                if (!enumerator.MoveNext())
-                    throw new Exception("Invalid raw data. Count of components in raw data is odd");
-                var value = enumerator.Current;
+                var key = item.Key;
+                var value = item.Value;
                 if (!description.Members.TryGetValue(key, out var member))
                 {
-                    resultObject.WithoutLoaded.Add(key, value);
+                    instance.WithoutLoaded.Add(key, value);
                     continue;
                 }
 
                 if (member.IsGameObject)
                 {
-                    member.SetValue(resultObject, Decode(member.MemberType, value));
+                    var newGameObject = (GameObject) Activator.CreateInstance(member.MemberType);
+                    member.SetValue(instance, Decode(member.MemberType, Parse(value, newGameObject.ParserSense), newGameObject));
                     continue;
                 }
                 
-                member.SetValue(resultObject, GetParser(member.MemberType)(value));
+                member.SetValue(instance, GetParser(member.MemberType)(value));
             }
 
-            return resultObject;
+            return instance;
         }
 
         private static string Encode(Type type, GameObject obj)
@@ -57,22 +72,31 @@ namespace GeometryDashAPI.Parser
             var description = GeometryDashApi.GetDescription(type);
             var needSeparate = false;
 
-            foreach (var member in description.Members.Values)
+            void AppendKey(string key)
             {
                 if (needSeparate)
                     builder.Append(obj.ParserSense);
                 needSeparate = true;
-                builder.Append(member.Attribute.Key);
+                builder.Append(key);
                 builder.Append(obj.ParserSense);
-                
+            }
+            
+            foreach (var member in description.Members.Values)
+            {
                 if (member.IsGameObject)
                 {
+                    AppendKey(member.Attribute.Key);
                     builder.Append(Encode(member.MemberType, (GameObject)member.GetValue(obj)));
                     continue;
                 }
+
+                var value = member.GetValue(obj);
+                if (!member.Attribute.AlwaysSet && Equals(member.Attribute.DefaultValue, value))
+                    continue;
                 
+                AppendKey(member.Attribute.Key);
                 var parser = GeometryDashApi.ObjectToStringParsers[member.MemberType];
-                builder.Append(parser(member.GetValue(obj)));
+                builder.Append(parser(value));
             }
 
             foreach (var item in obj.WithoutLoaded)
@@ -87,6 +111,25 @@ namespace GeometryDashAPI.Parser
             return builder.ToString();
         }
 
+        private static Dictionary<string, string> Parse(string raw, string sense)
+        {
+            var parser = new LLParser(sense);
+            var values = new Dictionary<string, string>();
+
+            using (var enumerator = parser.Parse(raw).GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    var key = enumerator.Current;
+                    if (!enumerator.MoveNext())
+                        throw new Exception("Invalid raw data. Count of components in raw data is odd");
+                    values.Add(key, enumerator.Current);
+                }
+            }
+
+            return values;
+        }
+        
         private static Func<string, object> GetParser(Type forType)
         {
             if (GeometryDashApi.StringToObjectParsers.TryGetValue(forType, out var parser))

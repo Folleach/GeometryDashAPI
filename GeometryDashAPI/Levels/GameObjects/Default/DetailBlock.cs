@@ -1,5 +1,6 @@
 ﻿namespace GeometryDashAPI.Levels.GameObjects.Default
 {
+    [GameBlock(1658, 1888)]
     public class DetailBlock : Block
     {
         public virtual short Default_ColorDetail { get; protected set; } = 1;

@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using GeometryDashAPI.Parser;
+using GeometryDashAPI.Parsers;
 using GeometryDashAPI.Tests.TestObjects;
 using NUnit.Framework;
 
