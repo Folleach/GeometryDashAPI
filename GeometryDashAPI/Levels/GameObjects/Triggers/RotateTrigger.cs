@@ -24,7 +24,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
                 LoadProperty(byte.Parse(data[i]), data[i + 1]);
         }
 
-        public override void LoadProperty(byte key, string value)
+        public void LoadProperty(byte key, string value)
         {
             switch (key)
             {
@@ -53,7 +53,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
                     EasingTime = GameConvert.StringToSingle(value);
                     return;
                 default:
-                    base.LoadProperty(key, value);
+                    //base.LoadProperty(key, value);
                     return;
             }
         }

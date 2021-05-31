@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
@@ -191,7 +192,11 @@ namespace GeometryDashAPI.Levels
 
             foreach (Block block in Blocks)
             {
-                builder.Append(ObjectParser.EncodeBlock(block));
+                if (block is MoveTrigger)
+                {
+                    
+                }
+                builder.Append(ObjectParser.EncodeBlock(block.GetType(), block));
                 builder.Append(';');
             }
 

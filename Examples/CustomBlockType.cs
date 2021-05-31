@@ -1,4 +1,5 @@
-﻿using GeometryDashAPI.Data;
+﻿using GeometryDashAPI;
+using GeometryDashAPI.Data;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects.Default;
@@ -6,23 +7,13 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 namespace Examples
 {
     //An example of creating your own classes for blocks.
+    [GameBlock(1520)]
     class MyShakeTrigger : Trigger
     {
-        public override Layer Default_ZLayer { get; protected set; } = Layer.T2;
-        public override short Default_ZOrder { get; protected set; } = 99;
+        [GameProperty("24", (short)Layer.T2)] protected override short zLayer { get; set; } = (short)Layer.T2;
+        [GameProperty("25", (short)99)] public override short ZOrder { get; set; } = 99;
 
-        public MyShakeTrigger() : base(1520)
-        {
-        }
-
-        public MyShakeTrigger(string[] data) : base(data)
-        {
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
+        [GameProperty("9999", 2)] public int MySuperVelocity { get; set; } = 2;
     }
 
     class CustomBlockType

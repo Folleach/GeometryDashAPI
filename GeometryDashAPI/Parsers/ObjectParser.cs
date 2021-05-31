@@ -34,9 +34,9 @@ namespace GeometryDashAPI.Parsers
             return (Block) Decode(type, values, (GameObject) Activator.CreateInstance(type));
         }
 
-        public static string EncodeBlock<T>(T block) where T : Block
+        public static string EncodeBlock(Type type, Block block)
         {
-            return Encode(typeof(T), block);
+            return Encode(type, block);
         }
 
         private static GameObject Decode(Type type, Dictionary<string, string> values, GameObject instance)

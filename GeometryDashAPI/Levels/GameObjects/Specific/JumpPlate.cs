@@ -3,7 +3,7 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
-    public enum JumpPlateID
+    public enum JumpPlateId
     {
         Yellow = 35,
         Purple = 140,
@@ -11,28 +11,24 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
         LightBlue = 67
     }
 
+    [GameBlock(35, 140, 1332, 67)]
     public class JumpPlate : Block
     {
-        public override Layer Default_ZLayer { get; protected set; } = Layer.B1;
-        public override short Default_ZOrder { get; protected set; } = 12;
+        [GameProperty("24", (short)Layer.B1)] protected override short zLayer { get; set; } = (short)Layer.B1;
+        [GameProperty("25", (short)12)] public override short ZOrder { get; set; } = 12;
 
-        public JumpPlateID BlockType
+        public JumpPlateId BlockType
         {
-            get => (JumpPlateID)ID;
-            set => ID = (int)value;
+            get => (JumpPlateId)Id;
+            set => Id = (int)value;
         }
 
-        public JumpPlate(JumpPlateID type) : base((int)type)
+        public JumpPlate() : base(35)
         {
         }
-
-        public JumpPlate(string[] data) : base(data)
+        
+        public JumpPlate(JumpPlateId type) : base((int)type)
         {
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
         }
     }
 }

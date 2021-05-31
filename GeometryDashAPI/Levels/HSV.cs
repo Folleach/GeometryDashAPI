@@ -1,8 +1,8 @@
 ﻿namespace GeometryDashAPI.Levels
 {
-    public class HSV
+    public class Hsv
     {
-        const char Separator = 'a';
+        const char SEPARATOR = 'a';
 
         public short Hue { get; set; }
         public float Saturation { get; set; } = 1;
@@ -10,34 +10,29 @@
         public bool DeltaSaturation { get; set; }
         public bool DeltaBrightness { get; set; }
 
-        public bool IsDefault
-        {
-            get => Hue == 0 && Saturation == 1f && Brightness == 1f && !DeltaSaturation && !DeltaBrightness;
-        }
+        public bool IsDefault => Hue == 0 && Saturation == 1f && Brightness == 1f && !DeltaSaturation && !DeltaBrightness;
 
-        public HSV()
-        {
-        }
-
-        public HSV(string data)
-        {
-            string[] dataArray = data.Split(Separator);
-            Hue = short.Parse(dataArray[0]);
-            Saturation = GameConvert.StringToSingle(dataArray[1]);
-            Brightness = GameConvert.StringToSingle(dataArray[2]);
-
-            DeltaSaturation = GameConvert.StringToBool(dataArray[3]);
-            DeltaBrightness = GameConvert.StringToBool(dataArray[4]);
-        }
-
-        public override string ToString()
+        public static string Parse(Hsv hsv)
         {
             return
-                $"{Hue}{Separator}" +
-                $"{GameConvert.SingleToString(Saturation)}{Separator}" +
-                $"{GameConvert.SingleToString(Brightness)}{Separator}" +
-                $"{GameConvert.BoolToString(DeltaSaturation)}{Separator}" +
-                $"{GameConvert.BoolToString(DeltaBrightness)}";
+                $"{hsv.Hue}{SEPARATOR}" +
+                $"{GameConvert.SingleToString(hsv.Saturation)}{SEPARATOR}" +
+                $"{GameConvert.SingleToString(hsv.Brightness)}{SEPARATOR}" +
+                $"{GameConvert.BoolToString(hsv.DeltaSaturation)}{SEPARATOR}" +
+                $"{GameConvert.BoolToString(hsv.DeltaBrightness)}";
+        }
+
+        public static Hsv Parse(string raw)
+        {
+            var result = new Hsv();
+            var dataArray = raw.Split(SEPARATOR);
+            result.Hue = short.Parse(dataArray[0]);
+            result.Saturation = GameConvert.StringToSingle(dataArray[1]);
+            result.Brightness = GameConvert.StringToSingle(dataArray[2]);
+            result.DeltaSaturation = GameConvert.StringToBool(dataArray[3]);
+            result.DeltaBrightness = GameConvert.StringToBool(dataArray[4]);
+
+            return result;
         }
     }
 }

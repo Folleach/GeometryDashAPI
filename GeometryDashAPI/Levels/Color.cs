@@ -25,7 +25,7 @@ namespace GeometryDashAPI.Levels
         public float Opacity { get; set; } = 1f;
         public bool CopyOpacity { get; set; }
 
-        public HSV ColorHSV { get; set; }
+        public Hsv ColorHSV { get; set; }
         public int TargetChannelID { get; set; }
 
         public Color(short id)
@@ -87,7 +87,7 @@ namespace GeometryDashAPI.Levels
                         TargetChannelID = int.Parse(properties[i + 1]);
                         break;
                     case "10":
-                        ColorHSV = new HSV(properties[i + 1]);
+                        ColorHSV = Hsv.Parse(properties[i + 1]);
                         break;
                     case "15":
                         //TODO: Added to class
@@ -134,7 +134,7 @@ namespace GeometryDashAPI.Levels
 
             if (TargetChannelID != 0)
             {
-                builder.Append($"{Sp}9{Sp}{TargetChannelID}{Sp}10{Sp}{(ColorHSV == null ? new HSV().ToString() : ColorHSV.ToString())}");
+                builder.Append($"{Sp}9{Sp}{TargetChannelID}{Sp}10{Sp}{(ColorHSV == null ? new Hsv().ToString() : ColorHSV.ToString())}");
                 if (CopyOpacity)
                     builder.Append($"{Sp}17{Sp}1");
             }

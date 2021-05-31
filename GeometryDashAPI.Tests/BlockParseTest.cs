@@ -16,7 +16,7 @@ namespace GeometryDashAPI.Tests
 
             var actual = ObjectParser.DecodeBlock(input);
 
-            Assert.AreEqual(1, actual.ID);
+            Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(3, actual.PositionX);
             Assert.AreEqual(6, actual.PositionY);
         }

@@ -3,22 +3,14 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
+    [GameBlock(1700)]
     public class CircleParticle : ColorBlock
     {
-        public override Layer Default_ZLayer { get; protected set; } = Layer.B1;
-        public override short Default_ZOrder { get; protected set; } = 0;
+        [GameProperty("24", (short)Layer.B1)] protected override short zLayer { get; set; } = (short)Layer.B1;
+        [GameProperty("25", (short)0)] public override short ZOrder { get; set; } = 0;
 
         public CircleParticle() : base(1700)
         {
-        }
-
-        public CircleParticle(string[] data) : base(data)
-        {
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
         }
     }
 }

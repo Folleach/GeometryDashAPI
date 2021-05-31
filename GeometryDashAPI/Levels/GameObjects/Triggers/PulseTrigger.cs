@@ -37,7 +37,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
                 _detailOnly = true;
             }
         }
-        public HSV ValueHSV { get; set; }
+        public Hsv ValueHSV { get; set; }
         public short ColorID { get; set; }
 
         public PulseTrigger() : base(1006)
@@ -51,7 +51,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
                 LoadProperty(byte.Parse(data[i]), data[i + 1]);
         }
 
-        public override void LoadProperty(byte key, string value)
+        public void LoadProperty(byte key, string value)
         {
             switch (key)
             {
@@ -92,13 +92,13 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
                     DetailOnly = GameConvert.StringToBool(value);
                     return;
                 case 49:
-                    ValueHSV = new HSV(value);
+                    ValueHSV = Hsv.Parse(value);
                     return;
                 case 50:
                     ColorID = short.Parse(value);
                     return;
                 default:
-                    base.LoadProperty(key, value);
+                    //base.LoadProperty(key, value);
                     return;
             }
         }

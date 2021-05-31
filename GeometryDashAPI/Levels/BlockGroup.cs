@@ -13,7 +13,7 @@ namespace GeometryDashAPI.Levels
         {
             var builder = new StringBuilder();
             var first = true;
-            foreach (var id in ToArray())
+            foreach (var id in this)
             {
                 if (first)
                 {

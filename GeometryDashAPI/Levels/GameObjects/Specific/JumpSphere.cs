@@ -3,7 +3,7 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
-    public enum JumpSphereID
+    public enum JumpSphereId
     {
         Yellow = 36,
         Purple = 141,
@@ -15,49 +15,27 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
         ArrowPurple = 1751
     }
 
+    [GameBlock(36, 141, 1333, 84, 1022, 1330, 1704, 1751)]
     public class JumpSphere : Block
     {
-        public override Layer Default_ZLayer { get; protected set; } = Layer.B1;
-        public override short Default_ZOrder { get; protected set; } = 12;
+        [GameProperty("24", (short)Layer.B1)] protected override short zLayer { get; set; } = (short)Layer.B1;
+        [GameProperty("25", (short)12)] public override short ZOrder { get; set; } = 12;
 
         [GameProperty("99", false)]
         public bool MultiActivate { get; set; }
 
-        public JumpSphereID BlockType
+        public JumpSphereId BlockType
         {
-            get => (JumpSphereID)ID;
-            set => ID = (int)value;
+            get => (JumpSphereId)Id;
+            set => Id = (int)value;
         }
 
-        public JumpSphere(JumpSphereID type) : base((int)type)
+        public JumpSphere() : base(36)
         {
         }
-
-        public JumpSphere(string[] data)
+        
+        public JumpSphere(JumpSphereId type) : base((int)type)
         {
-            for (int i = 0; i < data.Length; i += 2)
-                LoadProperty(byte.Parse(data[i]), data[i + 1]);
-        }
-
-        public override void LoadProperty(byte key, string value)
-        {
-            switch (key)
-            {
-                case 99:
-                    MultiActivate = GameConvert.StringToBool(value);
-                    return;
-                default:
-                    base.LoadProperty(key, value);
-                    return;
-            }
-        }
-
-        public override string ToString()
-        {
-            if (MultiActivate)
-                return $"{base.ToString()},99,1";
-            else
-                return base.ToString();
         }
     }
 }

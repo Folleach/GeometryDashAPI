@@ -3,56 +3,24 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Triggers
 {
+    [GameBlock(901)]
     public class MoveTrigger : Trigger
     {
-        public int TargetGroupID { get; set; }
-        public int MoveX { get; set; }
-        public int MoveY { get; set; }
-        public float Time { get; set; } = 0.5f;
-        public Easing EasingType { get; set; } = Easing.None;
-        public float EasingTime { get; set; } = 2f;
+        [GameProperty("51", 0, true)] public int TargetGroupId { get; set; }
+        [GameProperty("28", 0, true)] public int MoveX { get; set; }
+        [GameProperty("29", 0, true)] public int MoveY { get; set; }
+        [GameProperty("10", 0.5f, true)] public float Time { get; set; } = 0.5f;
+
+        public Easing EasingType
+        {
+            get => (Easing) easingType;
+            set => easingType = (byte) value;
+        }
+        [GameProperty("30", (byte)Easing.None, true)] private byte easingType = (byte)Easing.None;
+        [GameProperty("85", 2f, true)] public float EasingTime { get; set; } = 2f;
 
         public MoveTrigger() : base(901)
         {
-        }
-
-        public MoveTrigger(string[] data)
-        {
-            for (int i = 0; i < data.Length; i += 2)
-                LoadProperty(byte.Parse(data[i]), data[i + 1]);
-        }
-
-        public override void LoadProperty(byte key, string value)
-        {
-            switch (key)
-            {
-                case 51:
-                    TargetGroupID = int.Parse(value);
-                    return;
-                case 28:
-                    MoveX = int.Parse(value);
-                    return;
-                case 29:
-                    MoveY = int.Parse(value);
-                    return;
-                case 10:
-                    Time = GameConvert.StringToSingle(value);
-                    return;
-                case 30:
-                    EasingType = (Easing)byte.Parse(value);
-                    return;
-                case 85:
-                    EasingTime = GameConvert.StringToSingle(value);
-                    return;
-                default:
-                    base.LoadProperty(key, value);
-                    return;
-            }
-        }
-
-        public override string ToString()
-        {
-            return $"{base.ToString()},51,{TargetGroupID},28,{MoveX},29,{MoveY},10,{GameConvert.SingleToString(Time)},30,{(byte)EasingType},85,{GameConvert.SingleToString(EasingTime)}";
         }
     }
 }

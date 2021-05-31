@@ -23,7 +23,8 @@ namespace GeometryDashAPI
                 { typeof(double), x => GameConvert.StringToDouble(x) },
                 { typeof(float), x => GameConvert.StringToSingle(x) },
                 { typeof(string), x => x },
-                { typeof(BlockGroup), BlockGroup.Parse}
+                { typeof(BlockGroup), BlockGroup.Parse },
+                { typeof(Hsv), Hsv.Parse }
             };
         internal static readonly Dictionary<Type, Func<object, string>> ObjectToStringParsers
             = new Dictionary<Type, Func<object, string>>()
@@ -36,7 +37,8 @@ namespace GeometryDashAPI
                 { typeof(double), x => GameConvert.DoubleToString((double)x) },
                 { typeof(float), x => GameConvert.SingleToString((float)x) },
                 { typeof(string), x => (string)x },
-                { typeof(BlockGroup), x => ((BlockGroup)x).ToString()}
+                { typeof(BlockGroup), x => ((BlockGroup)x).ToString() },
+                { typeof(Hsv), x => Hsv.Parse((Hsv)x) }
             };
         private static readonly Dictionary<Type, GameTypeDescription> TypesDescriptionsCache
             = new Dictionary<Type, GameTypeDescription>();

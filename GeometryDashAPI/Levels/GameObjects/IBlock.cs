@@ -4,7 +4,7 @@ namespace GeometryDashAPI.Levels.GameObjects
 {
     public interface IBlock
     {
-        int ID { get; set; }
+        int Id { get; set; }
         float PositionX { get; set; }
         float PositionY { get; set; }
         bool HorizontalReflection { get; set; }
@@ -14,7 +14,7 @@ namespace GeometryDashAPI.Levels.GameObjects
         int LinkControl { get; set; }
         short EditorL { get; set; }
         short EditorL2 { get; set; }
-        bool HighDetal { get; set; }
+        bool HighDetail { get; set; }
         BlockGroup Group { get; set; }
         bool DontFade { get; set; }
         bool DontEnter { get; set; }

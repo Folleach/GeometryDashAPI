@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 
 namespace GeometryDashAPI
 {
@@ -47,6 +48,16 @@ namespace GeometryDashAPI
         public static byte[] FromBase64(string data)
         {
             return Convert.FromBase64String(data.Replace("_", "/").Replace("-", "+"));
+        }
+        
+        public static string ToBase64S(string data)
+        {
+            return Convert.ToBase64String(Encoding.ASCII.GetBytes(data)).Replace("/", "_").Replace("+", "-");
+        }
+
+        public static string FromBase64S(string data)
+        {
+            return Encoding.ASCII.GetString(Convert.FromBase64String(data.Replace("_", "/").Replace("-", "+")));
         }
     }
 }
