@@ -75,5 +75,19 @@ namespace GeometryDashAPI.Tests
             
             Assert.AreEqual(expected, encoded);
         }
+
+        [Test]
+        public void Encode_AllTypes_ShouldNotThrowException()
+        {
+            var all = new AllTypes();
+            Assert.DoesNotThrow(() => ObjectParser.Encode(all));
+        }
+        
+        [Test]
+        public void Decode_AllTypes_ShouldNotThrowException()
+        {
+            var all = ObjectParser.Encode(new AllTypes());
+            Assert.DoesNotThrow(() => ObjectParser.Decode<AllTypes>(all));
+        }
     }
 }

@@ -16,7 +16,9 @@ namespace GeometryDashAPI
             {
                 { typeof(bool), x => GameConvert.StringToBool(x) },
                 { typeof(byte), x => byte.Parse(x) },
+                { typeof(short), x => short.Parse(x) },
                 { typeof(int), x => int.Parse(x) },
+                { typeof(long), x => long.Parse(x) },
                 { typeof(double), x => GameConvert.StringToDouble(x) },
                 { typeof(float), x => GameConvert.StringToSingle(x) },
                 { typeof(string), x => x }
@@ -26,7 +28,9 @@ namespace GeometryDashAPI
             {
                 { typeof(bool), x => GameConvert.BoolToString((bool)x) },
                 { typeof(byte), x => x.ToString() },
+                { typeof(short), x => x.ToString() },
                 { typeof(int), x => x.ToString() },
+                { typeof(long), x => x.ToString() },
                 { typeof(double), x => GameConvert.DoubleToString((double)x) },
                 { typeof(float), x => GameConvert.SingleToString((float)x) },
                 { typeof(string), x => (string)x }
