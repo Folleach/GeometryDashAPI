@@ -196,7 +196,7 @@ namespace GeometryDashAPI.Levels
                 {
                     
                 }
-                builder.Append(ObjectParser.EncodeBlock(block.GetType(), block));
+                builder.Append(ObjectParser.EncodeBlock(block));
                 builder.Append(';');
             }
 
