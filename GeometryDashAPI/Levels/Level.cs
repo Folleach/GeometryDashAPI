@@ -5,6 +5,7 @@ using GeometryDashAPI.Levels.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
 {
@@ -167,23 +168,10 @@ namespace GeometryDashAPI.Levels
 
         protected virtual void LoadBlocks(string[] blocksData)
         {
-            string[] tmpBlock;
-            int id;
-            for (int i = 1; i < blocksData.Length - 1; i++)
+            for (var i = 1; i < blocksData.Length - 1; i++)
             {
-                tmpBlock = blocksData[i].Split(',');
-                if (tmpBlock[0] != "1" || !int.TryParse(tmpBlock[1], out id))
-                {
-                    //TODO: Find valid block id. I think it won't be necessary
-                    throw new ArgumentException("The block id is not found.");
-                }
-                IBlock candidate = BlockTypeID.InitializeByID(id, tmpBlock, BlockBinding);
-                if (candidate == null)
-                {
-                    BlocksWithoutLoad.Add(blocksData[i]);
-                    continue;
-                }
-                Blocks.Add(candidate);
+                var block = ObjectParser.DecodeBlock(blocksData[i]);
+                Blocks.Add(block);
             }
         }
 

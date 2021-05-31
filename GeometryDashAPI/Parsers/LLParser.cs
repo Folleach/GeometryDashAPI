@@ -1,51 +1,53 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace GeometryDashAPI.Parsers
 {
-    public class LLParser
+    public struct LLParser
     {
-        private readonly string sense;
+        private readonly char sense;
+        private readonly string value;
+        private int index;
 
-        public LLParser(string sense)
+        public LLParser(char sense, string value)
         {
             this.sense = sense;
+            this.value = value;
+            index = 0;
         }
 
-        public IEnumerable<string> Parse(string value)
+        public unsafe Span<char> Next()
         {
-            var builder = new StringBuilder();
-            var index = 0;
-            while (index < value.Length)
+            var startIndex = index;
+            fixed (char* pointer = value)
             {
-                if (IsSense(value, index))
+                var current = pointer + index;
+                while (index < value.Length)
                 {
-                    yield return builder.ToString();
+                    if (value[index] == sense)
+                    {
+                        var span = new Span<char>(current, index - startIndex);
+                        index++;
+                        return span;
+                    }
                     index++;
-                    builder.Clear();
-                    continue;
                 }
-                index = Write(builder, value, index);
-            }
-            if (builder.Length > 0)
-                yield return builder.ToString();
-        }
 
-        private int Write(StringBuilder builder, string value, int index)
-        {
-            builder.Append(value[index]);
-            return ++index;
-        }
-
-        private bool IsSense(string value, int index)
-        {
-            for (var i = 0; i < sense.Length && index + i < value.Length; i++)
-            {
-                if (value[index + i] != sense[i])
-                    return false;
+                if (index != startIndex)
+                    return new Span<char>(current, index - startIndex);
             }
 
-            return true;
+            return null;
         }
+
+        // private bool IsSense(string value, int index)
+        // {
+        //     for (var i = 0; i < sense.Length && index + i < value.Length; i++)
+        //     {
+        //         if (value[index + i] != sense[i])
+        //             return false;
+        //     }
+        //
+        //     return true;
+        // }
     }
 }

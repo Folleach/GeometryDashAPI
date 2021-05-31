@@ -27,13 +27,25 @@ namespace Examples
             Console.WriteLine("Call 'F'");
             F().Wait();
             Console.WriteLine("'F' called");
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         private static async Task F()
         {
-            var level = await new GameServer().DownloadLevel(64144455);
-            Console.WriteLine(level.Name);
+            var levels = new LocalLevels();
+            var levelCM = levels.GetLevel("sti");
+            new Level(levelCM.LevelString);
+            new Level(levelCM.LevelString);
+            new Level(levelCM.LevelString);
+            new Level(levelCM.LevelString);
+            new Level(levelCM.LevelString);
+            new Level(levelCM.LevelString);
+            var stopwatch = Stopwatch.StartNew();
+            var level = new Level(levelCM.LevelString);
+            stopwatch.Stop();
+            //levels.GetLevel("str").LevelString = level.ToString();
+            //levels.Save();
+            Console.WriteLine(stopwatch.ElapsedTicks);
         }
     }
 }
