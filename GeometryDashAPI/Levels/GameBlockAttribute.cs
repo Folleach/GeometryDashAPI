@@ -7,17 +7,8 @@ namespace GeometryDashAPI.Levels
     {
         public readonly int[] Ids;
 
-        public GameBlockAttribute(
-            // int defaultColorBase,
-            // int defaultColorDetail,
-            // int defaultZOrder,
-            // Layer defaultZLayer,
-            params int[] ids)
+        public GameBlockAttribute(params int[] ids)
         {
-            // DefaultColorBase = defaultColorBase;
-            // DefaultColorDetail = defaultColorDetail;
-            // DefaultZOrder = defaultZOrder;
-            // DefaultZLayer = defaultZLayer;
             Ids = ids;
         }
     }

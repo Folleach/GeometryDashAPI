@@ -20,10 +20,9 @@ namespace Examples
     {
         public static void Invoke()
         {
-            LocalLevels levels = new LocalLevels();
-            BindingBlockID binding = new BindingBlockID();
-            binding.Bind(1520, typeof(MyShakeTrigger));
-            Level level = new Level(levels.GetLevelByName("Temp"), binding);
+            // TODO: Register outer types
+            var levels = new LocalLevels();
+            var level = new Level(levels.GetLevel("Temp"));
         }
     }
 }

@@ -2,36 +2,27 @@
 using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
-using System;
 using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
-using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
 {
     public class Level
     {
-        /// <summary>
-        /// The temporal property
-        /// </summary>
+#if DEBUG
         public string LoadedString { get; private set; }
+#endif
 
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
-
-        public List<string> BlocksWithoutLoad { get; set; }
-        public BindingBlockID BlockBinding { get; set; }
 
         public ColorList Colors { get; private set; }
         public BlockList Blocks { get; private set; }
 
-        #region Properties
         public int CountBlock { get => Blocks.Count; }
         public int CountColor { get => Colors.Count; }
-        #endregion
 
-        #region Level properties
         public GameMode GameMode { get; set; } = GameMode.Cube;
         public SpeedType PlayerSpeed { get; set; } = SpeedType.Default;
         public bool Dual { get; set; }
@@ -49,51 +40,47 @@ namespace GeometryDashAPI.Levels
         public int kS39 { get; set; }
         public int kA9 { get; set; }
         public int kA11 { get; set; }
-        #endregion
 
-        #region Constructor
-        public Level(BindingBlockID blockBinding = null)
+        public Level()
         {
-            this.Initialize(blockBinding);
-            this.Load(DefaultLevelString);
+            Initialize();
+            Load(DefaultLevelString);
         }
 
-        public Level(string data, BindingBlockID blockBinding = null)
+        public Level(string data)
         {
-            this.Initialize(blockBinding);
-            this.Load(data);
+            Initialize();
+            Load(data);
         }
 
-        public Level(LevelCreatorModel model, BindingBlockID blockBinding = null)
+        public Level(LevelCreatorModel model)
         {
-            this.Initialize(blockBinding);
-            this.Load(model.LevelString);
+            Initialize();
+            Load(model.LevelString);
         }
-        #endregion
 
-        protected virtual void Initialize(BindingBlockID blockBinding)
+        protected virtual void Initialize()
         {
-            BlocksWithoutLoad = new List<string>();
-            BlockBinding = blockBinding;
             Colors = new ColorList();
             Blocks = new BlockList();
         }
 
         public void AddBlock(IBlock block)
         {
-            this.Blocks.Add(block);
+            Blocks.Add(block);
         }
 
         public void AddColor(Color color)
         {
-            this.Colors.AddColor(color);
+            Colors.AddColor(color);
         }
 
-        #region Load and save methods
         protected virtual void Load(string compressData)
         {
             string data = Crypt.GZipDecompress(GameConvert.FromBase64(compressData));
+#if DEBUG
             LoadedString = data;
+#endif
             string[] splitData = data.Split(';');
             string[] levelProperties = splitData[0].Split(',');
             for (int i = 0; i < levelProperties.Length; i += 2)
@@ -101,7 +88,7 @@ namespace GeometryDashAPI.Levels
                 switch (levelProperties[i])
                 {
                     case "kS38":
-                        this.LoadColors(levelProperties[i + 1]);
+                        LoadColors(levelProperties[i + 1]);
                         break;
                     case "kA13":
                         MusicOffset = GameConvert.StringToSingle(levelProperties[i + 1]);
@@ -155,7 +142,7 @@ namespace GeometryDashAPI.Levels
                         throw new PropertyNotSupportedException(levelProperties[i], levelProperties[i + 1]);
                 }
             }
-            this.LoadBlocks(splitData);
+            LoadBlocks(splitData);
         }
 
         protected virtual void LoadColors(string colorsData)
@@ -164,7 +151,7 @@ namespace GeometryDashAPI.Levels
             {
                 if (colorData == string.Empty)
                     continue;
-                this.Colors.AddColor(new Color(colorData));
+                Colors.AddColor(new Color(colorData));
             }
         }
 
@@ -192,23 +179,12 @@ namespace GeometryDashAPI.Levels
 
             foreach (Block block in Blocks)
             {
-                if (block is MoveTrigger)
-                {
-                    
-                }
                 builder.Append(ObjectParser.EncodeBlock(block));
-                builder.Append(';');
-            }
-
-            foreach (string rawblock in BlocksWithoutLoad)
-            {
-                builder.Append(rawblock);
                 builder.Append(';');
             }
 
             byte[] bytes = Crypt.GZipCompress(Encoding.ASCII.GetBytes(builder.ToString()));
             return GameConvert.ToBase64(bytes);
         }
-        #endregion
     }
 }
