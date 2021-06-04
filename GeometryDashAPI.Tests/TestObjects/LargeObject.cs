@@ -1003,6 +1003,6 @@
         [GameProperty("999")] public int x999 { get; set; }
         [GameProperty("1000")] public int x1000 { get; set; }
 
-        internal override string ParserSense { get; } = ":";
+        public override string ParserSense => ":";
     }
 }

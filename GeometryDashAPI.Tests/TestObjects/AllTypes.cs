@@ -17,6 +17,6 @@
         [GameProperty("7")]
         public bool Bool { get; set; }
 
-        internal override string ParserSense { get; } = ",";
+        public override string ParserSense => ",";
     }
 }
