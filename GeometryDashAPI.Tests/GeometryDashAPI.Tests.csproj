@@ -21,4 +21,14 @@
     <ProjectReference Include="..\GeometryDashAPI\GeometryDashAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BenchmarkSources" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="BenchmarkSources\SampleLevel.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

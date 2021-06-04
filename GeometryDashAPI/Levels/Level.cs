@@ -44,19 +44,19 @@ namespace GeometryDashAPI.Levels
         public Level()
         {
             Initialize();
-            Load(DefaultLevelString);
+            Load(DefaultLevelString, true);
         }
 
-        public Level(string data)
+        public Level(string data, bool compressed)
         {
             Initialize();
-            Load(data);
+            Load(data, compressed);
         }
 
         public Level(LevelCreatorModel model)
         {
             Initialize();
-            Load(model.LevelString);
+            Load(model.LevelString, true);
         }
 
         protected virtual void Initialize()
@@ -75,9 +75,10 @@ namespace GeometryDashAPI.Levels
             Colors.AddColor(color);
         }
 
-        protected virtual void Load(string compressData)
+        protected virtual void Load(string data, bool compressed)
         {
-            string data = Crypt.GZipDecompress(GameConvert.FromBase64(compressData));
+            if (compressed)
+                data = Crypt.GZipDecompress(GameConvert.FromBase64(data));
 #if DEBUG
             LoadedString = data;
 #endif

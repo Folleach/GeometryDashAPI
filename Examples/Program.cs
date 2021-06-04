@@ -34,10 +34,10 @@ namespace Examples
         private static void F()
         {
             var levels = new LocalLevels();
-            new Level(levels.GetLevel("sti").LevelString);
+            new Level(levels.GetLevel("sti"));
             var downloaded = new GameServer().DownloadLevel(69648515).Result.LevelString;
             var stopwatch = Stopwatch.StartNew();
-            var level = new Level(downloaded);
+            var level = new Level(downloaded, true);
             stopwatch.Stop();
 
             levels.GetLevel("str").LevelString = level.ToString();
