@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Levels.GameObjects.Default;
@@ -47,16 +48,7 @@ namespace GeometryDashAPI
 
         static GeometryDashApi()
         {
-            foreach (var type in typeof(GeometryDashApi).Assembly.GetTypes())
-            {
-                foreach (var item in type.GetCustomAttributes(false))
-                {
-                    if (!(item is GameBlockAttribute attribute))
-                        continue;
-                    foreach (var id in attribute.Ids)
-                        BlockTypes.Add(id, type);
-                }
-            }
+            RegisterBlockTypes(typeof(GeometryDashApi).Assembly, false);
         }
 
         internal static GameTypeDescription GetDescription(Type type)
@@ -66,6 +58,28 @@ namespace GeometryDashAPI
             return TypesDescriptionsCache[type] = new GameTypeDescription(type);
         }
 
+        public static void RegisterBlockTypes(Assembly assembly, bool overrideTypes)
+        {
+            foreach (var type in assembly.GetTypes())
+                RegisterBlockType(type, overrideTypes);
+        }
+
+        public static void RegisterBlockType(Type type, bool overrideType)
+        {
+            foreach (var item in type.GetCustomAttributes(false))
+            {
+                if (!(item is GameBlockAttribute attribute))
+                    continue;
+                foreach (var id in attribute.Ids)
+                {
+                    if (overrideType)
+                        BlockTypes[id] = type;
+                    else
+                        BlockTypes.Add(id, type);
+                }
+            }
+        }
+        
         public static Type GetBlockType(int blockId)
         {
             if (BlockTypes.TryGetValue(blockId, out var type))

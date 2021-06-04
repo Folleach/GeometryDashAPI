@@ -20,7 +20,7 @@ namespace Examples
     {
         public static void Invoke()
         {
-            // TODO: Register outer types
+            GeometryDashApi.RegisterBlockType(typeof(MyShakeTrigger), true);
             var levels = new LocalLevels();
             var level = new Level(levels.GetLevel("Temp"));
         }
