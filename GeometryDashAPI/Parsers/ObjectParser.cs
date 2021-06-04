@@ -14,7 +14,7 @@ namespace GeometryDashAPI.Parsers
         public static T Decode<T>(string raw) where T : GameObject, new()
         {
             var instance = new T();
-            return (T) Decode(typeof(T), Parse(raw, instance.ParserSense), instance);
+            return (T) Decode(typeof(T), Parse(raw, instance.GetParserSense()), instance);
         }
 
         public static string Encode<T>(T obj) where T : GameObject
@@ -57,7 +57,7 @@ namespace GeometryDashAPI.Parsers
                 {
                     var newGameObject = (GameObject) Activator.CreateInstance(member.MemberType);
                     member.SetValue(instance,
-                        Decode(member.MemberType, Parse(value, newGameObject.ParserSense), newGameObject));
+                        Decode(member.MemberType, Parse(value, newGameObject.GetParserSense()), newGameObject));
                     continue;
                 }
 
@@ -72,14 +72,15 @@ namespace GeometryDashAPI.Parsers
             var builder = new StringBuilder();
             var description = GeometryDashApi.GetDescription(type);
             var needSeparate = false;
+            var parserSense = obj.GetParserSense();
 
             void AppendKey(string key)
             {
                 if (needSeparate)
-                    builder.Append(obj.ParserSense);
+                    builder.Append(parserSense);
                 needSeparate = true;
                 builder.Append(key);
-                builder.Append(obj.ParserSense);
+                builder.Append(parserSense);
             }
 
             foreach (var member in description.Members.Values)
@@ -103,9 +104,9 @@ namespace GeometryDashAPI.Parsers
             foreach (var item in obj.WithoutLoaded)
             {
                 if (needSeparate)
-                    builder.Append(obj.ParserSense);
+                    builder.Append(parserSense);
                 builder.Append(item.Key);
-                builder.Append(obj.ParserSense);
+                builder.Append(parserSense);
                 builder.Append(item.Value);
             }
 

@@ -2,6 +2,6 @@
 {
     public class LevelPageDto : GameObject
     {
-        public override string ParserSense { get; } = ":";
+        public override string GetParserSense() => ":";
     }
 }

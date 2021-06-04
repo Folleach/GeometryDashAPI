@@ -6,6 +6,6 @@ namespace GeometryDashAPI.Tests.TestObjects
     {
         [GameProperty("33")] public double X { get; set; }
         
-        public override string ParserSense => ":";
+        public override string GetParserSense() => ":";
     }
 }

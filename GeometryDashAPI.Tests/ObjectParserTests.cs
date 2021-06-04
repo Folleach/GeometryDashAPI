@@ -59,7 +59,7 @@ namespace GeometryDashAPI.Tests
             
             var decoded = ObjectParser.Decode<SampleContainer>(input);
             
-            decoded.Should().BeEquivalentTo(expected, options => options.Excluding(x => x.ParserSense));
+            decoded.Should().BeEquivalentTo(expected);
         }
         
         [Test]

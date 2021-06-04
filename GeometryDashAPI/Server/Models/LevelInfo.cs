@@ -11,6 +11,6 @@
         [GameProperty("4")]
         public string Level { get; set; }
 
-        public override string ParserSense { get; } = ":";
+        public override string GetParserSense() => ":";
     }
 }
