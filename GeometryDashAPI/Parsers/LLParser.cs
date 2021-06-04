@@ -4,11 +4,11 @@ namespace GeometryDashAPI.Parsers
 {
     public struct LLParser
     {
-        private readonly char sense;
+        private readonly string sense;
         private readonly string value;
         private int index;
 
-        public LLParser(char sense, string value)
+        public LLParser(string sense, string value)
         {
             this.sense = sense;
             this.value = value;
@@ -23,12 +23,22 @@ namespace GeometryDashAPI.Parsers
                 var current = pointer + index;
                 while (index < value.Length)
                 {
-                    if (value[index] == sense)
+                    var isSense = true;
+                    for (var i = 0; i < sense.Length && index + i < value.Length; i++)
+                    {
+                        if (value[index + i] == sense[i])
+                            continue;
+                        isSense = false;
+                        break;
+                    }
+
+                    if (isSense)
                     {
                         var span = new Span<char>(current, index - startIndex);
                         index++;
                         return span;
                     }
+
                     index++;
                 }
 

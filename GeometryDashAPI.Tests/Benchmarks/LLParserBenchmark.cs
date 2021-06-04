@@ -8,7 +8,7 @@ namespace GeometryDashAPI.Tests
     public class LLParserBenchmark
     {
         private LLParser parser;
-        private char separator = '.';
+        private string separator = ".";
 
         [Params(1000, 10000)]
         public int N;
