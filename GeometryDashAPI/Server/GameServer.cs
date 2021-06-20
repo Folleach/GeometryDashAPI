@@ -31,7 +31,7 @@ namespace GeometryDashAPI.Server
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
                 .AddToChain(getLevelsQuery);
-            return ObjectParser.Decode<LevelPageDto>(await network.GetAsync("/database/getGJLevels21.php", query));
+            return StructParser.Decode<LevelPageDto>(await network.GetAsync("/database/getGJLevels21.php", query));
         }
 
         public async Task<LevelPageDto> GetFeatureLevels(int page)

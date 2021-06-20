@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Server
 {
@@ -9,12 +10,8 @@ namespace GeometryDashAPI.Server
         public int RangeOut { get; private set; }
         public int CountOnPage => (RangeOut - RangeIn + 1);
 
-        public Pagination(string hashData)
+        public Pagination()
         {
-            string[] data = hashData.Split(':');
-            TotalCount = int.Parse(data[0]);
-            RangeIn = int.Parse(data[1]);
-            RangeOut = int.Parse(data[2]);
         }
 
         public Pagination(int total, int rangeIn, int rangeOut)
@@ -27,6 +24,21 @@ namespace GeometryDashAPI.Server
         public bool HasPage(int page)
         {
             return page * CountOnPage < TotalCount;
+        }
+
+        public static Pagination Parse(string raw)
+        {
+            var parser = new LLParser(":", raw);
+            var result = new Pagination();
+            result.TotalCount = int.Parse(parser.Next());
+            result.RangeIn = int.Parse(parser.Next());
+            result.RangeOut = int.Parse(parser.Next());
+            return result;
+        }
+
+        public static string Parse(Pagination pagination)
+        {
+            return $"{pagination.TotalCount}:{pagination.RangeIn}:{pagination.RangeOut}";
         }
     }
 }

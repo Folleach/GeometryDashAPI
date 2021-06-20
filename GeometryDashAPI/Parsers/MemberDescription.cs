@@ -1,24 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace GeometryDashAPI
 {
-    public class AttributeMember<TAttribute>
+    public class MemberDescription<TAttribute>
     {
-        public MemberInfo Member;
-        public TAttribute Attribute;
-        public bool IsGameObject;
-        public bool IsProperty;
+        public readonly MemberInfo Member;
+        public readonly TAttribute Attribute;
+        public readonly bool IsProperty;
+        public readonly ArraySeparatorAttribute ArraySeparatorAttribute;
+        
+        public Type MemberType => IsProperty ? ((PropertyInfo) Member).PropertyType : ((FieldInfo) Member).FieldType;
 
-        public AttributeMember(MemberInfo member, TAttribute attribute)
+        public MemberDescription(MemberInfo member, TAttribute attribute)
         {
             Member = member;
             IsProperty = member is PropertyInfo;
             Attribute = attribute;
-            IsGameObject = typeof(GameObject).IsAssignableFrom(MemberType);
+            
+            if (MemberType!.IsGenericType &&
+                MemberType.GetGenericTypeDefinition() == typeof(List<>))
+                ArraySeparatorAttribute = member.GetCustomAttribute<ArraySeparatorAttribute>();
         }
-
-        public Type MemberType => IsProperty ? ((PropertyInfo) Member).PropertyType : ((FieldInfo) Member).FieldType;
 
         public void SetValue(object instance, object value)
         {

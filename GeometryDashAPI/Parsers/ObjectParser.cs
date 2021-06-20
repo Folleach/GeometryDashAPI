@@ -8,8 +8,7 @@ namespace GeometryDashAPI.Parsers
 {
     public static class ObjectParser
     {
-        private static readonly Dictionary<Type, GameTypeDescription> TypesCache
-            = new Dictionary<Type, GameTypeDescription>();
+        private static readonly Dictionary<Type, TypeDescription<string, GamePropertyAttribute>> TypesCache = new();
 
         public static T Decode<T>(string raw) where T : GameObject, new()
         {
@@ -39,9 +38,15 @@ namespace GeometryDashAPI.Parsers
             return Encode(block.GetType(), block);
         }
 
+        internal static GameObject Decode(Type type, string raw)
+        {
+            var instance = (GameObject) Activator.CreateInstance(type);
+            return Decode(type, Parse(raw, instance.GetParserSense()), instance);
+        }
+
         private static GameObject Decode(Type type, Dictionary<string, string> values, GameObject instance)
         {
-            var description = GeometryDashApi.GetDescription(type);
+            var description = GeometryDashApi.GetGamePropertyCache(type);
 
             foreach (var item in values)
             {
@@ -53,24 +58,22 @@ namespace GeometryDashAPI.Parsers
                     continue;
                 }
 
-                if (member.IsGameObject)
+                if (member.ArraySeparatorAttribute != null)
                 {
-                    var newGameObject = (GameObject) Activator.CreateInstance(member.MemberType);
-                    member.SetValue(instance,
-                        Decode(member.MemberType, Parse(value, newGameObject.GetParserSense()), newGameObject));
+                    member.SetValue(instance, ArrayParser.Decode(member.MemberType, member.ArraySeparatorAttribute.Separator, value));
                     continue;
                 }
 
-                member.SetValue(instance, GetParser(member.MemberType)(value));
+                member.SetValue(instance, GeometryDashApi.GetStringParser(member.MemberType)(value));
             }
 
             return instance;
         }
 
-        private static string Encode(Type type, GameObject obj)
+        internal static string Encode(Type type, GameObject obj)
         {
             var builder = new StringBuilder();
-            var description = GeometryDashApi.GetDescription(type);
+            var description = GeometryDashApi.GetGamePropertyCache(type);
             var needSeparate = false;
             var parserSense = obj.GetParserSense();
 
@@ -85,19 +88,12 @@ namespace GeometryDashAPI.Parsers
 
             foreach (var member in description.Members.Values)
             {
-                if (member.IsGameObject)
-                {
-                    AppendKey(member.Attribute.Key);
-                    builder.Append(Encode(member.MemberType, (GameObject) member.GetValue(obj)));
-                    continue;
-                }
-
                 var value = member.GetValue(obj);
                 if (!member.Attribute.AlwaysSet && Equals(member.Attribute.DefaultValue, value))
                     continue;
 
                 AppendKey(member.Attribute.Key);
-                var parser = GeometryDashApi.ObjectToStringParsers[member.MemberType];
+                var parser = GeometryDashApi.GetObjectParser(member.MemberType);
                 builder.Append(parser(value));
             }
 
@@ -120,6 +116,7 @@ namespace GeometryDashAPI.Parsers
 
             while (true)
             {
+                Span<char> x = null;
                 var key = parser.Next();
                 var value = parser.Next();
                 if (key == null)
@@ -130,13 +127,6 @@ namespace GeometryDashAPI.Parsers
             }
 
             return values;
-        }
-
-        private static Func<string, object> GetParser(Type forType)
-        {
-            if (GeometryDashApi.StringToObjectParsers.TryGetValue(forType, out var parser))
-                return parser;
-            throw new Exception($"Couldn't parse: {forType}");
         }
     }
 }

@@ -23,12 +23,13 @@ namespace GeometryDashAPI.Server.Models
 
         public void Load(string data)
         {
+            throw new NotImplementedException();
             if (data == "-1")
                 return;
             string[] buffer = data.Split('#');
             if (buffer.Length != 5)
                 throw new ArgumentException("No matches with the template");
-            Page = new Pagination(buffer[3]);
+            //Page = new Pagination(buffer[3]);
             Hash = buffer[4];
             var authorAssigment = GetAuthorAssigment(buffer[1]);
             ReadMusicInfo(buffer[2]);

@@ -35,7 +35,7 @@ namespace GeometryDashAPI.Parsers
                     if (isSense)
                     {
                         var span = new Span<char>(current, index - startIndex);
-                        index++;
+                        index += sense.Length;
                         return span;
                     }
 

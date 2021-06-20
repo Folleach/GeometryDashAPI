@@ -33,16 +33,9 @@ namespace Examples
 
         private static void F()
         {
-            var levels = new LocalLevels();
-            new Level(levels.GetLevel("sti"));
-            var downloaded = new GameServer().DownloadLevel(69648515).Result.LevelString;
-            var stopwatch = Stopwatch.StartNew();
-            var level = new Level(downloaded, true);
-            stopwatch.Stop();
-
-            levels.GetLevel("str").LevelString = level.ToString();
-            levels.Save();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            var features = new GameServer().GetFeatureLevels(0).Result;
+            foreach (var music in features.Musics)
+                Console.WriteLine($"{music.MusicName}\t\t{music.Url}");
         }
     }
 }
