@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 using System.Text;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 namespace GeometryDashAPI
 {
@@ -24,12 +25,25 @@ namespace GeometryDashAPI
 
         public static string GZipDecompress(byte[] data)
         {
-            string resultString = string.Empty;
+            var resultString = string.Empty;
             if (data != null && data.Length > 0)
             {
-                using (MemoryStream stream = new MemoryStream(data))
-                using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
-                using (StreamReader reader = new StreamReader(zip))
+                using (var stream = new MemoryStream(data))
+                using (var zip = new GZipStream(stream, CompressionMode.Decompress))
+                using (var reader = new StreamReader(zip))
+                    resultString = reader.ReadToEnd();
+            }
+            return resultString;
+        }
+        
+        public static string ZlipDecompress(byte[] data)
+        {
+            var resultString = string.Empty;
+            if (data != null && data.Length > 0)
+            {
+                using (var stream = new MemoryStream(data))
+                using (var zip = new InflaterInputStream(stream))
+                using (var reader = new StreamReader(zip))
                     resultString = reader.ReadToEnd();
             }
             return resultString;

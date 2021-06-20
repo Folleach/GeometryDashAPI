@@ -3,6 +3,7 @@ using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Parsers;
@@ -78,7 +79,12 @@ namespace GeometryDashAPI.Levels
         protected virtual void Load(string data, bool compressed)
         {
             if (compressed)
-                data = Crypt.GZipDecompress(GameConvert.FromBase64(data));
+            {
+                if (data[0] == 'e' && data[1] == 'J')
+                    data = Crypt.ZlipDecompress(GameConvert.FromBase64(data));
+                else
+                    data = Crypt.GZipDecompress(GameConvert.FromBase64(data));
+            }
 #if DEBUG
             LoadedString = data;
 #endif
@@ -140,7 +146,8 @@ namespace GeometryDashAPI.Levels
                         kA11 = int.Parse(levelProperties[i + 1]);
                         break;
                     default:
-                        throw new PropertyNotSupportedException(levelProperties[i], levelProperties[i + 1]);
+                        //throw new PropertyNotSupportedException(levelProperties[i], levelProperties[i + 1]);
+                        break;
                 }
             }
             LoadBlocks(splitData);
