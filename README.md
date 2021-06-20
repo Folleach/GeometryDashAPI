@@ -8,8 +8,8 @@ Library for working with game data.
 - Game process.
 - Remote server data.
 
-## Download and use
-1. Install from Nuget as `GeometryDashAPI`
+## Download and use 
+1. Install [`GeometryDashAPI`](https://www.nuget.org/packages/GeometryDashAPI/) from Nuget
 2. The end. You can use it :)
 
 ## Examples
