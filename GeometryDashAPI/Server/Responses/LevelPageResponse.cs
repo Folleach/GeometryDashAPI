@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using GeometryDashAPI.Server.Dtos;
 
-namespace GeometryDashAPI.Server.Dtos
+namespace GeometryDashAPI.Server.Responses
 {
-    public class LevelPageDto : GameStruct
+    public class LevelPageResponse : GameStruct, IServerResponseCode
     {
         [StructPosition(0)]
         [ArraySeparator("|")]
@@ -23,5 +24,7 @@ namespace GeometryDashAPI.Server.Dtos
         public string Hash { get; set; }
         
         public override string GetParserSense() => "#";
+
+        public int ResponseCode { get; set; }
     }
 }

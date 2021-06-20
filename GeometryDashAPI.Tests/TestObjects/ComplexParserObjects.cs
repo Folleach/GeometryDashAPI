@@ -18,8 +18,9 @@ namespace GeometryDashAPI.Tests.TestObjects
 
         public override string GetParserSense() => "#";
 
-        public static readonly string ExampleInput = "A:2#10:12#A:1~A:3~A:5#1:2~3:4";
+        public static readonly string ExampleInput = "A:2#10:12#A:1~A:3~A:5#1:2~3:4"; // Из вот этой строки
 
+        // Даёт вот этот объект
         public static readonly ComplexParserObject ExampleExpected = new ComplexParserObject()
         {
             Object = new ComplexObject()
