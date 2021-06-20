@@ -8,7 +8,7 @@ namespace GeometryDashAPI.Server
 {
     public class GameServer
     {
-        private Network network = new Network();
+        private Network network = new();
 
         public async Task<TopResponse> GetTop(TopType type, int count)
         {

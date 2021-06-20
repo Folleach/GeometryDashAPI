@@ -8,6 +8,7 @@ namespace GeometryDashAPI.Server
     internal class Network
     {
         public Encoding DataEncoding { get; }
+        public int Timeout { get; set; } = 30_000;
 
         public Network() : this(Encoding.ASCII)
         {
@@ -29,11 +30,14 @@ namespace GeometryDashAPI.Server
             client.ContentType = "application/x-www-form-urlencoded";
             client.Headers.Add("20", "*/*");
             client.Method = "POST";
+            client.Timeout = Timeout;
             var data = DataEncoding.GetBytes(properties.ToString());
             var requestStream = await client.GetRequestStreamAsync();
             await requestStream.WriteAsync(data, 0, data.Length);
             var response = await client.GetResponseAsync();
-            return await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
+            var result = await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
+            response.Close();
+            return result;
         }
     }
 }
