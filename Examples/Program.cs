@@ -8,7 +8,6 @@ using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Memory;
 using GeometryDashAPI.Server;
 using GeometryDashAPI.Server.Enums;
-using GeometryDashAPI.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +24,13 @@ namespace Examples
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.Unicode;
+            Console.InputEncoding = Encoding.Unicode;
+            
+            new ServerExample().Start();
+            Console.ReadLine();
+            return;
+
             Console.WriteLine("Call 'F'");
             F();
             Console.WriteLine("'F' called");
