@@ -14,8 +14,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Server.Dtos;
+using GeometryDashAPI.Server.Responses;
 
 namespace Examples
 {
@@ -27,21 +30,21 @@ namespace Examples
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
             
-            new ServerExample().Start();
-            Console.ReadLine();
-            return;
-
             Console.WriteLine("Call 'F'");
             F();
+            Console.ReadLine();
             Console.WriteLine("'F' called");
             //Console.ReadKey();
         }
 
         private static void F()
         {
-            var features = new GameServer().GetFeatureLevels(0).Result;
-            foreach (var music in features.Musics)
-                Console.WriteLine($"{music.MusicName}\t\t{music.Url}");
+            var loginResponse = new GameServer().Login("folleach", "***********").Result;
+            Console.WriteLine($"HttpStatusCode: {loginResponse.HttpStatusCode}");
+            Console.WriteLine($"GdStatusCode: {loginResponse.GeometryDashStatusCode}");
+            Console.WriteLine($"Result: " + (loginResponse.GetResultOrDefault() == null
+                ? "null"
+                : loginResponse.GetResultOrDefault().AccountId.ToString()));
         }
     }
 }
