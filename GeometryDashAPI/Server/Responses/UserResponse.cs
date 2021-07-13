@@ -2,7 +2,7 @@
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class UserResponse : GameStruct, IServerResponseCode
+    public class UserResponse : GameStruct
     {
         [StructPosition(0)]
         public UserInfoDto User { get; set; }
@@ -10,7 +10,5 @@ namespace GeometryDashAPI.Server.Responses
         [StructPosition(1)] public Pagination Page { get; set; }
         
         public override string GetParserSense() => "#";
-        
-        public int ResponseCode { get; set; }
     }
 }

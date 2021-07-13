@@ -19,12 +19,12 @@ namespace GeometryDashAPI.Server
             DataEncoding = encoding;
         }
         
-        public async Task<string> GetAsync(string path, IQuery query)
+        public async Task<(HttpStatusCode statusCode, string body)> GetAsync(string path, IQuery query)
         {
             return await GetUseWebClient(path, query.BuildQuery());
         }
 
-        private async Task<string> GetUseWebClient(string path, Parameters properties)
+        private async Task<(HttpStatusCode statusCode, string body)> GetUseWebClient(string path, Parameters properties)
         {
             var client = WebRequest.Create($"http://boomlings.com{path}");
             client.ContentType = "application/x-www-form-urlencoded";
@@ -34,10 +34,12 @@ namespace GeometryDashAPI.Server
             var data = DataEncoding.GetBytes(properties.ToString());
             var requestStream = await client.GetRequestStreamAsync();
             await requestStream.WriteAsync(data, 0, data.Length);
-            var response = await client.GetResponseAsync();
-            var result = await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
+            var response = (HttpWebResponse)await client.GetResponseAsync();
+            var responseStream = response.GetResponseStream();
+            var result = responseStream == null ? null : await new StreamReader(responseStream).ReadToEndAsync();
+            var statusCode = response.StatusCode;
             response.Close();
-            return result;
+            return (statusCode, result);
         }
     }
 }

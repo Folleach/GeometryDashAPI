@@ -16,26 +16,28 @@ namespace Examples
         public async void Start()
         {
             var server = new GameServer();
-            var account = server.Login(USERNAME, PASSWORD).Result;
-
-            if (account.ResponseCode != 0)
+            var accountResponse = server.Login(USERNAME, PASSWORD).Result;
+            
+            if (accountResponse.GeometryDashStatusCode != 0)
             {
-                Console.WriteLine($"Can't login as {USERNAME}. Error code: {account.ResponseCode}");
+                Console.WriteLine($"Can't login as {USERNAME}. Error code: {accountResponse.GeometryDashStatusCode}");
                 return;
             }
             Console.WriteLine($"Success login as {USERNAME}\n");
 
+            var account = accountResponse.GetResultOrDefault();
+
             var accountInfo = await server.GetAccountInfo(account.AccountId);
-            ShowAccount(accountInfo);
+            ShowAccount(accountInfo.GetResultOrDefault());
             
             var comments = await server.GetAccountComments(account.AccountId, 0);
-            ShowComment(comments.Comments);
+            ShowComment(comments.GetResultOrDefault()?.Comments);
             
             var myLevels = await server.GetMyLevels(new PasswordQuery(account.AccountId, PASSWORD), account.UserId, 0);
-            ShowLevels(myLevels);
+            ShowLevels(myLevels.GetResultOrDefault());
             
             var top = await server.GetTop(TopType.Top, 100);
-            ShowTop(top);
+            ShowTop(top.GetResultOrDefault());
         }
 
         private void ShowTop(TopResponse top)

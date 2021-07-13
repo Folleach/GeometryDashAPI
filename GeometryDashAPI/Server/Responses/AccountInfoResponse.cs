@@ -2,12 +2,10 @@
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class AccountInfoResponse : GameStruct, IServerResponseCode
+    public class AccountInfoResponse : GameStruct
     {
         [StructPosition(0)] public AccountDto Account { get; set; }
         
         public override string GetParserSense() => "||";
-        public int ResponseCode { get; set; }
-        
     }
 }

@@ -3,7 +3,7 @@ using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class AccountCommentPageResponse : GameStruct, IServerResponseCode
+    public class AccountCommentPageResponse : GameStruct
     {
         [StructPosition(0)]
         [ArraySeparator("|")]
@@ -13,7 +13,5 @@ namespace GeometryDashAPI.Server.Responses
         public Pagination Page { get; set; }
         
         public override string GetParserSense() => "#";
-        
-        public int ResponseCode { get; set; }
     }
 }
