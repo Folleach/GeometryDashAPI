@@ -11,7 +11,7 @@
     <RepositoryUrl>https://github.com/Folleach/GeometryDashAPI</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>api, geometry, dash</PackageTags>
-    <PackageVersion>0.1.6</PackageVersion>
+    <PackageVersion>0.1.7</PackageVersion>
     <LangVersion>9</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
