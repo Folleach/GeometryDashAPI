@@ -26,11 +26,11 @@ namespace GeometryDashAPI.Server
 
         private async Task<(HttpStatusCode statusCode, string body)> GetUseWebClient(string path, Parameters properties)
         {
-            var client = WebRequest.Create($"http://boomlings.com{path}");
+            var client = (HttpWebRequest)WebRequest.Create($"http://www.boomlings.com{path}");
             client.ContentType = "application/x-www-form-urlencoded";
-            client.Headers.Add("20", "*/*");
             client.Method = "POST";
             client.Timeout = Timeout;
+            client.Accept = "*/*";
             var data = DataEncoding.GetBytes(properties.ToString());
             var requestStream = await client.GetRequestStreamAsync();
             await requestStream.WriteAsync(data, 0, data.Length);

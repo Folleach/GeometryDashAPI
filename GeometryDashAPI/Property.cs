@@ -1,14 +1,14 @@
 ﻿namespace GeometryDashAPI
 {
-    public struct Property
+    public readonly struct Property
     {
-        public object Key { get; set; }
-        public object Value { get; set; }
+        public readonly string Key;
+        public readonly string Value;
 
         public Property(object key, object value)
         {
-            Key = key;
-            Value = value;
+            Key = key.ToString();
+            Value = value.ToString();
         }
 
         public override string ToString()

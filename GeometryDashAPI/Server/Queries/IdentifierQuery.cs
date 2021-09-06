@@ -4,24 +4,34 @@ namespace GeometryDashAPI.Server.Queries
 {
     public class IdentifierQuery : IQuery
     {
-        public Guid UDID { get; set; } = Guid.Parse("00000000-ffff-dddd-5555-123456789abc");
-        public int UUID { get; set; } = 1;
+        private readonly Guid udid;
+        private readonly int uuid;
 
-        public IdentifierQuery()
+        private readonly Property udidProperty;
+        private readonly Property uuidProperty;
+
+        public IdentifierQuery(Guid udid, int uuid)
         {
+            this.udid = udid;
+            this.uuid = uuid;
+
+            udidProperty = new Property("udid", udid);
+            uuidProperty = new Property("uuid", uuid);
         }
 
         public Parameters BuildQuery()
         {
-            Parameters result = new Parameters();
+            var result = new Parameters();
             BuildQuery(result);
             return result;
         }
 
         public void BuildQuery(Parameters parameters)
         {
-            parameters.Add(new Property("udid", UDID));
-            parameters.Add(new Property("uuid", UUID));
+            parameters.Add(udidProperty);
+            parameters.Add(uuidProperty);
         }
+
+        public static IdentifierQuery Default => new(Guid.Parse("00000000-ffff-dddd-5555-123456789abc"), 1);
     }
 }

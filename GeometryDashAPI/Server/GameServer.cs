@@ -1,7 +1,6 @@
 ﻿using GeometryDashAPI.Server.Enums;
 using GeometryDashAPI.Server.Queries;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using GeometryDashAPI.Server.Responses;
 
@@ -9,13 +8,25 @@ namespace GeometryDashAPI.Server
 {
     public class GameServer
     {
-        private Network network = new();
+        private readonly IdentifierQuery identifierQuery;
+        private readonly OnlineQuery onlineQuery;
+        private readonly Network network = new();
+
+        public GameServer()
+        {
+        }
+        
+        public GameServer(IdentifierQuery identifierQuery = null, OnlineQuery onlineQuery = null)
+        {
+            this.identifierQuery = identifierQuery;
+            this.onlineQuery = onlineQuery;
+        }
 
         public async Task<ServerResponse<TopResponse>> GetTop(TopType type, int count)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
-                .AddToChain(new IdentifierQuery())
+                .AddToChain(GetIdentifier())
                 .AddProperty(new Property("type", type.GetAttributeOfSelected<OriginalNameAttribute>().OriginalName))
                 .AddProperty(new Property("count", count));
             return await Get<TopResponse>("/database/getGJScores20.php", query);
@@ -71,8 +82,10 @@ namespace GeometryDashAPI.Server
 
         public async Task<ServerResponse<LevelResponse>> DownloadLevel(int id)
         {
+            var seed = new RandomSeedQuery(10);
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
+                .AddToChain(seed)
                 .AddProperty(new Property("levelID", id))
                 .AddProperty(new Property("inc", 0))
                 .AddProperty(new Property("extras", 0));
@@ -83,7 +96,7 @@ namespace GeometryDashAPI.Server
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
-                .AddToChain(new IdentifierQuery())
+                .AddToChain(GetIdentifier())
                 .AddProperty(new Property("targetAccountID", accountId));
             return await Get<AccountInfoResponse>("/database/getGJUserInfo20.php", query);
         }
@@ -107,5 +120,9 @@ namespace GeometryDashAPI.Server
             var (statusCode, body) = await network.GetAsync(path, query);
             return new ServerResponse<T>(statusCode, body);
         }
+
+        private IdentifierQuery GetIdentifier() => identifierQuery ?? IdentifierQuery.Default;
+
+        private OnlineQuery GetOnlineQuery() => onlineQuery ?? OnlineQuery.Default;
     }
 }
