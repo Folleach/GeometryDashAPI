@@ -82,10 +82,8 @@ namespace GeometryDashAPI.Server
 
         public async Task<ServerResponse<LevelResponse>> DownloadLevel(int id)
         {
-            var seed = new RandomSeedQuery(10);
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
-                .AddToChain(seed)
                 .AddProperty(new Property("levelID", id))
                 .AddProperty(new Property("inc", 0))
                 .AddProperty(new Property("extras", 0));
