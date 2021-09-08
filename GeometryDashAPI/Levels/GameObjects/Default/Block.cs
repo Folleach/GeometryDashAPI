@@ -10,7 +10,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("3", 0, true)] public float PositionY { get; set; }
         [GameProperty("4", false)] public bool HorizontalReflection { get; set; }
         [GameProperty("5", false)] public bool VerticalReflection { get; set; }
-        [GameProperty("6", (short)0)] public short Rotation { get; set; }
+        [GameProperty("6", (int)0)] public int Rotation { get; set; }
         public bool Glow
         {
             get => !glow;

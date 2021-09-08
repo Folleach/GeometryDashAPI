@@ -9,7 +9,7 @@ namespace GeometryDashAPI.Levels.GameObjects
         float PositionY { get; set; }
         bool HorizontalReflection { get; set; }
         bool VerticalReflection { get; set; }
-        short Rotation { get; set; }
+        int Rotation { get; set; }
         bool Glow { get; set; }
         int LinkControl { get; set; }
         short EditorL { get; set; }
