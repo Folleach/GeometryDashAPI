@@ -32,8 +32,13 @@ namespace GeometryDashAPI.Parsers
         {
             foreach (var property in type.GetProperties())
                 yield return property;
-            foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
-                yield return field;
+            var current = type;
+            while (current != null && current != typeof(object))
+            {
+                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+                    yield return field;
+                current = current.BaseType;
+            }
         }
     }
 }

@@ -100,6 +100,8 @@ namespace GeometryDashAPI
                 return raw => ObjectParser.Decode(type, raw);
             if (td!.IsGameStruct)
                 return raw => StructParser.Decode(type, raw);
+            if (type.IsEnum)
+                return raw => Enum.Parse(type, raw);
             // if (td!.IsArray)
             //     return raw => ArrayParser.Decode(type, arraySeperators[type], raw);
             throw new Exception($"Couldn't parse: {type}");

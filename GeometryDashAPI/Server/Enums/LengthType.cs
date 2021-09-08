@@ -2,10 +2,10 @@
 {
     public enum LengthType
     {
-        Tiny,
-        Short,
-        Medium,
-        Long,
-        XL
+        Tiny = 0,
+        Short = 1,
+        Medium = 2,
+        Long = 3,
+        XL = 4
     }
 }
