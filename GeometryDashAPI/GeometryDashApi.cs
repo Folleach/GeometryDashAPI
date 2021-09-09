@@ -19,7 +19,7 @@ namespace GeometryDashAPI
                 { typeof(byte), x => byte.Parse(x) },
                 { typeof(short), x => short.Parse(x) },
                 { typeof(int), x => int.Parse(x) },
-                { typeof(int?), x => string.IsNullOrEmpty(x) ? null : int.Parse(x) },
+                { typeof(int?), x => string.IsNullOrEmpty(x) ? (int?)null : int.Parse(x) },
                 { typeof(long), x => long.Parse(x) },
                 { typeof(double), x => GameConvert.StringToDouble(x) },
                 { typeof(float), x => GameConvert.StringToSingle(x) },
