@@ -15,10 +15,20 @@ namespace GeometryDashAPI.Server.Dtos
         private string description;
         public string Description
         {
-            get => GameConvert.FromBase64S(description);
-            set => description = GameConvert.ToBase64S(value);
+            get
+            {
+                var value = description;
+                if ((value.Length % 4) != 0)
+                    value = $"{value}{new string('=', 4 - value.Length % 4)}";
+                return GameConvert.FromBase64S(value);
+            }
+            set
+            {
+                var base64 = GameConvert.ToBase64S(value);
+                description = base64.Length > 255 ? base64.Remove(255, base64.Length - 255) : base64;
+            }
         }
-        
+
         [GameProperty("5")]
         public int Version { get; set; }
         
@@ -90,10 +100,10 @@ namespace GeometryDashAPI.Server.Dtos
         public int Objects { get; set; }
         
         [GameProperty("46")]
-        public int EditorTime { get; set; }
+        public int? EditorTime { get; set; }
         
         [GameProperty("47")]
-        public int EditorTimeCopies { get; set; }
+        public int? EditorTimeCopies { get; set; }
         
         public override string GetParserSense() => ":";
     }
