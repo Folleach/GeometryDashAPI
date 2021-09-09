@@ -10,16 +10,17 @@ namespace GeometryDashAPI.Server
     {
         private readonly IdentifierQuery identifierQuery;
         private readonly OnlineQuery onlineQuery;
-        private readonly Network network = new();
+        private readonly Network network;
 
-        public GameServer()
+        public GameServer() : this(null)
         {
         }
         
-        public GameServer(IdentifierQuery identifierQuery = null, OnlineQuery onlineQuery = null)
+        public GameServer(IdentifierQuery identifierQuery = null, OnlineQuery onlineQuery = null, Network network = null)
         {
             this.identifierQuery = identifierQuery;
             this.onlineQuery = onlineQuery;
+            this.network = network ?? new Network();
         }
 
         public async Task<ServerResponse<TopResponse>> GetTop(TopType type, int count)

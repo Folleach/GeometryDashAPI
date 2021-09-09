@@ -1,12 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GeometryDashAPI.Server
 {
-    internal class Network
+    public class Network
     {
+        private readonly Action<HttpWebRequest> configurator;
         public Encoding DataEncoding { get; }
         public int Timeout { get; set; } = 30_000;
 
@@ -14,9 +16,10 @@ namespace GeometryDashAPI.Server
         {
         }
 
-        public Network(Encoding encoding)
+        public Network(Encoding encoding, Action<HttpWebRequest> configurator = null)
         {
             DataEncoding = encoding;
+            this.configurator = configurator;
         }
         
         public async Task<(HttpStatusCode statusCode, string body)> GetAsync(string path, IQuery query)
@@ -31,6 +34,7 @@ namespace GeometryDashAPI.Server
             client.Method = "POST";
             client.Timeout = Timeout;
             client.Accept = "*/*";
+            configurator?.Invoke(client);
             var data = DataEncoding.GetBytes(properties.ToString());
             var requestStream = await client.GetRequestStreamAsync();
             await requestStream.WriteAsync(data, 0, data.Length);
