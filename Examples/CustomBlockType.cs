@@ -11,7 +11,7 @@ namespace Examples
     class MyShakeTrigger : Trigger
     {
         [GameProperty("24", (short)Layer.T2)] protected override short zLayer { get; set; } = (short)Layer.T2;
-        [GameProperty("25", (short)99)] public override short ZOrder { get; set; } = 99;
+        [GameProperty("25", 99)] public override int ZOrder { get; set; } = 99;
 
         [GameProperty("9999", 2)] public int MySuperVelocity { get; set; } = 2;
     }

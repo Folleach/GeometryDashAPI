@@ -5,7 +5,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
     [GameBlock(914)]
     public class TextBlock : DetailBlock
     {
-        [GameProperty("25", (short)1)] public override short ZOrder { get; set; } = 1;
+        [GameProperty("25", 1)] public override int ZOrder { get; set; } = 1;
 
         public string Text
         {

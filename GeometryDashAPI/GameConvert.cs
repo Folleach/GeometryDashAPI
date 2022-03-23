@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace GeometryDashAPI
 {
@@ -42,11 +43,16 @@ namespace GeometryDashAPI
 
         public static string ToBase64(byte[] data)
         {
+            return WebEncoders.Base64UrlEncode(data);
             return Convert.ToBase64String(data).Replace("/", "_").Replace("+", "-");
         }
 
         public static byte[] FromBase64(string data)
         {
+            if (data == null)
+                return null;
+            var wrongIndex = data.IndexOf(' ', StringComparison.Ordinal);
+            return WebEncoders.Base64UrlDecode(data, 0, wrongIndex >= 0 ? wrongIndex : data.Length);
             return Convert.FromBase64String(data.Replace("_", "/").Replace("-", "+"));
         }
         

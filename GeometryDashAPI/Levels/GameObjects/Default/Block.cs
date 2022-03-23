@@ -24,7 +24,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("57", null)] public BlockGroup Group { get; set; }
         [GameProperty("64", false)] public bool DontFade { get; set; }
         [GameProperty("67", false)] public bool DontEnter { get; set; }
-        [GameProperty("25", (short)2)] public virtual short ZOrder { get; set; } = 2;
+        [GameProperty("25", 2)] public virtual int ZOrder { get; set; } = 2;
         public Layer ZLayer
         {
             get => (Layer)zLayer;

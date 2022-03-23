@@ -18,7 +18,7 @@ namespace GeometryDashAPI.Levels.GameObjects
         BlockGroup Group { get; set; }
         bool DontFade { get; set; }
         bool DontEnter { get; set; }
-        short ZOrder { get; set; }
+        int ZOrder { get; set; }
         Layer ZLayer { get; set; }
         float Scale { get; set; }
         bool GroupParent { get; set; }

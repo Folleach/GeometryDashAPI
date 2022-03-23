@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
     public class JumpPlate : Block
     {
         [GameProperty("24", (short)Layer.B1)] protected override short zLayer { get; set; } = (short)Layer.B1;
-        [GameProperty("25", (short)12)] public override short ZOrder { get; set; } = 12;
+        [GameProperty("25", 12)] public override int ZOrder { get; set; } = 12;
 
         public JumpPlateId BlockType
         {

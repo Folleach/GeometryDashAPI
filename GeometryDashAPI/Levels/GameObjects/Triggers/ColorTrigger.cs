@@ -5,7 +5,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
     [GameBlock(899)]
     public class ColorTrigger : Trigger
     {
-        [GameProperty("23", 0, true)] public short ColorId { get; set; }
+        [GameProperty("23", 0, true)] public int ColorId { get; set; }
         [GameProperty("7", (byte)255, true)] public byte Red { get; set; } = 255;
         [GameProperty("8", (byte)255, true)] public byte Green { get; set; } = 255;
         [GameProperty("9", (byte)255, true)] public byte Blue { get; set; } = 255;
