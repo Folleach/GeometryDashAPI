@@ -1,14 +1,16 @@
 ﻿using System;
-using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using GeometryDashAPI.Factories;
 
 namespace GeometryDashAPI.Server
 {
     public class Network
     {
-        private readonly Action<HttpWebRequest> configurator;
+        private readonly IFactory<HttpClient> httpClientFactory;
+        private readonly Func<string, bool> responseFilter;
         public Encoding DataEncoding { get; }
         public int Timeout { get; set; } = 30_000;
 
@@ -16,33 +18,30 @@ namespace GeometryDashAPI.Server
         {
         }
 
-        public Network(Encoding encoding, Action<HttpWebRequest> configurator = null)
+        public Network(Encoding encoding, IFactory<HttpClient> httpClientFactory = null, Func<string, bool> responseFilter = null)
         {
             DataEncoding = encoding;
-            this.configurator = configurator;
+            this.httpClientFactory = httpClientFactory ?? new DefaultHttpClientFactory();
+            this.responseFilter = responseFilter;
         }
         
         public async Task<(HttpStatusCode statusCode, string body)> GetAsync(string path, IQuery query)
         {
-            return await GetUseWebClient(path, query.BuildQuery());
+            return await GetUseHttpClient(path, query.BuildQuery());
         }
 
-        private async Task<(HttpStatusCode statusCode, string body)> GetUseWebClient(string path, Parameters properties)
+        private async Task<(HttpStatusCode statusCode, string body)> GetUseHttpClient(string path, Parameters properties)
         {
-            var client = (HttpWebRequest)WebRequest.Create($"http://www.boomlings.com{path}");
-            client.ContentType = "application/x-www-form-urlencoded";
-            client.Method = "POST";
-            client.Timeout = Timeout;
-            client.Accept = "*/*";
-            configurator?.Invoke(client);
-            var data = DataEncoding.GetBytes(properties.ToString());
-            var requestStream = await client.GetRequestStreamAsync();
-            await requestStream.WriteAsync(data, 0, data.Length);
-            var response = (HttpWebResponse)await client.GetResponseAsync();
-            var responseStream = response.GetResponseStream();
-            var result = responseStream == null ? null : await new StreamReader(responseStream).ReadToEndAsync();
+            using var httpClient = httpClientFactory.Create();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
+
+            using var response = await httpClient.PostAsync($"http://www.boomlings.com{path}",
+                new StringContent(properties.ToString(), Encoding.UTF8, "application/x-www-form-urlencoded"));
+
+            var result = await response.Content.ReadAsStringAsync();
+            if (responseFilter != null && !responseFilter(result))
+                throw new Exception("Invalid data by response filter");
             var statusCode = response.StatusCode;
-            response.Close();
             return (statusCode, result);
         }
     }

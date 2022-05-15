@@ -7,7 +7,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
     public class CircleParticle : ColorBlock
     {
         [GameProperty("24", (short)Layer.B1)] protected override short zLayer { get; set; } = (short)Layer.B1;
-        [GameProperty("25", (short)0)] public override short ZOrder { get; set; } = 0;
+        [GameProperty("25", 0)] public override int ZOrder { get; set; } = 0;
 
         public CircleParticle() : base(1700)
         {

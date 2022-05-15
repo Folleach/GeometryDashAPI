@@ -20,11 +20,11 @@ namespace GeometryDashAPI.Server.Dtos
                 var value = description;
                 if ((value.Length % 4) != 0)
                     value = $"{value}{new string('=', 4 - value.Length % 4)}";
-                return GameConvert.FromBase64S(value);
+                return GameConvert.FromBase64String(value);
             }
             set
             {
-                var base64 = GameConvert.ToBase64S(value);
+                var base64 = GameConvert.ToBase64String(value);
                 description = base64.Length > 255 ? base64.Remove(255, base64.Length - 255) : base64;
             }
         }

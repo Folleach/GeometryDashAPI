@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace GeometryDashAPI
 {
@@ -40,24 +41,30 @@ namespace GeometryDashAPI
             return double.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
 
-        public static string ToBase64(byte[] data)
+        public static string ToBase64(byte[] value)
         {
-            return Convert.ToBase64String(data).Replace("/", "_").Replace("+", "-");
+            return WebEncoders.Base64UrlEncode(value);
         }
 
-        public static byte[] FromBase64(string data)
+        public static byte[] FromBase64(string base64)
         {
-            return Convert.FromBase64String(data.Replace("_", "/").Replace("-", "+"));
+            if (base64 == null)
+                return null;
+            var wrongIndex = base64.IndexOf(' ', StringComparison.Ordinal);
+            return WebEncoders.Base64UrlDecode(base64, 0, wrongIndex >= 0 ? wrongIndex : base64.Length);
         }
         
-        public static string ToBase64S(string data)
+        public static string ToBase64String(string value)
         {
-            return Convert.ToBase64String(Encoding.ASCII.GetBytes(data)).Replace("/", "_").Replace("+", "-");
+            return WebEncoders.Base64UrlEncode(Encoding.ASCII.GetBytes(value));
         }
 
-        public static string FromBase64S(string data)
+        public static string FromBase64String(string base64)
         {
-            return Encoding.ASCII.GetString(Convert.FromBase64String(data.Replace("_", "/").Replace("-", "+")));
+            if (base64 == null)
+                return null;
+            var wrongIndex = base64.IndexOf(' ', StringComparison.Ordinal);
+            return Encoding.ASCII.GetString(WebEncoders.Base64UrlDecode(base64, 0, wrongIndex >= 0 ? wrongIndex : base64.Length));
         }
     }
 }

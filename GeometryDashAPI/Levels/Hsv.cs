@@ -4,7 +4,7 @@
     {
         const char SEPARATOR = 'a';
 
-        public short Hue { get; set; }
+        public float Hue { get; set; }
         public float Saturation { get; set; } = 1;
         public float Brightness { get; set; } = 1;
         public bool DeltaSaturation { get; set; }
@@ -26,7 +26,7 @@
         {
             var result = new Hsv();
             var dataArray = raw.Split(SEPARATOR);
-            result.Hue = short.Parse(dataArray[0]);
+            result.Hue = GameConvert.StringToSingle(dataArray[0]);
             result.Saturation = GameConvert.StringToSingle(dataArray[1]);
             result.Brightness = GameConvert.StringToSingle(dataArray[2]);
             result.DeltaSaturation = GameConvert.StringToBool(dataArray[3]);
