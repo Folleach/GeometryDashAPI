@@ -1,6 +1,6 @@
 ﻿using GeometryDashAPI;
 
-namespace GeometryDashAPI.Tests.TestObjects
+namespace TestObjects
 {
     public class ObjectSample : GameObject
     {

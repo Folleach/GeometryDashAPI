@@ -1,12 +1,12 @@
 ﻿using System;
 using FluentAssertions;
-using GeometryDashAPI.Parser;
 using GeometryDashAPI.Parsers;
-using GeometryDashAPI.Tests.TestObjects;
 using NUnit.Framework;
+using TestObjects;
 
 namespace GeometryDashAPI.Tests
 {
+    [TestFixture]
     public class ObjectParserTests
     {
         [TestCase("33:1.4", 1.4)]

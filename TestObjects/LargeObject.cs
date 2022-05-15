@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Tests.TestObjects
+﻿using GeometryDashAPI;
+
+namespace TestObjects
 {
     public class LargeObject : GameObject
     {

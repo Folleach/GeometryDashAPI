@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using GeometryDashAPI;
 
-namespace GeometryDashAPI.Tests.TestObjects
+namespace TestObjects
 {
     public class ComplexParserObject : GameStruct
     {

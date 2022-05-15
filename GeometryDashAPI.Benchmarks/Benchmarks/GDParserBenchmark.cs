@@ -1,12 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
-using GeometryDashAPI.Parser;
 using GeometryDashAPI.Parsers;
-using GeometryDashAPI.Tests.TestObjects;
+using TestObjects;
 
-namespace GeometryDashAPI.Tests
+namespace GeometryDashAPI.Tests.Benchmarks
 {
     [DisassemblyDiagnoser]
-    public class GDParserBenchmark
+    public class GdParserBenchmark
     {
         private string largeRaw;
 
