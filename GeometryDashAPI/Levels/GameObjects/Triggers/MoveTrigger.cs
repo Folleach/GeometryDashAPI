@@ -7,8 +7,8 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
     public class MoveTrigger : Trigger
     {
         [GameProperty("51", 0, true)] public int TargetGroupId { get; set; }
-        [GameProperty("28", 0, true)] public int MoveX { get; set; }
-        [GameProperty("29", 0, true)] public int MoveY { get; set; }
+        [GameProperty("28", 0, true)] public float MoveX { get; set; }
+        [GameProperty("29", 0, true)] public float MoveY { get; set; }
         [GameProperty("10", 0.5f, true)] public float Time { get; set; } = 0.5f;
 
         public Easing EasingType
