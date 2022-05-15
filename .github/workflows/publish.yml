@@ -31,8 +31,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./GeometryDashAPI.sln
     - name: Release build
-      run: dotnet build -c Release ./GeometryDashAPI.sln
+      run: dotnet build -c Release ./GeometryDashAPI/GeometryDashAPI.csproj
     - name: Pack
-      run: dotnet pack -c Release -o ./pack/ ./GeometryDashAPI.sln
+      run: dotnet pack -c Release -o ./pack/ ./GeometryDashAPI/GeometryDashAPI.csproj
     - name: Push to NuGet
       run: dotnet nuget push ./pack/GeometryDashAPI*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
