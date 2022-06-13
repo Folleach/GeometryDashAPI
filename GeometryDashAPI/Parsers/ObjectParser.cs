@@ -129,7 +129,7 @@ namespace GeometryDashAPI.Parsers
                     break;
                 if (value == null)
                     throw new Exception("Invalid raw data. Count of components in raw data is odd");
-                values[key.ToString()] = value.ToString();
+                values[string.Intern(key.ToString())] = string.Intern(value.ToString());
             }
 
             return values;
