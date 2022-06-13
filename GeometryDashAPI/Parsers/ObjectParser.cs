@@ -10,10 +10,15 @@ namespace GeometryDashAPI.Parsers
     {
         private static readonly Dictionary<Type, TypeDescription<string, GamePropertyAttribute>> TypesCache = new();
 
+        private static readonly Dictionary<string, string> v1 = new();
+        private static readonly Dictionary<string, string> v2 = new();
+        private static readonly Dictionary<string, string> v3 = new();
+
         public static T Decode<T>(string raw) where T : GameObject, new()
         {
             var instance = new T();
-            return (T) Decode(typeof(T), Parse(raw, instance.GetParserSense()), instance);
+            v1.Clear();
+            return (T) Decode(typeof(T), Parse(raw, instance.GetParserSense(), v1), instance);
         }
 
         public static string Encode<T>(T obj) where T : GameObject
@@ -23,7 +28,8 @@ namespace GeometryDashAPI.Parsers
 
         public static Block DecodeBlock(string raw)
         {
-            var values = Parse(raw, ",");
+            v2.Clear();
+            var values = Parse(raw, ",", v2);
             if (!values.TryGetValue("1", out var rawId))
                 throw new Exception("Raw data doesn't contains id component");
             if (!int.TryParse(rawId, out var id))
@@ -41,7 +47,8 @@ namespace GeometryDashAPI.Parsers
         internal static GameObject Decode(Type type, string raw)
         {
             var instance = (GameObject) Activator.CreateInstance(type);
-            return Decode(type, Parse(raw, instance.GetParserSense()), instance);
+            v3.Clear();
+            return Decode(type, Parse(raw, instance.GetParserSense(), v3), instance);
         }
 
         private static GameObject Decode(Type type, Dictionary<string, string> values, GameObject instance)
@@ -109,10 +116,9 @@ namespace GeometryDashAPI.Parsers
             return builder.ToString();
         }
 
-        private static Dictionary<string, string> Parse(string raw, string sense)
+        private static Dictionary<string, string> Parse(string raw, string sense, Dictionary<string, string> values)
         {
             var parser = new LLParser(sense, raw);
-            var values = new Dictionary<string, string>();
 
             while (true)
             {

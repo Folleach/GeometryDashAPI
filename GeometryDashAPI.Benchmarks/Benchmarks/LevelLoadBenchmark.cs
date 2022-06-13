@@ -1,6 +1,9 @@
 ﻿using System.IO;
+using System.Net;
 using BenchmarkDotNet.Attributes;
 using GeometryDashAPI.Levels;
+using GeometryDashAPI.Server;
+using GeometryDashAPI.Server.Responses;
 
 namespace GeometryDashAPI.Tests
 {
@@ -8,18 +11,19 @@ namespace GeometryDashAPI.Tests
     [MemoryDiagnoser]
     public class LevelLoadBenchmark
     {
-        private string rawLevel;
+        private string levelRaw;
         
         [GlobalSetup]
         public void SetUp()
         {
-            rawLevel = File.ReadAllText("BenchmarkSources/SampleLevel.txt");
+            levelRaw = File.ReadAllText(@"C:\Users\Andrey\Documents\GitHub\GeometryDashAPI\cromulent.txt");
         }
 
         [Benchmark]
         public void Load()
         {
-            new Level(rawLevel, false);
+            var response = new ServerResponse<LevelResponse>(HttpStatusCode.OK, levelRaw);
+            new Level(response.GetResultOrDefault().Level.LevelString, true);
         }
     }
 }
