@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BenchmarkDotNet.Attributes;
 using GeometryDashAPI.Parsers;
 
@@ -10,13 +11,13 @@ namespace GeometryDashAPI.Tests
         private LLParser parser;
         private string separator = ".";
 
-        [Params(1000, 10000)]
+        [Params(100, 1000, 10000, 100000)]
         public int N;
         
         [GlobalSetup]
         public void SetUp()
         {
-            parser = new LLParser(separator, string.Join(separator, Enumerable.Range(0, N).Select(x => "x")));
+            parser = new LLParser(separator, string.Join(separator, Enumerable.Range(0, N).Select(x => $"x")));
         }
         
         [Benchmark]
