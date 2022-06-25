@@ -12,19 +12,19 @@ namespace GeometryDashAPI.Tests.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            largeRaw = ObjectParser.Encode(new LargeObject());
+            largeRaw = ObjectParserOld.Encode(new LargeObject());
         }
         
         [Benchmark]
         public void Encode()
         {
-            ObjectParser.Encode(new LargeObject());
+            ObjectParserOld.Encode(new LargeObject());
         }
 
         [Benchmark]
         public void Decode()
         {
-            ObjectParser.Decode<LargeObject>(largeRaw);
+            ObjectParserOld.Decode<LargeObject>(largeRaw);
         }
     }
 }

@@ -14,6 +14,13 @@ namespace GeometryDashAPI
             return value ? "1" : "0";
         }
 
+        public static bool StringToBool(ReadOnlySpan<char> value, bool isReverse = false)
+        {
+            if (isReverse)
+                return value == "0";
+            return value == "1";
+        }
+        
         public static bool StringToBool(string value, bool isReverse = false)
         {
             if (isReverse)
@@ -26,14 +33,24 @@ namespace GeometryDashAPI
             return string.Format(Culture.FormatProvider, "{0}", value);
         }
 
+        public static float StringToSingle(ReadOnlySpan<char> value)
+        {
+            return float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
+        }
+
         public static float StringToSingle(string value)
         {
             return float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
-        
+
         public static string DoubleToString(double value)
         {
             return string.Format(Culture.FormatProvider, "{0}", value);
+        }
+
+        public static double StringToDouble(ReadOnlySpan<char> value)
+        {
+            return double.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
 
         public static double StringToDouble(string value)

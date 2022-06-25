@@ -5,6 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <StartupObject>Examples.Program</StartupObject>
     <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

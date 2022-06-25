@@ -99,7 +99,7 @@ namespace GeometryDashAPI
             if (!tds.TryGetValue(type, out td))
                 td = GetTypeDescription(type);
             if (td!.IsGameObject)
-                return raw => ObjectParser.Decode(type, raw);
+                return raw => ObjectParserOld.Decode(type, raw);
             if (td!.IsGameStruct)
                 return raw => StructParser.Decode(type, raw);
             if (type.IsEnum)
@@ -117,7 +117,7 @@ namespace GeometryDashAPI
             if (!tds.TryGetValue(type, out td))
                 td = GetTypeDescription(type);
             if (td.IsGameObject)
-                 return value => ObjectParser.Encode(type, (GameObject)value);
+                 return value => ObjectParserOld.Encode(type, (GameObject)value);
             if (td.IsGameStruct)
                  return value => StructParser.Encode(type, (GameStruct)value);
             throw new Exception($"Couldn't parse: {type}");

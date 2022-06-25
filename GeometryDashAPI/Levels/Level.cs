@@ -167,7 +167,7 @@ namespace GeometryDashAPI.Levels
         {
             for (var i = 1; i < blocksData.Length - 1; i++)
             {
-                var block = ObjectParser.DecodeBlock(blocksData[i]);
+                var block = ObjectParserOld.DecodeBlock(blocksData[i]);
                 Blocks.Add(block);
             }
         }
@@ -187,7 +187,7 @@ namespace GeometryDashAPI.Levels
 
             foreach (Block block in Blocks)
             {
-                builder.Append(ObjectParser.EncodeBlock(block));
+                builder.Append(ObjectParserOld.EncodeBlock(block));
                 builder.Append(';');
             }
 

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Server
@@ -25,6 +26,8 @@ namespace GeometryDashAPI.Server
         {
             return page * CountOnPage < TotalCount;
         }
+
+        public static Pagination Parse(ReadOnlySpan<char> data) => Parse(data.ToString());
 
         public static Pagination Parse(string raw)
         {

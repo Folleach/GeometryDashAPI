@@ -13,9 +13,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
@@ -31,6 +33,12 @@ using Newtonsoft.Json;
 
 namespace Examples
 {
+    class TestObject
+    {
+        public int Value { get; set; }
+        public string X { get; set; }
+    }
+    
     //This class for the only test.
     class Program
     {
@@ -39,21 +47,130 @@ namespace Examples
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
             
-            Console.WriteLine("Call 'F'");
             F();
-            Console.ReadLine();
-            Console.WriteLine("'F' called");
-            //Console.ReadKey();
         }
+
+        private static IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
+        {
+            foreach (var property in type.GetProperties())
+                yield return property;
+            var current = type;
+            while (current != null && current != typeof(object))
+            {
+                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+                    yield return field;
+                current = current.BaseType;
+            }
+        }
+
+        private static Expression<Func<T>> CreateInstance<T>() { 
+            var createdType = typeof(T);
+            var ctor = Expression.New(createdType);
+            var memberInit = Expression.MemberInit(ctor);
+
+            return
+                Expression.Lambda<Func<T>>(memberInit);
+        }
+
+        private static Expression<Action<TInstance, T>> CreateSetter<T, TInstance>(MemberInfo member)
+        {
+            var target = Expression.Parameter(typeof(TInstance));
+            MemberExpression getter;
+            if (member is PropertyInfo propertyInfo)
+                getter = Expression.Property(target, propertyInfo);
+            else if (member is FieldInfo fieldInfo)
+                getter = Expression.Field(target, fieldInfo);
+            else
+                throw new ArgumentException("Not supported member");
+            
+            var property = Expression.Parameter(typeof(T));
+            return Expression.Lambda<Action<TInstance, T>>
+            (
+                Expression.Assign(getter, property), target, property
+            );
+        }
+
+        private static Regex IdRegex = new Regex(@"1,(?<t>\d)", RegexOptions.Compiled);
+
+        private static Dictionary<int, Type> blocks = new Dictionary<int, Type>()
+        {
+            [1] = typeof(BaseBlock)
+        };
+
+        private static Type GetBlockType(ReadOnlySpan<char> raw)
+        {
+            return int.TryParse(IdRegex.Match(raw.ToString()).Groups["t"].Value, out var value) ? blocks[value] : typeof(BaseBlock);
+        }
+
+        private static Dictionary<int, Action<GameObject, string, int, int>> setters = new()
+        {
+            [1] = ((o, s, arg3, arg4) => o.WithoutLoaded = new Dictionary<string, string>())
+        };
+
+        private static Action<GameObject, string, int, int> DefaultSetter =>
+            (o, s, arg3, arg4) => o.WithoutLoaded = new Dictionary<string, string>();
+
+        private static unsafe GameObject ParseBlock(string sense, string raw, int offset, int length)
+        {
+            var span = raw.AsSpan(offset, length);
+            var senseSpan = sense.AsSpan();
+            var parser = new LLParserSpan(senseSpan, span);
+            var type = GetBlockType(span);
+            var instance = (GameObject)null; //Expression.MemberInit(Expression.New(type));
+            Span<char> current;
+            var coff = 0;
+            while ((current = parser.Next()) != null)
+            {
+                int.TryParse(current, out var key);
+                var value = parser.Next();
+                coff += current.Length + sense.Length;
+                if (!setters.TryGetValue(key, out var setter))
+                {
+                    DefaultSetter(instance, raw, 0, 1);
+                    continue;
+                }
+
+                setter(instance, raw, 0, 1);
+            }
+
+            return null;
+        }
+
+        private static T Create<T>() where T : struct => new();
 
         private static void F()
         {
-            var loginResponse = new GameServer().Login("folleach", "***********").Result;
-            Console.WriteLine($"HttpStatusCode: {loginResponse.HttpStatusCode}");
-            Console.WriteLine($"GdStatusCode: {loginResponse.GeometryDashStatusCode}");
-            Console.WriteLine($"Result: " + (loginResponse.GetResultOrDefault() == null
-                ? "null"
-                : loginResponse.GetResultOrDefault().AccountId.ToString()));
+            var descriptors = new List<IDescriptor<IGameObject, int>>();
+            var descriptor = new TypeDescriptor<MoveTrigger, int>();
+            descriptors.Add(descriptor);
+            var instance = descriptor.Create();
+            descriptor.Set(instance, 29, "12.4".AsSpan());
+
+            // var type = typeof(MoveTrigger);
+            // var createSetter = typeof(Program).GetMethod(nameof(CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);
+            // var instance = CreateInstance<MoveTrigger>().Compile()();
+            // var members = GetPropertiesAndFields(type);
+            // foreach (var member in members)
+            // {
+            //     Type returnType = null;
+            //     if (member is PropertyInfo propertyInfo)
+            //         returnType = propertyInfo.PropertyType;
+            //     if (member is FieldInfo fieldInfo)
+            //         returnType = fieldInfo.FieldType;
+            //     var reflectionCreateSetter = createSetter!.MakeGenericMethod(returnType!, type);
+            //     var exp = reflectionCreateSetter.Invoke(null, new []{ member });
+            // }
+            // var setter = CreateSetter<float, MoveTrigger>(type.GetProperty(nameof(MoveTrigger.MoveX))).Compile();
+            // setter(instance, 32);
+            
+            return;
+            
+            Console.WriteLine("start");
+            var levelRaw = File.ReadAllText(@"C:\Users\Andrey\Documents\GitHub\GeometryDashAPI\feature.txt");
+            var response = new ServerResponse<LevelResponse>(HttpStatusCode.OK, levelRaw);
+            var level = new Level(response.GetResultOrDefault().Level.LevelString, true);
+            Console.WriteLine($"done: {level.Blocks.Count}");
+            Console.ReadKey();
         }
     }
 }

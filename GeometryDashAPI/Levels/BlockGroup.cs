@@ -26,6 +26,8 @@ namespace GeometryDashAPI.Levels
             return builder.ToString();
         }
 
+        public static BlockGroup Parse(ReadOnlySpan<char> data) => Parse(data.ToString());
+        
         public static BlockGroup Parse(string raw)
         {
             var result = new BlockGroup();

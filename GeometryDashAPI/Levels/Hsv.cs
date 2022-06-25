@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Levels
+﻿using System;
+
+namespace GeometryDashAPI.Levels
 {
     public class Hsv
     {
@@ -21,6 +23,8 @@
                 $"{GameConvert.BoolToString(hsv.DeltaSaturation)}{SEPARATOR}" +
                 $"{GameConvert.BoolToString(hsv.DeltaBrightness)}";
         }
+
+        public static Hsv Parse(ReadOnlySpan<char> data) => Parse(data.ToString());
 
         public static Hsv Parse(string raw)
         {
