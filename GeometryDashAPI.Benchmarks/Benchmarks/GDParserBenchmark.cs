@@ -1,30 +1,37 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using BenchmarkDotNet.Attributes;
 using GeometryDashAPI.Parsers;
 using TestObjects;
 
-namespace GeometryDashAPI.Tests.Benchmarks
+namespace GeometryDashAPI.Benchmarks.Benchmarks
 {
     [DisassemblyDiagnoser]
     public class GdParserBenchmark
     {
         private string largeRaw;
+        private static IGameParser parser;
+
+        [Params(typeof(ObjectParserOld), typeof(ObjectParser))]
+        public Type ParserParam;
 
         [GlobalSetup]
         public void Setup()
         {
-            largeRaw = ObjectParserOld.Encode(new LargeObject());
+            largeRaw = parser.Encode(new LargeObject());
+            parser = (IGameParser)Activator.CreateInstance(ParserParam);
+            GeometryDashApi.parser = parser;
         }
-        
+
         [Benchmark]
         public void Encode()
         {
-            ObjectParserOld.Encode(new LargeObject());
+            parser.Encode(new LargeObject());
         }
 
         [Benchmark]
         public void Decode()
         {
-            ObjectParserOld.Decode<LargeObject>(largeRaw);
+            parser.Decode<LargeObject>(largeRaw);
         }
     }
 }

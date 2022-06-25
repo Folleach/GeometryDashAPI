@@ -15,7 +15,8 @@ namespace GeometryDashAPI.Levels
 #if DEBUG
         public string LoadedString { get; private set; }
 #endif
-
+        internal static IGameParser parser;
+        
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
         public ColorList Colors { get; private set; }
@@ -167,7 +168,7 @@ namespace GeometryDashAPI.Levels
         {
             for (var i = 1; i < blocksData.Length - 1; i++)
             {
-                var block = ObjectParserOld.DecodeBlock(blocksData[i]);
+                var block = parser.DecodeBlock(blocksData[i]);
                 Blocks.Add(block);
             }
         }
@@ -185,9 +186,10 @@ namespace GeometryDashAPI.Levels
                 $"kA3,{GameConvert.BoolToString(Mini)},kA8,{GameConvert.BoolToString(Dual)}," +
                 $"kA4,{(byte)PlayerSpeed},kA9,{kA9},kA10,{GameConvert.BoolToString(TwoPlayerMode)},kA11,{kA11};");
 
-            foreach (Block block in Blocks)
+            foreach (var block1 in Blocks)
             {
-                builder.Append(ObjectParserOld.EncodeBlock(block));
+                var block = (Block)block1;
+                builder.Append(parser.EncodeBlock(block));
                 builder.Append(';');
             }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
@@ -70,87 +69,87 @@ public class ReflectionVsExpression
         return instance.MoveX;
     }
 
-    // [Benchmark]
-    // public object JustObjectReturn()
-    // {
-    //     return JustObject;
-    // }
+    [Benchmark]
+    public object JustObjectReturn()
+    {
+        return JustObject;
+    }
     
-    // [Benchmark]
-    // public object Boxing()
-    // {
-    //     return 123;
-    // }
-    //
-    // [Benchmark]
-    // public string Key_GetByInt()
-    // {
-    //     IntKeys.TryGetValue(123, out var value);
-    //     return value;
-    // }
-    //
-    // [Benchmark]
-    // public string Key_GetByString()
-    // {
-    //     return StringKeys.TryGetValue("123", out var value) ? value : string.Empty;
-    // }
-    //
-    // [Benchmark]
-    // public int Key_ToInt()
-    // {
-    //     var span = KeySet.AsSpan(1, 3);
-    //     return int.TryParse(span, out var key) ? key : 0;
-    // }
-    //
-    // [Benchmark]
-    // public string Key_ToString()
-    // {
-    //     var span = KeySet.AsSpan(1, 3);
-    //     return span.ToString();
-    // }
-    //
-    // [Benchmark]
-    // public InitObject Init_Reflection()
-    // {
-    //     return (InitObject)Activator.CreateInstance(type);
-    // }
-    //
-    // [Benchmark]
-    // public InitObject Init_Expression()
-    // {
-    //     return CreateInitObjectByExpression.Invoke();
-    // }
-    //
-    // [Benchmark]
-    // public void Set_Reflection()
-    // {
-    //     var instance = CreateInitObjectByExpression.Invoke();
-    //     nameProperty.SetValue(instance, "Hello world");
-    //     xProperty.SetValue(instance, 123);
-    // }
-    //
-    // [Benchmark]
-    // public void Set_Expression()
-    // {
-    //     var instance = CreateInitObjectByExpression.Invoke();
-    //     namePropertyExp(instance, "Hello world");
-    //     xPropertyExp(instance, 123);
-    // }
-    //
-    // [Benchmark]
-    // public InitObject CreateWithInit_Reflection()
-    // {
-    //     var instance = (InitObject)Activator.CreateInstance(type);
-    //     nameProperty.SetValue(instance, "Hello world");
-    //     xProperty.SetValue(instance, 123);
-    //     return instance;
-    // }
-    //
-    // [Benchmark]
-    // public InitObject CreateWithInit_Expression()
-    // {
-    //     return creator("Hello world", 123);
-    // }
+    [Benchmark]
+    public object Boxing()
+    {
+        return 123;
+    }
+    
+    [Benchmark]
+    public string Key_GetByInt()
+    {
+        IntKeys.TryGetValue(123, out var value);
+        return value;
+    }
+    
+    [Benchmark]
+    public string Key_GetByString()
+    {
+        return StringKeys.TryGetValue("123", out var value) ? value : string.Empty;
+    }
+    
+    [Benchmark]
+    public int Key_ToInt()
+    {
+        var span = KeySet.AsSpan(1, 3);
+        return int.TryParse(span, out var key) ? key : 0;
+    }
+    
+    [Benchmark]
+    public string Key_ToString()
+    {
+        var span = KeySet.AsSpan(1, 3);
+        return span.ToString();
+    }
+    
+    [Benchmark]
+    public InitObject Init_Reflection()
+    {
+        return (InitObject)Activator.CreateInstance(type);
+    }
+    
+    [Benchmark]
+    public InitObject Init_Expression()
+    {
+        return CreateInitObjectByExpression.Invoke();
+    }
+    
+    [Benchmark]
+    public void Set_Reflection()
+    {
+        var instance = CreateInitObjectByExpression.Invoke();
+        nameProperty.SetValue(instance, "Hello world");
+        xProperty.SetValue(instance, 123);
+    }
+    
+    [Benchmark]
+    public void Set_Expression()
+    {
+        var instance = CreateInitObjectByExpression.Invoke();
+        namePropertyExp(instance, "Hello world");
+        xPropertyExp(instance, 123);
+    }
+    
+    [Benchmark]
+    public InitObject CreateWithInit_Reflection()
+    {
+        var instance = (InitObject)Activator.CreateInstance(type);
+        nameProperty.SetValue(instance, "Hello world");
+        xProperty.SetValue(instance, 123);
+        return instance;
+    }
+    
+    [Benchmark]
+    public InitObject CreateWithInit_Expression()
+    {
+        return creator("Hello world", 123);
+    }
     
     private static Expression<Func<InitObject>> BuildLambda() { 
         var createdType = typeof(InitObject);

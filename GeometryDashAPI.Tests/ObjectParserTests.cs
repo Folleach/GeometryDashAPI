@@ -9,11 +9,13 @@ namespace GeometryDashAPI.Tests
     [TestFixture]
     public class ObjectParserTests
     {
+        private IGameParser parser = new ObjectParser();
+
         [TestCase("33:1.4", 1.4)]
         [TestCase("11:1:33:4", 4)]
         public void Decode_SampleObject_ShouldDecodeCorrect(string raw, double expected)
         {
-            var actual = ObjectParserOld.Decode<ObjectSample>(raw);
+            var actual = parser.Decode<ObjectSample>(raw);
             
             Assert.AreEqual(expected, actual.X);
         }
@@ -23,7 +25,7 @@ namespace GeometryDashAPI.Tests
         {
             var input = "10:hello:33:9";
 
-            var actual = ObjectParserOld.Decode<ObjectSample>(input);
+            var actual = parser.Decode<ObjectSample>(input);
             
             Assert.AreEqual(9, actual.X);
             Assert.AreEqual(1, actual.WithoutLoaded.Count);
@@ -34,15 +36,15 @@ namespace GeometryDashAPI.Tests
         [TestCase("1")]
         public void Decode_SampleObject_ThrowExceptionIfHaveError(string input)
         {
-            Assert.Throws(typeof(Exception), () => ObjectParserOld.Decode<ObjectSample>(input));
+            Assert.Throws(typeof(Exception), () => parser.Decode<ObjectSample>(input));
         }
         
         [TestCase("33:1.4")]
         [TestCase("33:4:11:1")]
         public void Decode_SampleObject_ShouldEncodeCorrect(string raw)
         {
-            var decoded = ObjectParserOld.Decode<ObjectSample>(raw);
-            var encoded = ObjectParserOld.Encode(decoded);
+            var decoded = parser.Decode<ObjectSample>(raw);
+            var encoded = parser.Encode(decoded);
             
             Assert.AreEqual(raw, encoded);
         }
@@ -57,7 +59,7 @@ namespace GeometryDashAPI.Tests
             };
             const string input = "1~33:1.3~2~33:11";
             
-            var decoded = ObjectParserOld.Decode<SampleContainer>(input);
+            var decoded = parser.Decode<SampleContainer>(input);
             
             decoded.Should().BeEquivalentTo(expected);
         }
@@ -72,7 +74,7 @@ namespace GeometryDashAPI.Tests
             };
             const string expected = "1~33:1.3~2~33:11";
             
-            var encoded = ObjectParserOld.Encode(input);
+            var encoded = parser.Encode(input);
             
             Assert.AreEqual(expected, encoded);
         }
@@ -81,14 +83,14 @@ namespace GeometryDashAPI.Tests
         public void Encode_AllTypes_ShouldNotThrowException()
         {
             var all = new AllTypes();
-            Assert.DoesNotThrow(() => ObjectParserOld.Encode(all));
+            Assert.DoesNotThrow(() => parser.Encode(all));
         }
         
         [Test]
         public void Decode_AllTypes_ShouldNotThrowException()
         {
-            var all = ObjectParserOld.Encode(new AllTypes());
-            Assert.DoesNotThrow(() => ObjectParserOld.Decode<AllTypes>(all));
+            var all = parser.Encode(new AllTypes());
+            Assert.DoesNotThrow(() => parser.Decode<AllTypes>(all));
         }
 
         [Test]
@@ -100,7 +102,7 @@ namespace GeometryDashAPI.Tests
                 X1 = 2
             };
 
-            var actual = ObjectParserOld.Decode<MultipleSense>(input);
+            var actual = parser.Decode<MultipleSense>(input);
 
             actual.Should().BeEquivalentTo(expected);
         }

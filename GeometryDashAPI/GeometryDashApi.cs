@@ -8,11 +8,14 @@ using GeometryDashAPI.Parsers;
 using GeometryDashAPI.Server;
 
 [assembly: InternalsVisibleTo("GeometryDashAPI.Tests")]
+[assembly: InternalsVisibleTo("GeometryDashAPI.Benchmarks")]
 
 namespace GeometryDashAPI
 {
     public class GeometryDashApi
     {
+        internal static IGameParser parser = new ObjectParser();
+
         private static readonly Dictionary<Type, Func<string, object>> StringToObjectParsers = new ()
             {
                 { typeof(bool), x => GameConvert.StringToBool(x) },
@@ -99,7 +102,7 @@ namespace GeometryDashAPI
             if (!tds.TryGetValue(type, out td))
                 td = GetTypeDescription(type);
             if (td!.IsGameObject)
-                return raw => ObjectParserOld.Decode(type, raw);
+                return raw => GeometryDashApi.parser.Decode(type, raw);
             if (td!.IsGameStruct)
                 return raw => StructParser.Decode(type, raw);
             if (type.IsEnum)
@@ -117,7 +120,7 @@ namespace GeometryDashAPI
             if (!tds.TryGetValue(type, out td))
                 td = GetTypeDescription(type);
             if (td.IsGameObject)
-                 return value => ObjectParserOld.Encode(type, (GameObject)value);
+                 return value => GeometryDashApi.parser.Encode(type, (GameObject)value);
             if (td.IsGameStruct)
                  return value => StructParser.Encode(type, (GameStruct)value);
             throw new Exception($"Couldn't parse: {type}");

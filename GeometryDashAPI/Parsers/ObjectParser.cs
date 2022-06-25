@@ -2,31 +2,30 @@
 using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
-using GeometryDashAPI.Parser;
 
 namespace GeometryDashAPI.Parsers
 {
-    public static class ObjectParser
+    public class ObjectParser : IGameParser
     {
-        private static readonly Dictionary<Type, TypeDescription<string, GamePropertyAttribute>> TypesCache = new();
+        private readonly Dictionary<Type, TypeDescription<string, GamePropertyAttribute>> TypesCache = new();
 
-        private static readonly Dictionary<string, string> v1 = new();
-        private static readonly Dictionary<string, string> v2 = new();
-        private static readonly Dictionary<string, string> v3 = new();
+        private readonly Dictionary<string, string> v1 = new();
+        private readonly Dictionary<string, string> v2 = new();
+        private readonly Dictionary<string, string> v3 = new();
 
-        public static T Decode<T>(string raw) where T : GameObject, new()
+        public T Decode<T>(string raw) where T : GameObject, new()
         {
             var instance = new T();
             v1.Clear();
             return (T) Decode(typeof(T), Parse(raw, instance.GetParserSense(), v1), instance);
         }
 
-        public static string Encode<T>(T obj) where T : GameObject
+        public string Encode<T>(T obj) where T : GameObject
         {
             return Encode(typeof(T), obj);
         }
 
-        public static Block DecodeBlock(string raw)
+        public Block DecodeBlock(string raw)
         {
             v2.Clear();
             var values = Parse(raw, ",", v2);
@@ -39,12 +38,12 @@ namespace GeometryDashAPI.Parsers
             return (Block) Decode(type, values, (GameObject) Activator.CreateInstance(type));
         }
 
-        public static string EncodeBlock(Block block)
+        public string EncodeBlock(Block block)
         {
             return Encode(block.GetType(), block);
         }
 
-        internal static GameObject Decode(Type type, string raw)
+        public GameObject Decode(Type type, string raw)
         {
             var instance = (GameObject) Activator.CreateInstance(type);
             v3.Clear();
@@ -77,7 +76,7 @@ namespace GeometryDashAPI.Parsers
             return instance;
         }
 
-        internal static string Encode(Type type, GameObject obj)
+        public string Encode(Type type, GameObject obj)
         {
             var builder = new StringBuilder();
             var description = GeometryDashApi.GetGamePropertyCache(type);
