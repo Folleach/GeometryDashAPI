@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Parser;
 
@@ -19,6 +20,11 @@ namespace GeometryDashAPI.Parsers
             var instance = new T();
             v1.Clear();
             return (T) Decode(typeof(T), Parse(raw, instance.GetParserSense(), v1), instance);
+        }
+
+        public T Decode<T>(ReadOnlySpan<char> raw) where T : GameObject, new()
+        {
+            return Decode<T>(raw.ToString());
         }
 
         public string Encode<T>(T obj) where T : GameObject

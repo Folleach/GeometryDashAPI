@@ -1,4 +1,5 @@
 ﻿using GeometryDashAPI;
+using GeometryDashAPI.Attributes;
 
 namespace TestObjects
 {

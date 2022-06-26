@@ -1,4 +1,5 @@
-﻿using GeometryDashAPI.Server.Dtos;
+﻿using GeometryDashAPI.Attributes;
+using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {

@@ -7,8 +7,8 @@ namespace GeometryDashAPI.Parsers
 {
     public class ObjectParser : IGameParser
     {
-        private readonly Dictionary<Type, TypeDescription<string, GamePropertyAttribute>> TypesCache = new();
-
+        private static Dictionary<Type, IDescriptor<IGameObject, int>> descriptors = new();
+        
         private readonly Dictionary<string, string> v1 = new();
         private readonly Dictionary<string, string> v2 = new();
         private readonly Dictionary<string, string> v3 = new();
@@ -18,6 +18,11 @@ namespace GeometryDashAPI.Parsers
             var instance = new T();
             v1.Clear();
             return (T) Decode(typeof(T), Parse(raw, instance.GetParserSense(), v1), instance);
+        }
+
+        public T Decode<T>(ReadOnlySpan<char> raw) where T : GameObject, new()
+        {
+            return Decode<T>(raw.ToString());
         }
 
         public string Encode<T>(T obj) where T : GameObject
@@ -52,25 +57,19 @@ namespace GeometryDashAPI.Parsers
 
         private static GameObject Decode(Type type, Dictionary<string, string> values, GameObject instance)
         {
-            var description = GeometryDashApi.GetGamePropertyCache(type);
-
+            var descriptor = descriptors.GetOrCreate(type, CreateDescriptor);
+            
             foreach (var item in values)
             {
                 var key = item.Key;
                 var value = item.Value;
-                if (!description.Members.TryGetValue(key, out var member))
-                {
-                    instance.WithoutLoaded.Add(key, value);
-                    continue;
-                }
+                descriptor.Set(instance, int.Parse(key), value.AsSpan());
 
-                if (member.ArraySeparatorAttribute != null)
-                {
-                    member.SetValue(instance, ArrayParser.Decode(member.MemberType, member.ArraySeparatorAttribute.Separator, value));
-                    continue;
-                }
-
-                member.SetValue(instance, GeometryDashApi.GetStringParser(member.MemberType)(value));
+                // if (member.ArraySeparatorAttribute != null)
+                // {
+                //     member.SetValue(instance, ArrayParser.Decode(member.MemberType, member.ArraySeparatorAttribute.Separator, value));
+                //     continue;
+                // }
             }
 
             return instance;
@@ -132,6 +131,14 @@ namespace GeometryDashAPI.Parsers
             }
 
             return values;
+        }
+
+        private static IDescriptor<IGameObject, int> CreateDescriptor(Type type)
+        {
+            var descriptorType = typeof(TypeDescriptor<,>);
+            var generic = descriptorType.MakeGenericType(type, typeof(int));
+            var instance = (IDescriptor<IGameObject, int>)Activator.CreateInstance(generic);
+            return instance;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Server.Dtos
+﻿using GeometryDashAPI.Attributes;
+
+namespace GeometryDashAPI.Server.Dtos
 {
     public class AuthorIdsDto : GameStruct
     {

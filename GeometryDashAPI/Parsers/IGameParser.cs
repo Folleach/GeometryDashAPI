@@ -6,6 +6,7 @@ namespace GeometryDashAPI.Parsers
     public interface IGameParser
     {
         T Decode<T>(string raw) where T : GameObject, new();
+        T Decode<T>(ReadOnlySpan<char> raw) where T : GameObject, new();
         string Encode<T>(T obj) where T : GameObject;
 
         Block DecodeBlock(string raw);

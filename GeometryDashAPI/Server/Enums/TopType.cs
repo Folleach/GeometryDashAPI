@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Server.Enums
+﻿using GeometryDashAPI.Attributes;
+
+namespace GeometryDashAPI.Server.Enums
 {
     public enum TopType
     {

@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Levels.GameObjects.Default
+﻿using GeometryDashAPI.Attributes;
+
+namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     public abstract class Trigger : Block, ITrigger
     {

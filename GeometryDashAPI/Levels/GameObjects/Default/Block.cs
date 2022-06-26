@@ -1,8 +1,10 @@
-﻿using GeometryDashAPI.Levels.Enums;
+﻿using GeometryDashAPI.Attributes;
+using GeometryDashAPI.Levels.Enums;
 
 namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     [GameBlock()]
+    [Sense(",")]
     public class Block : GameObject, IBlock
     {
         [GameProperty("1", 0, true)] public int Id { get; set; }

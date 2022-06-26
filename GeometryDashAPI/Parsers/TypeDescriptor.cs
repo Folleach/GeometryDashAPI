@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using GeometryDashAPI.Attributes;
 
 namespace GeometryDashAPI.Parsers
 {
     public class TypeDescriptor<T, TKey> : IDescriptor<T, TKey> where T : IGameObject
     {
         private readonly Dictionary<int, TypeDescriptorHelper.Setter<T>> setters = new();
+        private readonly string Sense;
         private readonly Func<T> create;
 
         public TypeDescriptor()
@@ -18,6 +20,10 @@ namespace GeometryDashAPI.Parsers
                 .Select(member => (member, attribute: member.GetCustomAttribute<GamePropertyAttribute>()))
                 .Where(x => x.attribute != null);
             create = CreateInstanceExpression<T>(type).Compile();
+            var senseAttribute = type.GetCustomAttribute<SenseAttribute>();
+            if (senseAttribute == null)
+                throw new ArgumentException($"Type '{type}' doesn't contains sense attribute", Sense);
+            Sense = senseAttribute.Sense;
             var createSetter = typeof(TypeDescriptorHelper)
                 .GetMethod(nameof(TypeDescriptorHelper.CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);
             foreach (var (member, attribute) in members)
@@ -33,6 +39,22 @@ namespace GeometryDashAPI.Parsers
         }
 
         public T Create() => create();
+
+        public T Create(ReadOnlySpan<char> raw)
+        {
+            var parser = new LLParserSpan(Sense, raw);
+            var instance = create();
+            Span<char> key;
+            while ((key = parser.Next()) != null)
+            {
+                var value = parser.Next();
+                if (value == null)
+                    throw new InvalidOperationException($"Object '{raw.ToString()}' has odd number of nodes");
+                Set(instance, int.Parse(key), value);
+            }
+
+            return instance;
+        }
 
         public void Set(IGameObject instance, int key, ReadOnlySpan<char> raw)
         {
@@ -83,16 +105,36 @@ namespace GeometryDashAPI.Parsers
                 FieldInfo fieldInfo => Expression.Field(target, fieldInfo),
                 _ => throw new ArgumentException($"Not supported member ({member})")
             };
-            var parserType = typeof(Parsers);
-            var parserName = GenerateParserName(typeof(TProp));
-            var parser = parserType.GetMethod(parserName, BindingFlags.Static | BindingFlags.Public);
-            if (parser == null)
-                throw new InvalidOperationException($"Can't create expression because parser '{parserName}' isn't present");
+            var parser = GetParser<TProp>(out var instance);
 
             return Expression.Lambda<Setter<TInstance>>
             (
-                Expression.Assign(field, Expression.Call(null, parser, data)), target, data
+                Expression.Assign(field, Expression.Call(instance, parser, data)), target, data
             );
+        }
+
+        private static MethodInfo GetParser<TProp>(out Expression instanceExpression)
+        {
+            if (typeof(IGameObject).IsAssignableFrom(typeof(TProp)))
+            {
+                instanceExpression = Expression.Constant(GeometryDashApi.parser);
+                var parserInstance = GeometryDashApi.parser;
+                var genericDecode = parserInstance.GetType().GetMethod(nameof(parserInstance.Decode), new[] { typeof(ReadOnlySpan<char>) });
+                var decode = genericDecode?.MakeGenericMethod(typeof(TProp));
+
+                if (decode == null)
+                    throw new InvalidOperationException($"Method T Decode(ReadOnlySpan<char>) is not implemented in parser {parserInstance}");
+                return decode;
+            }
+
+            var parserType = typeof(Parsers);
+            var parserName = GenerateParserName(typeof(TProp));
+            var parser = parserType.GetMethod(parserName, BindingFlags.Static | BindingFlags.Public);
+
+            instanceExpression = null;
+            if (parser == null)
+                throw new InvalidOperationException($"Parser '{parserName}' isn't present");
+            return parser;
         }
 
         private static string GenerateParserName(Type type)

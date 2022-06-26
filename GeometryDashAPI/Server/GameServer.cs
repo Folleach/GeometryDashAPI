@@ -2,6 +2,7 @@
 using GeometryDashAPI.Server.Queries;
 using System;
 using System.Threading.Tasks;
+using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Server.Responses;
 
 namespace GeometryDashAPI.Server

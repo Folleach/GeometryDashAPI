@@ -31,7 +31,9 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         [Benchmark]
         public Level Load()
         {
+            GeometryDashApi.parser = new ObjectParserOld();
             var response = new ServerResponse<LevelResponse>(HttpStatusCode.OK, levelRaw);
+            GeometryDashApi.parser = parser;
             return new Level(response.GetResultOrDefault().Level.LevelString, true);
         }
     }

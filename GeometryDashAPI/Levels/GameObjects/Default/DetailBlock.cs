@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Levels.GameObjects.Default
+﻿using GeometryDashAPI.Attributes;
+
+namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     [GameBlock(1658, 1888)]
     public class DetailBlock : Block

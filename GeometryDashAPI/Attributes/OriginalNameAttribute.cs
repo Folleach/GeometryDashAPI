@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GeometryDashAPI
+namespace GeometryDashAPI.Attributes
 {
     public class OriginalNameAttribute : Attribute
     {

@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Levels.GameObjects.Triggers
+﻿using GeometryDashAPI.Attributes;
+
+namespace GeometryDashAPI.Levels.GameObjects.Triggers
 {
     [GameBlock(1611)]
     public class CountTrigger : TargetingTrigger

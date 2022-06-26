@@ -1,4 +1,5 @@
 ﻿using System;
+using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Server.Enums;
 
 namespace GeometryDashAPI.Server.Dtos

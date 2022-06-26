@@ -1,4 +1,6 @@
-﻿namespace GeometryDashAPI.Server.Responses
+﻿using GeometryDashAPI.Attributes;
+
+namespace GeometryDashAPI.Server.Responses
 {
     public class LoginResponse : GameStruct
     {

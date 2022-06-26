@@ -1,7 +1,9 @@
 ﻿using GeometryDashAPI;
+using GeometryDashAPI.Attributes;
 
 namespace TestObjects
 {
+    [Sense(",")]
     public class AllTypes : GameObject
     {
         [GameProperty("1")]

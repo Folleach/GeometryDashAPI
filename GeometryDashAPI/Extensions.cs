@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace GeometryDashAPI
@@ -20,6 +21,13 @@ namespace GeometryDashAPI
                 FieldInfo info => info.FieldType,
                 _ => throw new ArgumentException("Not supported member type", nameof(member))
             };
+        }
+
+        public static TValue GetOrCreate<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> create)
+        {
+            if (!dictionary.TryGetValue(key, out var value))
+                dictionary.Add(key, value = create(key));
+            return value;
         }
     }
 }
