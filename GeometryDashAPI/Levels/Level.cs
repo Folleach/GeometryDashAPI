@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Levels
 #if DEBUG
         public string LoadedString { get; private set; }
 #endif
-        internal static IGameParser parser;
+        internal static IGameParser parser = new ObjectParser();
         
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 

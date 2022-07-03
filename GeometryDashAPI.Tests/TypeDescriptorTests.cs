@@ -52,4 +52,15 @@ public class TypeDescriptorTests
         Assert.AreEqual("11", instance.WithoutLoaded.FirstOrDefault().Key);
         Assert.AreEqual("abc!", instance.WithoutLoaded.FirstOrDefault().Value);
     }
+
+    [Test]
+    public void ShouldParseEnumItself()
+    {
+        var descriptor = new TypeDescriptor<ObjectWithEnum, int>();
+        
+        var instance = descriptor.Create();
+        descriptor.Set(instance, 1, "33");
+        
+        Assert.AreEqual(SimpleEnum.X, instance.Value);
+    }
 }

@@ -134,22 +134,47 @@ namespace GeometryDashAPI.Parsers
                 FieldInfo fieldInfo => Expression.Field(target, fieldInfo),
                 _ => throw new ArgumentException($"Not supported member ({member})")
             };
-            var parser = GetParser<TProp>(out var instance);
+            if (typeof(TProp).IsEnum)
+                return CreateEnumSetter<TProp, TInstance>(field, target, data);
+            return CreateParserSetter<TProp, TInstance>(field, data, target);
+        }
 
+        private static Expression<Setter<TInstance>> CreateParserSetter<TProp, TInstance>(MemberExpression field, ParameterExpression data, ParameterExpression target)
+        {
+            var parser = GetParserMethod<TProp>(out var instance);
             return Expression.Lambda<Setter<TInstance>>
             (
                 Expression.Assign(field, Expression.Call(instance, parser, data)), target, data
             );
         }
 
-        private static MethodInfo GetParser<TProp>(out Expression instanceExpression)
+        private static Expression<Setter<TInstance>> CreateEnumSetter<TProp, TInstance>(MemberExpression field, ParameterExpression target, ParameterExpression data)
         {
-            if (typeof(IGameObject).IsAssignableFrom(typeof(TProp)))
+            var underlyingType = Enum.GetUnderlyingType(typeof(TProp));
+            var parser = GetParserMethod(underlyingType, out var instance);
+            return Expression.Lambda<Setter<TInstance>>
+            (
+                Expression.Assign(field, Expression.Convert
+                    (
+                        Expression.Call(instance, parser, data), typeof(TProp)
+                    )
+                ), target, data
+            );
+        }
+
+        private static MethodInfo GetParserMethod<TProp>(out Expression instanceExpression)
+        {
+            return GetParserMethod(typeof(TProp), out instanceExpression);
+        }
+
+        private static MethodInfo GetParserMethod(Type propType, out Expression instanceExpression)
+        {
+            if (typeof(IGameObject).IsAssignableFrom(propType))
             {
                 instanceExpression = Expression.Constant(GeometryDashApi.parser);
                 var parserInstance = GeometryDashApi.parser;
                 var genericDecode = parserInstance.GetType().GetMethod(nameof(parserInstance.Decode), new[] { typeof(ReadOnlySpan<char>) });
-                var decode = genericDecode?.MakeGenericMethod(typeof(TProp));
+                var decode = genericDecode?.MakeGenericMethod(propType);
 
                 if (decode == null)
                     throw new InvalidOperationException($"Method T Decode(ReadOnlySpan<char>) is not implemented in parser {parserInstance}");
@@ -157,7 +182,7 @@ namespace GeometryDashAPI.Parsers
             }
 
             var parserType = typeof(Parsers);
-            var parserName = GenerateParserName(typeof(TProp));
+            var parserName = GenerateParserName(propType);
             var parser = parserType.GetMethod(parserName, BindingFlags.Static | BindingFlags.Public);
 
             instanceExpression = null;
