@@ -3,6 +3,7 @@ using GeometryDashAPI.Attributes;
 
 namespace TestObjects
 {
+    [Sense("#")]
     public class ComplexParserObject : GameStruct
     {
         [StructPosition(0)] public ComplexObject Object { get; set; }
@@ -54,6 +55,7 @@ namespace TestObjects
         public override string GetParserSense() => ":";
     }
 
+    [Sense(":")]
     public class ComplexObject : GameObject
     {
         [GameProperty("A")]

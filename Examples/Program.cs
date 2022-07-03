@@ -138,13 +138,33 @@ namespace Examples
 
         private static T Create<T>() where T : struct => new();
 
+        private static string Value;
+        
         private static void F()
         {
-            var descriptors = new List<IDescriptor<IGameObject, int>>();
-            var descriptor = new TypeDescriptor<MoveTrigger, int>();
-            descriptors.Add(descriptor);
-            var instance = descriptor.Create();
-            descriptor.Set(instance, 29, "12.4".AsSpan());
+            // var str = "28,10.1,29,1111,100,20";
+            // var descriptor = new TypeDescriptor<MoveTrigger, int>();
+            // var trigger = descriptor.Create(str);
+            //
+            // Expression<Func<float>> func = () => trigger.MoveX;
+            //
+            // Console.WriteLine(func);
+            
+            // var type = typeof(MoveTrigger);
+            // var propertyMoveX = type.GetProperty("MoveY", BindingFlags.Instance | BindingFlags.Public);
+            // var trigger = (MoveTrigger)Activator.CreateInstance(type);
+            // propertyMoveX.SetValue(trigger, 202.1f);
+            
+            // 1 способ, обычный код
+            // var trigger = new MoveTrigger();
+            // trigger.MoveX = 10.1f;
+            // trigger.MoveY = 1f;
+        
+            // var descriptors = new List<IDescriptor<IGameObject, int>>();
+            // var descriptor = new TypeDescriptor<MoveTrigger, int>();
+            // descriptors.Add(descriptor);
+            // var instance = descriptor.Create();
+            // descriptor.Set(instance, 29, "12.4".AsSpan());
 
             // var type = typeof(MoveTrigger);
             // var createSetter = typeof(Program).GetMethod(nameof(CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);

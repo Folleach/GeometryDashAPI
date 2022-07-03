@@ -3,6 +3,7 @@ using GeometryDashAPI.Attributes;
 
 namespace TestObjects
 {
+    [Sense(":")]
     public class LargeObject : GameObject
     {
         [GameProperty("1")] public int x1 { get; set; }

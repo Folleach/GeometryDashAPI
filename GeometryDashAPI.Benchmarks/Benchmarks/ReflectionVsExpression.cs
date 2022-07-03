@@ -44,112 +44,149 @@ public class ReflectionVsExpression
         [321] = "b"
     };
 
-    [Benchmark]
-    public float DefaultSet()
+    private static readonly Dictionary<string, int> StringKeysIntValues = new()
     {
-        var instance = new MoveTrigger();
-        var value = GameConvert.StringToSingle(ValueToSet);
-        instance.MoveX = value;
-        return instance.MoveX;
-    }
-    
-    [Benchmark]
-    public float DescriptorSet()
+        ["123"] = 1,
+        ["321"] = 2
+    };
+
+    private static readonly string[] ArrayAsDictionary =
     {
-        var instance = descriptor.Create();
-        descriptor.Set(instance, 28, ValueToSet.AsSpan());
-        return instance.MoveX;
-    }
-    
+        "a", "b"
+    };
+
     [Benchmark]
-    public float ReflectionSet()
+    [BenchmarkCategory("Dictionary or direct array?")]
+    public string DictionaryGet()
     {
-        var instance = Activator.CreateInstance<MoveTrigger>();
-        MoveXProperty.SetValue(instance, GameConvert.StringToSingle(ValueToSet));
-        return instance.MoveX;
+        return IntKeys[321];
     }
 
     [Benchmark]
-    public object JustObjectReturn()
+    [BenchmarkCategory("Dictionary or direct array?")]
+    public string ArrayGet()
     {
-        return JustObject;
+        return ArrayAsDictionary[1];
     }
     
-    [Benchmark]
-    public object Boxing()
-    {
-        return 123;
-    }
+    // [Benchmark]
+    // public int MapGet()
+    // {
+    //     return StringKeysIntValues.TryGetValue("123", out var value) ? value : 0;
+    // }
+    //
+    // [Benchmark]
+    // public int MapParse()
+    // {
+    //     return int.Parse("123");
+    // }
     
-    [Benchmark]
-    public string Key_GetByInt()
-    {
-        IntKeys.TryGetValue(123, out var value);
-        return value;
-    }
-    
-    [Benchmark]
-    public string Key_GetByString()
-    {
-        return StringKeys.TryGetValue("123", out var value) ? value : string.Empty;
-    }
-    
-    [Benchmark]
-    public int Key_ToInt()
-    {
-        var span = KeySet.AsSpan(1, 3);
-        return int.TryParse(span, out var key) ? key : 0;
-    }
-    
-    [Benchmark]
-    public string Key_ToString()
-    {
-        var span = KeySet.AsSpan(1, 3);
-        return span.ToString();
-    }
-    
-    [Benchmark]
-    public InitObject Init_Reflection()
-    {
-        return (InitObject)Activator.CreateInstance(type);
-    }
-    
-    [Benchmark]
-    public InitObject Init_Expression()
-    {
-        return CreateInitObjectByExpression.Invoke();
-    }
-    
-    [Benchmark]
-    public void Set_Reflection()
-    {
-        var instance = CreateInitObjectByExpression.Invoke();
-        nameProperty.SetValue(instance, "Hello world");
-        xProperty.SetValue(instance, 123);
-    }
-    
-    [Benchmark]
-    public void Set_Expression()
-    {
-        var instance = CreateInitObjectByExpression.Invoke();
-        namePropertyExp(instance, "Hello world");
-        xPropertyExp(instance, 123);
-    }
-    
-    [Benchmark]
-    public InitObject CreateWithInit_Reflection()
-    {
-        var instance = (InitObject)Activator.CreateInstance(type);
-        nameProperty.SetValue(instance, "Hello world");
-        xProperty.SetValue(instance, 123);
-        return instance;
-    }
-    
-    [Benchmark]
-    public InitObject CreateWithInit_Expression()
-    {
-        return creator("Hello world", 123);
-    }
+    // [Benchmark]
+    // public float DefaultSet()
+    // {
+    //     var instance = new MoveTrigger();
+    //     var value = GameConvert.StringToSingle(ValueToSet);
+    //     instance.MoveX = value;
+    //     return instance.MoveX;
+    // }
+    //
+    // [Benchmark]
+    // public float DescriptorSet()
+    // {
+    //     var instance = descriptor.Create();
+    //     descriptor.Set(instance, 28, ValueToSet.AsSpan());
+    //     return instance.MoveX;
+    // }
+    //
+    // [Benchmark]
+    // public float ReflectionSet()
+    // {
+    //     var instance = Activator.CreateInstance<MoveTrigger>();
+    //     MoveXProperty.SetValue(instance, GameConvert.StringToSingle(ValueToSet));
+    //     return instance.MoveX;
+    // }
+    //
+    // [Benchmark]
+    // public object JustObjectReturn()
+    // {
+    //     return JustObject;
+    // }
+    //
+    // [Benchmark]
+    // public object Boxing()
+    // {
+    //     return 123;
+    // }
+    //
+    // [Benchmark]
+    // public string Key_GetByInt()
+    // {
+    //     IntKeys.TryGetValue(123, out var value);
+    //     return value;
+    // }
+    //
+    // [Benchmark]
+    // public string Key_GetByString()
+    // {
+    //     return StringKeys.TryGetValue("123", out var value) ? value : string.Empty;
+    // }
+    //
+    // [Benchmark]
+    // public int Key_ToInt()
+    // {
+    //     var span = KeySet.AsSpan(1, 3);
+    //     return int.TryParse(span, out var key) ? key : 0;
+    // }
+    //
+    // [Benchmark]
+    // public string Key_ToString()
+    // {
+    //     var span = KeySet.AsSpan(1, 3);
+    //     return span.ToString();
+    // }
+    //
+    // [Benchmark]
+    // public InitObject Init_Reflection()
+    // {
+    //     return (InitObject)Activator.CreateInstance(type);
+    // }
+    //
+    // [Benchmark]
+    // public InitObject Init_Expression()
+    // {
+    //     return CreateInitObjectByExpression.Invoke();
+    // }
+    //
+    // [Benchmark]
+    // public void Set_Reflection()
+    // {
+    //     var instance = CreateInitObjectByExpression.Invoke();
+    //     nameProperty.SetValue(instance, "Hello world");
+    //     xProperty.SetValue(instance, 123);
+    // }
+    //
+    // [Benchmark]
+    // public void Set_Expression()
+    // {
+    //     var instance = CreateInitObjectByExpression.Invoke();
+    //     namePropertyExp(instance, "Hello world");
+    //     xPropertyExp(instance, 123);
+    // }
+    //
+    // [Benchmark]
+    // public InitObject CreateWithInit_Reflection()
+    // {
+    //     var instance = (InitObject)Activator.CreateInstance(type);
+    //     nameProperty.SetValue(instance, "Hello world");
+    //     xProperty.SetValue(instance, 123);
+    //     return instance;
+    // }
+    //
+    // [Benchmark]
+    // public InitObject CreateWithInit_Expression()
+    // {
+    //     return creator("Hello world", 123);
+    // }
     
     private static Expression<Func<InitObject>> BuildLambda() { 
         var createdType = typeof(InitObject);

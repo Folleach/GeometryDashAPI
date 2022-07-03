@@ -9,8 +9,8 @@ namespace GeometryDashAPI.Parsers
 {
     public class TypeDescriptor<T, TKey> : IDescriptor<T, TKey> where T : IGameObject
     {
-        private readonly Dictionary<int, TypeDescriptorHelper.Setter<T>> setters = new();
-        private readonly string Sense;
+        private readonly TypeDescriptorHelper.Setter<T>[] setters;
+        private readonly string sense;
         private readonly Func<T> create;
 
         public TypeDescriptor()
@@ -18,14 +18,18 @@ namespace GeometryDashAPI.Parsers
             var type = typeof(T);
             var members = GetPropertiesAndFields(type)
                 .Select(member => (member, attribute: member.GetCustomAttribute<GamePropertyAttribute>()))
-                .Where(x => x.attribute != null);
+                .Where(x => x.attribute != null)
+                .ToArray();
             create = CreateInstanceExpression<T>(type).Compile();
             var senseAttribute = type.GetCustomAttribute<SenseAttribute>();
             if (senseAttribute == null)
-                throw new ArgumentException($"Type '{type}' doesn't contains sense attribute", Sense);
-            Sense = senseAttribute.Sense;
+                throw new ArgumentException($"Type '{type}' doesn't contains sense attribute", sense);
+            sense = senseAttribute.Sense;
             var createSetter = typeof(TypeDescriptorHelper)
                 .GetMethod(nameof(TypeDescriptorHelper.CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);
+
+            setters = InitSetters(members);
+
             foreach (var (member, attribute) in members)
             {
                 var memberType = member.GetMemberType();
@@ -34,7 +38,7 @@ namespace GeometryDashAPI.Parsers
                     (Expression<TypeDescriptorHelper.Setter<T>>)createSetterGeneric.Invoke(null,
                         new object[] { member });
                 var setter = setterExpression!.Compile();
-                setters.Add(int.Parse(attribute.Key), setter);
+                setters[int.Parse(attribute.Key)] = setter;
             }
         }
 
@@ -42,7 +46,7 @@ namespace GeometryDashAPI.Parsers
 
         public T Create(ReadOnlySpan<char> raw)
         {
-            var parser = new LLParserSpan(Sense, raw);
+            var parser = new LLParserSpan(sense, raw);
             var instance = create();
             Span<char> key;
             while ((key = parser.Next()) != null)
@@ -58,13 +62,38 @@ namespace GeometryDashAPI.Parsers
 
         public void Set(IGameObject instance, int key, ReadOnlySpan<char> raw)
         {
-            if (setters.TryGetValue(key, out var setter))
+            if (key < 0)
+                goto WithoutLoad;
+            var setter = setters[key];
+            if (setter != null)
             {
                 setter((T)instance, raw);
                 return;
             }
-
+            WithoutLoad:
             instance.WithoutLoaded.Add(key.ToString(), raw.ToString());
+        }
+
+        private static TypeDescriptorHelper.Setter<T>[] InitSetters(IEnumerable<(MemberInfo member, GamePropertyAttribute attribute)> members)
+        {
+            var keys = new HashSet<string>();
+            var maxKeyValue = 0;
+            foreach (var (member, attribute) in members)
+            {
+                if (int.TryParse(attribute.Key, out var key))
+                {
+                    if (keys.Contains(attribute.Key))
+                        throw new InvalidOperationException($"Type is invalid. Has same keys: {key}");
+                    keys.Add(attribute.Key);
+                    if (maxKeyValue < key)
+                        maxKeyValue = key;
+                    continue;
+                }
+
+                throw new NotImplementedException("Type descriptors temporary not implemented non int keys");
+            }
+
+            return new TypeDescriptorHelper.Setter<T>[maxKeyValue + 1];
         }
 
         private static Expression<Func<TB>> CreateInstanceExpression<TB>(Type type)

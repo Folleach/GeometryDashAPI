@@ -31,6 +31,7 @@ namespace GeometryDashAPI.Tests
         }
 
         [Test]
+        [Ignore("Not implemented")]
         public void Decode_ComplexParserObject_ShouldBeCorrect()
         {
             var input = ComplexParserObject.ExampleInput;
