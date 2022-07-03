@@ -4,6 +4,7 @@ using GeometryDashAPI.Server.Enums;
 
 namespace GeometryDashAPI.Server.Dtos
 {
+    [Sense(":")]
     public class LevelPreviewDto : GameObject
     {
         [GameProperty("1")]

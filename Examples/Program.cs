@@ -142,6 +142,8 @@ namespace Examples
         
         private static void F()
         {
+            PerformanceTest();
+            return;
             // var str = "28,10.1,29,1111,100,20";
             // var descriptor = new TypeDescriptor<MoveTrigger, int>();
             // var trigger = descriptor.Create(str);
@@ -182,9 +184,10 @@ namespace Examples
             // }
             // var setter = CreateSetter<float, MoveTrigger>(type.GetProperty(nameof(MoveTrigger.MoveX))).Compile();
             // setter(instance, 32);
-            
-            return;
-            
+        }
+
+        private static void PerformanceTest()
+        {
             Console.WriteLine("start");
             var levelRaw = File.ReadAllText(@"C:\Users\Andrey\Documents\GitHub\GeometryDashAPI\feature.txt");
             var response = new ServerResponse<LevelResponse>(HttpStatusCode.OK, levelRaw);
