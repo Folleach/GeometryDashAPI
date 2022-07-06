@@ -117,7 +117,7 @@ namespace Examples
             var parser = new LLParserSpan(senseSpan, span);
             var type = GetBlockType(span);
             var instance = (GameObject)null; //Expression.MemberInit(Expression.New(type));
-            Span<char> current;
+            ReadOnlySpan<char> current;
             var coff = 0;
             while ((current = parser.Next()) != null)
             {

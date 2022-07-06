@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Parsers;
@@ -55,19 +56,36 @@ public class ReflectionVsExpression
         "a", "b"
     };
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static string GetValue() => JustObject;
+
     [Benchmark]
-    [BenchmarkCategory("Dictionary or direct array?")]
-    public string DictionaryGet()
+    [BenchmarkCategory("Call or get value")]
+    public string CallMethod()
     {
-        return IntKeys[321];
+        return GetValue();
     }
 
     [Benchmark]
-    [BenchmarkCategory("Dictionary or direct array?")]
-    public string ArrayGet()
+    [BenchmarkCategory("Call or get value")]
+    public string GetValueFromMemory()
     {
-        return ArrayAsDictionary[1];
+        return JustObject;
     }
+    
+    // [Benchmark]
+    // [BenchmarkCategory("Dictionary or direct array?")]
+    // public string DictionaryGet()
+    // {
+    //     return IntKeys[321];
+    // }
+    //
+    // [Benchmark]
+    // [BenchmarkCategory("Dictionary or direct array?")]
+    // public string ArrayGet()
+    // {
+    //     return ArrayAsDictionary[1];
+    // }
     
     // [Benchmark]
     // public int MapGet()

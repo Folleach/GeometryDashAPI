@@ -48,7 +48,7 @@ namespace GeometryDashAPI.Parsers
         {
             var parser = new LLParserSpan(sense, raw);
             var instance = create();
-            Span<char> key;
+            ReadOnlySpan<char> key;
             while ((key = parser.Next()) != null)
             {
                 var value = parser.Next();
