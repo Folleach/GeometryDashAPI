@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace GeometryDashAPI.Parsers
 {
@@ -78,6 +79,7 @@ namespace GeometryDashAPI.Parsers
             senseLength = sense.Length;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Span<char> Next()
         {
             var startIndex = index;
@@ -112,15 +114,16 @@ namespace GeometryDashAPI.Parsers
             return null;
         }
 
-        // private bool IsSense(string value, int index)
-        // {
-        //     for (var i = 0; i < sense.Length && index + i < value.Length; i++)
-        //     {
-        //         if (value[index + i] != sense[i])
-        //             return false;
-        //     }
-        //
-        //     return true;
-        // }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryParseNext(out Span<char> key, out Span<char> value)
+        {
+            key = Next();
+            value = Next();
+            if (key == null)
+                return false;
+            if (value == null)
+                throw new Exception("Invalid raw data. Count of components in raw data is odd");
+            return true;
+        }
     }
 }

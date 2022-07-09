@@ -8,16 +8,11 @@ namespace GeometryDashAPI.Parsers
     public class ObjectParser : IGameParser
     {
         private static Dictionary<Type, IDescriptor<IGameObject, int>> descriptors = new();
-        
-        private readonly Dictionary<string, string> v1 = new();
-        private readonly Dictionary<string, string> v2 = new();
-        private readonly Dictionary<string, string> v3 = new();
 
         public T Decode<T>(string raw) where T : GameObject, new()
         {
             var instance = new T();
-            v1.Clear();
-            return (T) Decode(typeof(T), Parse(raw, instance.GetParserSense(), v1), instance);
+            return (T) Decode(typeof(T), raw, instance.GetParserSense(), instance);
         }
 
         public T Decode<T>(ReadOnlySpan<char> raw) where T : GameObject, new()
@@ -32,15 +27,21 @@ namespace GeometryDashAPI.Parsers
 
         public Block DecodeBlock(string raw)
         {
-            v2.Clear();
-            var values = Parse(raw, ",", v2);
-            if (!values.TryGetValue("1", out var rawId))
-                throw new Exception("Raw data doesn't contains id component");
-            if (!int.TryParse(rawId, out var id))
+            var parser = new LLParserSpan(",", raw);
+            Span<char> key;
+            Span<char> blockId;
+            while (parser.TryParseNext(out key, out blockId))
+            {
+                if (key.SequenceEqual("1"))
+                    goto FoundKey;
+            }
+            throw new Exception("Raw data doesn't contains id component");
+            FoundKey:
+            if (!int.TryParse(blockId, out var id))
                 throw new Exception("Id is not a number");
             var type = GeometryDashApi.GetBlockType(id);
 
-            return (Block) Decode(type, values, (GameObject) Activator.CreateInstance(type));
+            return (Block) Decode(type, raw, ",", (GameObject) Activator.CreateInstance(type));
         }
 
         public string EncodeBlock(Block block)
@@ -51,26 +52,16 @@ namespace GeometryDashAPI.Parsers
         public GameObject Decode(Type type, string raw)
         {
             var instance = (GameObject) Activator.CreateInstance(type);
-            v3.Clear();
-            return Decode(type, Parse(raw, instance.GetParserSense(), v3), instance);
+            return Decode(type, raw, instance.GetParserSense(), instance);
         }
 
-        private static GameObject Decode(Type type, Dictionary<string, string> values, GameObject instance)
+        private static GameObject Decode(Type type, ReadOnlySpan<char> raw, ReadOnlySpan<char> sense, GameObject instance)
         {
+            var parser = new LLParserSpan(sense, raw);
             var descriptor = descriptors.GetOrCreate(type, CreateDescriptor);
-            
-            foreach (var item in values)
-            {
-                var key = item.Key;
-                var value = item.Value;
-                descriptor.Set(instance, int.Parse(key), value.AsSpan());
 
-                // if (member.ArraySeparatorAttribute != null)
-                // {
-                //     member.SetValue(instance, ArrayParser.Decode(member.MemberType, member.ArraySeparatorAttribute.Separator, value));
-                //     continue;
-                // }
-            }
+            while (parser.TryParseNext(out var key, out var value))
+                descriptor.Set(instance, int.Parse(key), value);
 
             return instance;
         }
@@ -112,25 +103,6 @@ namespace GeometryDashAPI.Parsers
             }
 
             return builder.ToString();
-        }
-
-        private static Dictionary<string, string> Parse(string raw, string sense, Dictionary<string, string> values)
-        {
-            var parser = new LLParserSpan(sense, raw);
-
-            while (true)
-            {
-                Span<char> x = null;
-                var key = parser.Next();
-                var value = parser.Next();
-                if (key == null)
-                    break;
-                if (value == null)
-                    throw new Exception("Invalid raw data. Count of components in raw data is odd");
-                values[key.ToString()] = value.ToString();
-            }
-
-            return values;
         }
 
         private static IDescriptor<IGameObject, int> CreateDescriptor(Type type)
