@@ -65,6 +65,8 @@ namespace GeometryDashAPI.Parsers
     {
         private readonly ReadOnlySpan<char> sense;
         private readonly ReadOnlySpan<char> value;
+        private readonly int valueLength;
+        private readonly int senseLength;
         private int index;
 
         public LLParserSpan(ReadOnlySpan<char> sense, ReadOnlySpan<char> value)
@@ -72,6 +74,8 @@ namespace GeometryDashAPI.Parsers
             this.sense = sense;
             this.value = value;
             index = 0;
+            valueLength = value.Length;
+            senseLength = sense.Length;
         }
 
         public unsafe Span<char> Next()
@@ -80,10 +84,10 @@ namespace GeometryDashAPI.Parsers
             fixed (char* pointer = value)
             {
                 var current = pointer + index;
-                while (index < value.Length)
+                while (index < valueLength)
                 {
                     var isSense = true;
-                    for (var i = 0; i < sense.Length && index + i < value.Length; i++)
+                    for (var i = 0; i < senseLength && index + i < valueLength; i++)
                     {
                         if (value[index + i] == sense[i])
                             continue;
@@ -94,7 +98,7 @@ namespace GeometryDashAPI.Parsers
                     if (isSense)
                     {
                         var span = new Span<char>(current, index - startIndex);
-                        index += sense.Length;
+                        index += senseLength;
                         return span;
                     }
 

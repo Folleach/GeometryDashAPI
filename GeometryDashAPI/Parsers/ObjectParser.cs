@@ -116,7 +116,7 @@ namespace GeometryDashAPI.Parsers
 
         private static Dictionary<string, string> Parse(string raw, string sense, Dictionary<string, string> values)
         {
-            var parser = new LLParser(sense, raw);
+            var parser = new LLParserSpan(sense, raw);
 
             while (true)
             {
