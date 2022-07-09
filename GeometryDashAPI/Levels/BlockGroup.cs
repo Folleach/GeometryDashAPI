@@ -26,19 +26,34 @@ namespace GeometryDashAPI.Levels
             return builder.ToString();
         }
 
-        public static BlockGroup Parse(ReadOnlySpan<char> data) => Parse(data.ToString());
-        
-        public static BlockGroup Parse(string raw)
+        public static BlockGroup Parse(ReadOnlySpan<char> data)
         {
             var result = new BlockGroup();
-            var parser = new LLParser(".", raw);
+            var parser = new LLParserSpan(".", data);
             while (true)
             {
                 var idRaw = parser.Next();
                 if (idRaw == null)
                     break;
                 if (!int.TryParse(idRaw, out var id))
-                    throw new Exception($"Can't parse group id in: {raw}");
+                    throw new Exception($"Can't parse group id in: {data.ToString()}");
+                result.Add(id);
+            }
+
+            return result;
+        }
+        
+        public static BlockGroup Parse(string data)
+        {
+            var result = new BlockGroup();
+            var parser = new LLParser(".", data);
+            while (true)
+            {
+                var idRaw = parser.Next();
+                if (idRaw == null)
+                    break;
+                if (!int.TryParse(idRaw, out var id))
+                    throw new Exception($"Can't parse group id in: {data}");
                 result.Add(id);
             }
 
