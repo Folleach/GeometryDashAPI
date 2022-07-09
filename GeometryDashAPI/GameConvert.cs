@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -7,6 +8,7 @@ namespace GeometryDashAPI
 {
     public static class GameConvert
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string BoolToString(bool value, bool isReverse = false)
         {
             if (isReverse)
@@ -14,13 +16,15 @@ namespace GeometryDashAPI
             return value ? "1" : "0";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StringToBool(ReadOnlySpan<char> value, bool isReverse = false)
         {
             if (isReverse)
                 return value == "0";
             return value == "1";
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StringToBool(string value, bool isReverse = false)
         {
             if (isReverse)
@@ -28,41 +32,49 @@ namespace GeometryDashAPI
             return value == "1";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string SingleToString(float value)
         {
             return string.Format(Culture.FormatProvider, "{0}", value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float StringToSingle(ReadOnlySpan<char> value)
         {
             return float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float StringToSingle(string value)
         {
             return float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string DoubleToString(double value)
         {
             return string.Format(Culture.FormatProvider, "{0}", value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double StringToDouble(ReadOnlySpan<char> value)
         {
             return double.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double StringToDouble(string value)
         {
             return double.Parse(value, NumberStyles.Any, Culture.FormatProvider);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64(byte[] value)
         {
             return WebEncoders.Base64UrlEncode(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] FromBase64(string base64)
         {
             if (base64 == null)
@@ -70,12 +82,14 @@ namespace GeometryDashAPI
             var wrongIndex = base64.IndexOf(' ', StringComparison.Ordinal);
             return WebEncoders.Base64UrlDecode(base64, 0, wrongIndex >= 0 ? wrongIndex : base64.Length);
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64String(string value)
         {
             return WebEncoders.Base64UrlEncode(Encoding.ASCII.GetBytes(value));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string FromBase64String(string base64)
         {
             if (base64 == null)

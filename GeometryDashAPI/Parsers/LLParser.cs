@@ -85,30 +85,33 @@ namespace GeometryDashAPI.Parsers
             var startIndex = index;
             fixed (char* pointer = value)
             {
-                var current = pointer + index;
-                while (index < valueLength)
+                fixed (char* sensePointer = sense)
                 {
-                    var isSense = true;
-                    for (var i = 0; i < senseLength && index + i < valueLength; i++)
+                    var current = pointer + index;
+                    while (index < valueLength)
                     {
-                        if (value[index + i] == sense[i])
-                            continue;
-                        isSense = false;
-                        break;
+                        var isSense = true;
+                        for (var i = 0; i < senseLength && index + i < valueLength; i++)
+                        {
+                            if (*(pointer + index + i) == *(sensePointer + i))
+                                continue;
+                            isSense = false;
+                            break;
+                        }
+
+                        if (isSense)
+                        {
+                            var span = new Span<char>(current, index - startIndex);
+                            index += senseLength;
+                            return span;
+                        }
+
+                        index++;
                     }
 
-                    if (isSense)
-                    {
-                        var span = new Span<char>(current, index - startIndex);
-                        index += senseLength;
-                        return span;
-                    }
-
-                    index++;
+                    if (index != startIndex)
+                        return new Span<char>(current, index - startIndex);
                 }
-
-                if (index != startIndex)
-                    return new Span<char>(current, index - startIndex);
             }
 
             return null;
