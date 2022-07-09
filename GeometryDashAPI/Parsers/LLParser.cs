@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 
 namespace GeometryDashAPI.Parsers
@@ -62,121 +63,58 @@ namespace GeometryDashAPI.Parsers
         // }
     }
 
-    public ref struct LLParserSpan
+    public unsafe ref struct LLParserSpan
     {
         private static readonly int VectorCount = Vector<short>.Count;
+        // private static readonly Vector<short> indices = new(Enumerable.Range(1, VectorCount).Select(num => (short)num).ToArray());
 
-        private readonly ReadOnlySpan<char> sense;
+        private readonly Span<short> valueRaw;
         private readonly ReadOnlySpan<char> value;
-        private readonly int senseLength;
         private readonly int valueLength;
         private readonly Vector<short> senseBase;
-        private readonly int vecCount;
         private int index;
 
         public LLParserSpan(ReadOnlySpan<char> sense, ReadOnlySpan<char> value)
         {
-            this.sense = sense;
-            this.value = value;
-            senseLength = sense.Length;
             valueLength = value.Length;
+            fixed (char* p = value)
+                valueRaw = new Span<short>(p, valueLength);
+            this.value = value;
             index = 0;
-            vecCount = Vector<short>.Count;
-            var arr = new short[VectorCount];
-            for (var i = 0; i < VectorCount; i++)
-                arr[i] = (short)sense.GetPinnableReference();
-            senseBase = new Vector<short>(arr);
+            senseBase = new Vector<short>((short)sense.GetPinnableReference());
         }
-        
-        public unsafe ReadOnlySpan<char> Next()
+
+        public ReadOnlySpan<char> Next()
         {
             if (index >= valueLength)
                 return null;
-            fixed (char* p = value)
+            var current = index;
+            var localStorage = stackalloc short[VectorCount];
+            var localSpan = new Span<short>(localStorage, VectorCount);
+            while (current < valueLength)
             {
-                var current = index;
-                while (current < valueLength)
+                var examine = valueLength - current;
+                if (examine > VectorCount)
+                    examine = VectorCount;
+                valueRaw.Slice(index, examine).CopyTo(localSpan);
+                var valueVec = new Vector<short>(localSpan);
+                var equals = Vector.Equals(senseBase, valueVec);
+                for (var i = 0; i < examine; i++)
                 {
-                    var examine = valueLength - current;
-                    if (examine > VectorCount)
-                        examine = VectorCount;
-                    var valueVec = new Vector<short>(new Span<short>(p + index, VectorCount));
-                    var equals = Vector.Equals(valueVec, senseBase);
-                    for (var i = 0; i < examine; i++)
+                    if (equals[i] != 0)
                     {
-                        if (equals[i] != 0)
-                        {
-                            var t = index;
-                            index = current + i + 1;
-                            return value.Slice(t, t - current + i);
-                        }
+                        var t = index;
+                        index = current + i + 1;
+                        return value.Slice(t, t - current + i);
                     }
-
-                    current += examine + 1;
                 }
 
-                var tx = index;
-                index = current;
-                return current > tx ? value.Slice(tx, current - tx - 1) : null;
+                current += examine + 1;
             }
+
+            var tx = index;
+            index = current;
+            return current > tx ? value.Slice(tx, current - tx - 1) : null;
         }
-        
-        public unsafe ReadOnlySpan<char> NextFirstAttemptOfVectors()
-        {
-            if (index >= valueLength)
-                return null;
-            fixed (char* p = value)
-            {
-                var current = index;
-                while (current < valueLength)
-                {
-                    var examine = valueLength - current;
-                    if (examine > VectorCount)
-                        examine = VectorCount;
-                    var valueVec = new Vector<short>(new Span<short>(p + index, VectorCount));
-                    var equals = Vector.Equals(valueVec, senseBase);
-                    for (var i = 0; i < examine; i++)
-                    {
-                        if (equals[i] != 0)
-                        {
-                            var t = index;
-                            index = current + i + 1;
-                            return value.Slice(t, t - current + i);
-                        }
-                    }
-
-                    current += examine + 1;
-                }
-
-                var tx = index;
-                index = current;
-                return current > tx ? value.Slice(tx, current - tx - 1) : null;
-            }
-        }
-
-        public unsafe Span<char> NextOnSpanExample()
-        {
-            if (index >= valueLength)
-                return null;
-            var current = value.Slice(index);
-            var next = current.IndexOf(sense, StringComparison.Ordinal);
-            fixed (char* p = current)
-            {
-                var span = next == -1 ? new Span<char>(p, current.Length) : new Span<char>(p, next);
-                index += next == -1 ? current.Length : next + 1;
-                return span;
-            }
-        }
-
-        // private bool IsSense(string value, int index)
-        // {
-        //     for (var i = 0; i < sense.Length && index + i < value.Length; i++)
-        //     {
-        //         if (value[index + i] != sense[i])
-        //             return false;
-        //     }
-        //
-        //     return true;
-        // }
     }
 }
