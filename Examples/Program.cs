@@ -29,6 +29,7 @@ using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Parsers;
 using GeometryDashAPI.Server.Dtos;
 using GeometryDashAPI.Server.Responses;
+using JetBrains.Profiler.Api;
 using Newtonsoft.Json;
 
 namespace Examples
@@ -189,10 +190,14 @@ namespace Examples
         private static void PerformanceTest()
         {
             Console.WriteLine("start");
-            var levelRaw = File.ReadAllText(@"C:\Users\Andrey\Documents\GitHub\GeometryDashAPI\feature.txt");
+            MemoryProfiler.GetSnapshot("Before run");
+            var levelRaw = File.ReadAllText(@"C:\Users\Andrey\Documents\GitHub\GeometryDashAPI\cromulent.txt");
             var response = new ServerResponse<LevelResponse>(HttpStatusCode.OK, levelRaw);
             var level = new Level(response.GetResultOrDefault().Level.LevelString, true);
-            Console.WriteLine($"done: {level.Blocks.Count}");
+            MemoryProfiler.GetSnapshot("After run");
+            GC.Collect(2);
+            MemoryProfiler.GetSnapshot("After GC");
+            Console.WriteLine($"done\tblocks: {level.Blocks.Count}, colors: {level.Colors.Count}");
             Console.ReadKey();
         }
     }

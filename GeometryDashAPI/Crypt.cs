@@ -36,7 +36,7 @@ namespace GeometryDashAPI
             return resultString;
         }
         
-        public static string ZlipDecompress(byte[] data)
+        public static string ZLibDecompress(byte[] data)
         {
             var resultString = string.Empty;
             if (data != null && data.Length > 0)

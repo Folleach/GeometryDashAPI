@@ -45,6 +45,11 @@ namespace GeometryDashAPI.Parsers
             return (Block) Decode(type, values, (GameObject) Activator.CreateInstance(type));
         }
 
+        public Block DecodeBlock(ReadOnlySpan<char> raw)
+        {
+            return DecodeBlock(raw.ToString());
+        }
+
         public string EncodeBlock(Block block)
         {
             return Encode(block.GetType(), block);

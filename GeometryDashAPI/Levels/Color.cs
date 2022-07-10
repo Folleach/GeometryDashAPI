@@ -1,7 +1,9 @@
-﻿using GeometryDashAPI.Exceptions;
+﻿using System;
+using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
 using System.Globalization;
 using System.Text;
+using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
 {
@@ -104,6 +106,48 @@ namespace GeometryDashAPI.Levels
                     default:
                         throw new PropertyNotSupportedException(properties[i], properties[i + 1]);
                 }
+            }
+        }
+        
+        public Color(ReadOnlySpan<char> data)
+        {
+            var parser = new LLParserSpan("_", data);
+            while (parser.TryParseNext(out var key, out var value) && value.Length > 0)
+            {
+                if (key.SequenceEqual("1"))
+                    Red = byte.Parse(value);
+                else if (key.SequenceEqual("2"))
+                    Green = byte.Parse(value);
+                else if (key.SequenceEqual("3"))
+                    Blue = byte.Parse(value);
+                else if (key.SequenceEqual("11"))
+                    Red2 = byte.Parse(value);
+                else if (key.SequenceEqual("12"))
+                    Green2 = byte.Parse(value);
+                else if (key.SequenceEqual("13"))
+                    Blue2 = byte.Parse(value);
+                else if (key.SequenceEqual("4"))
+                    PlayerColor = sbyte.Parse(value);
+                else if (key.SequenceEqual("5"))
+                    Blending = GameConvert.StringToBool(value, false);
+                else if (key.SequenceEqual("6"))
+                    ID = short.Parse(value);
+                else if (key.SequenceEqual("7"))
+                    Opacity = float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
+                else if (key.SequenceEqual("9"))
+                    TargetChannelID = int.Parse(value);
+                else if (key.SequenceEqual("10"))
+                    ColorHSV = Hsv.Parse(value);
+                else if (key.SequenceEqual("15"))
+                    ;
+                else if (key.SequenceEqual("17"))
+                    CopyOpacity = GameConvert.StringToBool(value);
+                else if (key.SequenceEqual("18"))
+                    ;
+                else if (key.SequenceEqual("8"))
+                    ;
+                else
+                    throw new PropertyNotSupportedException(key.ToString(), value.ToString());
             }
         }
 

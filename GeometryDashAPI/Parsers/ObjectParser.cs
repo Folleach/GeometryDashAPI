@@ -27,9 +27,14 @@ namespace GeometryDashAPI.Parsers
 
         public Block DecodeBlock(string raw)
         {
+            return DecodeBlock(raw.AsSpan());
+        }
+
+        public Block DecodeBlock(ReadOnlySpan<char> raw)
+        {
             var parser = new LLParserSpan(",", raw);
-            Span<char> key;
-            Span<char> blockId;
+            ReadOnlySpan<char> key;
+            ReadOnlySpan<char> blockId;
             while (parser.TryParseNext(out key, out blockId))
             {
                 if (key.SequenceEqual("1"))

@@ -22,7 +22,7 @@ namespace GeometryDashAPI.Data.Models
         }
         public string LevelString
         {
-            get => DataLevel.ContainsKey("k4") ? DataLevel ["k4"] : Level.DefaultLevelString;
+            get => DataLevel.ContainsKey("k4") ? DataLevel ["k4"] : LevelOld.DefaultLevelString;
             set => DataLevel["k4"] = value;
         }
         public string AuthorName

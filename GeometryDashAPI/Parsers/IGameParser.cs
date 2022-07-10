@@ -10,6 +10,7 @@ namespace GeometryDashAPI.Parsers
         string Encode<T>(T obj) where T : GameObject;
 
         Block DecodeBlock(string raw);
+        Block DecodeBlock(ReadOnlySpan<char> raw);
         string EncodeBlock(Block block);
 
         GameObject Decode(Type type, string raw); // internal

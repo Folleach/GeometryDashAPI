@@ -1,5 +1,4 @@
-﻿using System;
-using GeometryDashAPI.Data.Models;
+﻿using GeometryDashAPI.Data.Models;
 using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
@@ -11,7 +10,7 @@ using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
 {
-    public class Level
+    public class LevelOld
     {
 #if DEBUG
         public string LoadedString { get; private set; }
@@ -44,19 +43,19 @@ namespace GeometryDashAPI.Levels
         public int kA9 { get; set; }
         public int kA11 { get; set; }
 
-        public Level()
+        public LevelOld()
         {
             Initialize();
             Load(DefaultLevelString, true);
         }
 
-        public Level(string data, bool compressed)
+        public LevelOld(string data, bool compressed)
         {
             Initialize();
             Load(data, compressed);
         }
 
-        public Level(LevelCreatorModel model)
+        public LevelOld(LevelCreatorModel model)
         {
             Initialize();
             Load(model.LevelString, true);
@@ -90,65 +89,86 @@ namespace GeometryDashAPI.Levels
 #if DEBUG
             LoadedString = data;
 #endif
-            var parser = new LLParserSpan(";", data);
-            var header = parser.Next();
-            var headerParser = new LLParserSpan(",", header);
-            while (headerParser.TryParseNext(out var key, out var value))
+            string[] splitData = data.Split(';');
+            string[] levelProperties = splitData[0].Split(',');
+            for (int i = 0; i < levelProperties.Length; i += 2)
             {
-                if (key.SequenceEqual("kS38"))
-                    LoadColors(value);
-                else if (key.SequenceEqual("kA13"))
-                    MusicOffset = GameConvert.StringToSingle(value);
-                else if (key.SequenceEqual("kA15"))
-                    kA15 = int.Parse(value);
-                else if (key.SequenceEqual("kA16"))
-                    kA16 = int.Parse(value);
-                else if (key.SequenceEqual("kA14"))
-                    kA14 = value.ToString();
-                else if (key.SequenceEqual("kA6"))
-                    Background = byte.Parse(value);
-                else if (key.SequenceEqual("kA7"))
-                    Ground = byte.Parse(value);
-                else if (key.SequenceEqual("kA17"))
-                    kA17 = int.Parse(value);
-                else if (key.SequenceEqual("kA18"))
-                    Fonts = byte.Parse(value);
-                else if (key.SequenceEqual("kS39"))
-                    kS39 = int.Parse(value);
-                else if (key.SequenceEqual("kA2"))
-                    GameMode = (GameMode)int.Parse(value);
-                else if (key.SequenceEqual("kA3"))
-                    Mini = GameConvert.StringToBool(value, false);
-                else if (key.SequenceEqual("kA8"))
-                    Dual = GameConvert.StringToBool(value, false);
-                else if (key.SequenceEqual("kA4"))
-                    PlayerSpeed = (SpeedType)int.Parse(value);
-                else if (key.SequenceEqual("kA9"))
-                    kA9 = int.Parse(value);
-                else if (key.SequenceEqual("kA10"))
-                    TwoPlayerMode = GameConvert.StringToBool(value, false);
-                else if (key.SequenceEqual("kA11"))
-                    kA11 = int.Parse(value);
-                else
-                    throw new PropertyNotSupportedException(key.ToString(), value.ToString());
+                switch (levelProperties[i])
+                {
+                    case "kS38":
+                        LoadColors(levelProperties[i + 1]);
+                        break;
+                    case "kA13":
+                        MusicOffset = GameConvert.StringToSingle(levelProperties[i + 1]);
+                        break;
+                    case "kA15":
+                        kA15 = int.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA16":
+                        kA16 = int.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA14":
+                        kA14 = levelProperties[i + 1];
+                        break;
+                    case "kA6":
+                        Background = byte.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA7":
+                        Ground = byte.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA17":
+                        kA17 = int.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA18":
+                        Fonts = byte.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kS39":
+                        kS39 = int.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA2":
+                        GameMode = (GameMode)int.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA3":
+                        Mini = GameConvert.StringToBool(levelProperties[i + 1], false);
+                        break;
+                    case "kA8":
+                        Dual = GameConvert.StringToBool(levelProperties[i + 1], false);
+                        break;
+                    case "kA4":
+                        PlayerSpeed = (SpeedType)int.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA9":
+                        kA9 = int.Parse(levelProperties[i + 1]);
+                        break;
+                    case "kA10":
+                        TwoPlayerMode = GameConvert.StringToBool(levelProperties[i + 1], false);
+                        break;
+                    case "kA11":
+                        kA11 = int.Parse(levelProperties[i + 1]);
+                        break;
+                    default:
+                        //throw new PropertyNotSupportedException(levelProperties[i], levelProperties[i + 1]);
+                        break;
+                }
             }
-            LoadBlocks(parser);
+            LoadBlocks(splitData);
         }
 
-        protected virtual void LoadColors(ReadOnlySpan<char> colorsData)
+        protected virtual void LoadColors(string colorsData)
         {
-            var parser = new LLParserSpan("|", colorsData);
-            Span<char> color;
-            while ((color = parser.Next()) != null && color.Length > 0)
-                Colors.AddColor(new Color(color));
-        }
-
-        protected virtual void LoadBlocks(LLParserSpan llParser)
-        {
-            Span<char> rawBlock;
-            while ((rawBlock = llParser.Next()) != null && rawBlock.Length > 0)
+            foreach (string colorData in colorsData.Split('|'))
             {
-                var block = parser.DecodeBlock(rawBlock);
+                if (colorData == string.Empty)
+                    continue;
+                Colors.AddColor(new Color(colorData));
+            }
+        }
+
+        protected virtual void LoadBlocks(string[] blocksData)
+        {
+            for (var i = 1; i < blocksData.Length - 1; i++)
+            {
+                var block = parser.DecodeBlock(blocksData[i]);
                 Blocks.Add(block);
             }
         }

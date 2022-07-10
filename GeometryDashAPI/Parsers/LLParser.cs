@@ -118,7 +118,7 @@ namespace GeometryDashAPI.Parsers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryParseNext(out Span<char> key, out Span<char> value)
+        public bool TryParseNext(out ReadOnlySpan<char> key, out ReadOnlySpan<char> value)
         {
             key = Next();
             value = Next();

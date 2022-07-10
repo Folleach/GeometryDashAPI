@@ -63,14 +63,13 @@ namespace GeometryDashAPI.Parsers
         public void Set(IGameObject instance, int key, ReadOnlySpan<char> raw)
         {
             if (key < 0)
-                goto WithoutLoad;
+                instance.WithoutLoaded.Add(key.ToString(), raw.ToString());
             var setter = setters[key];
             if (setter != null)
             {
                 setter((T)instance, raw);
                 return;
             }
-            WithoutLoad:
             instance.WithoutLoaded.Add(key.ToString(), raw.ToString());
         }
 
