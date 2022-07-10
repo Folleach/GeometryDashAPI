@@ -3,12 +3,13 @@ using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class UserResponse : GameStruct
+    [Sense("#")]
+    public class UserResponse : GameObject
     {
-        [StructPosition(0)]
+        [GameProperty("0")]
         public UserInfoDto User { get; set; }
         
-        [StructPosition(1)] public Pagination Page { get; set; }
+        [GameProperty("1")] public Pagination Page { get; set; }
         
         public override string GetParserSense() => "#";
     }

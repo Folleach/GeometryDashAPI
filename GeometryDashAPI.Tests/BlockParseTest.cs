@@ -16,7 +16,7 @@ namespace GeometryDashAPI.Tests
         {
             var input = "1,1,2,3,3,6";
 
-            var actual = parser.DecodeBlock(input);
+            var actual = (Block)parser.DecodeBlock(input);
 
             Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(3, actual.PositionX);

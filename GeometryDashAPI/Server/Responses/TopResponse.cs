@@ -4,9 +4,10 @@ using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class TopResponse : GameStruct
+    [Sense("||")]
+    public class TopResponse : GameObject
     {
-        [StructPosition(0)]
+        [GameProperty("0")]
         [ArraySeparator("|")]
         public List<AccountDto> Users { get; set; }
         

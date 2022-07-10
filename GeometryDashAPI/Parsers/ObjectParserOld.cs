@@ -32,7 +32,12 @@ namespace GeometryDashAPI.Parsers
             return Encode(typeof(T), obj);
         }
 
-        public Block DecodeBlock(string raw)
+        public List<T> DecodeArray<T>(ReadOnlySpan<char> raw, string separator) where T : IGameObject
+        {
+            throw new NotImplementedException();
+        }
+
+        public IGameObject DecodeBlock(string raw)
         {
             v2.Clear();
             var values = Parse(raw, ",", v2);
@@ -45,7 +50,7 @@ namespace GeometryDashAPI.Parsers
             return (Block) Decode(type, values, (GameObject) Activator.CreateInstance(type));
         }
 
-        public Block DecodeBlock(ReadOnlySpan<char> raw)
+        public IGameObject DecodeBlock(ReadOnlySpan<char> raw)
         {
             return DecodeBlock(raw.ToString());
         }
@@ -55,7 +60,7 @@ namespace GeometryDashAPI.Parsers
             return Encode(block.GetType(), block);
         }
 
-        public GameObject Decode(Type type, string raw)
+        public IGameObject Decode(Type type, string raw)
         {
             var instance = (GameObject) Activator.CreateInstance(type);
             v3.Clear();

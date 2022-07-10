@@ -49,7 +49,7 @@ namespace GeometryDashAPI
             };
 
         private static readonly Dictionary<Type, TypeDescription<string, GamePropertyAttribute>> ObjectCache = new();
-        private static readonly Dictionary<Type, TypeDescription<int, StructPositionAttribute>> StructCache = new();
+        private static readonly Dictionary<Type, TypeDescription<int, AsStructAttribute>> StructCache = new();
         private static readonly Dictionary<Type, Td> tds = new();
 
         private static readonly Dictionary<int, Type> BlockTypes = new();
@@ -66,12 +66,12 @@ namespace GeometryDashAPI
             return ObjectCache[type] = new TypeDescription<string, GamePropertyAttribute>(type, attribute => attribute.Key);
         }
 
-        internal static TypeDescription<int, StructPositionAttribute> GetStructMemberCache(Type type)
-        {
-            if (StructCache.TryGetValue(type, out var description))
-                return description;
-            return StructCache[type] = new TypeDescription<int, StructPositionAttribute>(type, attribute => attribute.Position);
-        }
+        // internal static TypeDescription<int, AsStructAttribute> GetStructMemberCache(Type type)
+        // {
+        //     if (StructCache.TryGetValue(type, out var description))
+        //         return description;
+        //     return StructCache[type] = new TypeDescription<int, AsStructAttribute>(type, attribute => attribute.Position);
+        // }
 
         public static void RegisterBlockTypes(Assembly assembly, bool overrideTypes)
         {
@@ -104,8 +104,8 @@ namespace GeometryDashAPI
                 td = GetTypeDescription(type);
             if (td!.IsGameObject)
                 return raw => GeometryDashApi.parser.Decode(type, raw);
-            if (td!.IsGameStruct)
-                return raw => StructParser.Decode(type, raw);
+            if (td!.IsGameStruct) ;
+                // return raw => StructParser.Decode(type, raw);
             if (type.IsEnum)
                 return raw => Enum.Parse(type, raw);
             // if (td!.IsArray)
@@ -122,8 +122,8 @@ namespace GeometryDashAPI
                 td = GetTypeDescription(type);
             if (td.IsGameObject)
                  return value => GeometryDashApi.parser.Encode(type, (GameObject)value);
-            if (td.IsGameStruct)
-                 return value => StructParser.Encode(type, (GameStruct)value);
+            if (td.IsGameStruct) ;
+                 // return value => StructParser.Encode(type, (GameStruct)value);
             throw new Exception($"Couldn't parse: {type}");
         }
         

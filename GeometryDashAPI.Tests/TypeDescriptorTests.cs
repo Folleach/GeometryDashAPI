@@ -34,8 +34,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectSample, int>();
 
-        var instance = descriptor.Create();
-        descriptor.Set(instance, 33, "1.9");
+        var instance = descriptor.Create("33:1.9");
         
         Assert.AreEqual(1.9, instance.X);
     }
@@ -45,8 +44,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectSample, int>();
         
-        var instance = descriptor.Create();
-        descriptor.Set(instance, 11, "abc!");
+        var instance = descriptor.Create("11:abc!");
         
         Assert.AreEqual(1, instance.WithoutLoaded.Count);
         Assert.AreEqual("11", instance.WithoutLoaded.FirstOrDefault().Key);
@@ -58,8 +56,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectWithEnum, int>();
         
-        var instance = descriptor.Create();
-        descriptor.Set(instance, 1, "33");
+        var instance = descriptor.Create("1:33");
         
         Assert.AreEqual(SimpleEnum.X, instance.Value);
     }

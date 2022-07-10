@@ -169,7 +169,7 @@ namespace GeometryDashAPI.Levels
             for (var i = 1; i < blocksData.Length - 1; i++)
             {
                 var block = parser.DecodeBlock(blocksData[i]);
-                Blocks.Add(block);
+                Blocks.Add((Block)block);
             }
         }
 

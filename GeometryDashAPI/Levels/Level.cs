@@ -4,7 +4,6 @@ using GeometryDashAPI.Exceptions;
 using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Parsers;
@@ -23,8 +22,8 @@ namespace GeometryDashAPI.Levels
         public ColorList Colors { get; private set; }
         public BlockList Blocks { get; private set; }
 
-        public int CountBlock { get => Blocks.Count; }
-        public int CountColor { get => Colors.Count; }
+        public int CountBlock => Blocks.Count;
+        public int CountColor => Colors.Count;
 
         public GameMode GameMode { get; set; } = GameMode.Cube;
         public SpeedType PlayerSpeed { get; set; } = SpeedType.Default;
@@ -149,7 +148,7 @@ namespace GeometryDashAPI.Levels
             while ((rawBlock = llParser.Next()) != null && rawBlock.Length > 0)
             {
                 var block = parser.DecodeBlock(rawBlock);
-                Blocks.Add(block);
+                Blocks.Add((Block)block);
             }
         }
 

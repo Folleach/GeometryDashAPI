@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
@@ -12,7 +13,7 @@ namespace GeometryDashAPI.Parsers
         public T Decode<T>(string raw) where T : GameObject, new()
         {
             var instance = new T();
-            return (T) Decode(typeof(T), raw, instance.GetParserSense(), instance);
+            return (T) Decode(typeof(T), raw, instance.GetParserSense());
         }
 
         public T Decode<T>(ReadOnlySpan<char> raw) where T : GameObject, new()
@@ -25,12 +26,23 @@ namespace GeometryDashAPI.Parsers
             return Encode(typeof(T), obj);
         }
 
-        public Block DecodeBlock(string raw)
+        public List<T> DecodeArray<T>(ReadOnlySpan<char> raw, string separator) where T : IGameObject
+        {
+            var parser = new LLParserSpan(separator, raw);
+            Span<char> value;
+            var descriptor = descriptors.GetOrCreate(typeof(T), CreateDescriptor);
+            var list = new List<T>();
+            while ((value = parser.Next()) != null)
+                list.Add((T)descriptor.Create(value));
+            return list;
+        }
+
+        public IGameObject DecodeBlock(string raw)
         {
             return DecodeBlock(raw.AsSpan());
         }
 
-        public Block DecodeBlock(ReadOnlySpan<char> raw)
+        public IGameObject DecodeBlock(ReadOnlySpan<char> raw)
         {
             var parser = new LLParserSpan(",", raw);
             ReadOnlySpan<char> key;
@@ -46,7 +58,7 @@ namespace GeometryDashAPI.Parsers
                 throw new Exception("Id is not a number");
             var type = GeometryDashApi.GetBlockType(id);
 
-            return (Block) Decode(type, raw, ",", (GameObject) Activator.CreateInstance(type));
+            return Decode(type, raw, ",");
         }
 
         public string EncodeBlock(Block block)
@@ -54,21 +66,16 @@ namespace GeometryDashAPI.Parsers
             return Encode(block.GetType(), block);
         }
 
-        public GameObject Decode(Type type, string raw)
+        public IGameObject Decode(Type type, string raw)
         {
             var instance = (GameObject) Activator.CreateInstance(type);
-            return Decode(type, raw, instance.GetParserSense(), instance);
+            return Decode(type, raw, instance.GetParserSense());
         }
 
-        private static GameObject Decode(Type type, ReadOnlySpan<char> raw, ReadOnlySpan<char> sense, GameObject instance)
+        private static IGameObject Decode(Type type, ReadOnlySpan<char> raw, ReadOnlySpan<char> sense)
         {
-            var parser = new LLParserSpan(sense, raw);
             var descriptor = descriptors.GetOrCreate(type, CreateDescriptor);
-
-            while (parser.TryParseNext(out var key, out var value))
-                descriptor.Set(instance, int.Parse(key), value);
-
-            return instance;
+            return descriptor.Create(raw);
         }
 
         public string Encode(Type type, GameObject obj)

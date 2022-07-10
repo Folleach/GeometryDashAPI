@@ -8,12 +8,14 @@ namespace GeometryDashAPI.Tests
     [TestFixture]
     public class StructParserTests
     {
+        private static ObjectParser parser = new();
+
         [Test]
         public void Decode_SampleStruct_ShouldBeCorrect()
         {
             var input = "33:1~8:444";
 
-            var actual = StructParser.Decode<StructSample>(input);
+            var actual = parser.Decode<StructSample>(input);
 
             var expected = new StructSample()
             {
@@ -31,13 +33,12 @@ namespace GeometryDashAPI.Tests
         }
 
         [Test]
-        [Ignore("Not implemented")]
         public void Decode_ComplexParserObject_ShouldBeCorrect()
         {
             var input = ComplexParserObject.ExampleInput;
             var expected = ComplexParserObject.ExampleExpected;
 
-            var actual = StructParser.Decode<ComplexParserObject>(input);
+            var actual = parser.Decode<ComplexParserObject>(input);
 
             actual.Should().BeEquivalentTo(expected);
         }

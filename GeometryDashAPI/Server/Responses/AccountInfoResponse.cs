@@ -3,9 +3,11 @@ using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class AccountInfoResponse : GameStruct
+    [Sense("||")]
+    [AsStruct]
+    public class AccountInfoResponse : GameObject
     {
-        [StructPosition(0)] public AccountDto Account { get; set; }
+        [GameProperty("0")] public AccountDto Account { get; set; }
         
         public override string GetParserSense() => "||";
     }

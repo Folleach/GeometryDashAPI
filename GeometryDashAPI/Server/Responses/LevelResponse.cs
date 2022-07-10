@@ -3,11 +3,13 @@ using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class LevelResponse : GameStruct
+    [Sense("#")]
+    [AsStruct]
+    public class LevelResponse : GameObject
     {
-        [StructPosition(0)] public LevelDto Level { get; set; }
-        [StructPosition(1)] public string Hash1 { get; set; }
-        [StructPosition(2)] public string Hash2 { get; set; }
+        [GameProperty("0")] public LevelDto Level { get; set; }
+        [GameProperty("1")] public string Hash1 { get; set; }
+        [GameProperty("2")] public string Hash2 { get; set; }
 
         public override string GetParserSense() => "#";
     }

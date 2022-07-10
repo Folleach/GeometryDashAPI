@@ -6,6 +6,5 @@ namespace GeometryDashAPI.Parsers
     {
         T Create();
         T Create(ReadOnlySpan<char> raw);
-        void Set(IGameObject instance, int key, ReadOnlySpan<char> raw);
     }
 }

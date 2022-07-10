@@ -2,11 +2,12 @@
 
 namespace GeometryDashAPI.Server.Dtos
 {
-    public class AuthorIdsDto : GameStruct
+    [AsStruct]
+    public class AuthorIdsDto : GameObject
     {
-        [StructPosition(0)] public int UserId { get; set; }
-        [StructPosition(1)] public string UserName { get; set; }
-        [StructPosition(2)] public int AccountId { get; set; }
+        [GameProperty("0")] public int UserId { get; set; }
+        [GameProperty("1")] public string UserName { get; set; }
+        [GameProperty("2")] public int AccountId { get; set; }
         
         public override string GetParserSense() => ":";
     }

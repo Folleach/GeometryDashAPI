@@ -4,13 +4,15 @@ using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class AccountCommentPageResponse : GameStruct
+    [Sense("#")]
+    [AsStruct]
+    public class AccountCommentPageResponse : GameObject
     {
-        [StructPosition(0)]
+        [GameProperty("0")]
         [ArraySeparator("|")]
         public List<AccountCommentDto> Comments { get; set; }
         
-        [StructPosition(1)]
+        [GameProperty("1")]
         public Pagination Page { get; set; }
         
         public override string GetParserSense() => "#";

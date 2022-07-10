@@ -4,24 +4,25 @@ using GeometryDashAPI.Server.Dtos;
 
 namespace GeometryDashAPI.Server.Responses
 {
-    public class LevelPageResponse : GameStruct
+    [Sense("#")]
+    public class LevelPageResponse : GameObject
     {
-        [StructPosition(0)]
+        [GameProperty("0")]
         [ArraySeparator("|")]
         public List<LevelPreviewDto> Levels { get; set; }
         
-        [StructPosition(1)]
+        [GameProperty("1")]
         [ArraySeparator("|")]
         public List<AuthorIdsDto> Authors { get; set; }
         
-        [StructPosition(2)]
+        [GameProperty("2")]
         [ArraySeparator("~:~")]
         public List<MusicInfoDto> Musics { get; set; }
         
-        [StructPosition(3)]
+        [GameProperty("3")]
         public Pagination Page { get; set; }
         
-        [StructPosition(4)]
+        [GameProperty("4")]
         public string Hash { get; set; }
         
         public override string GetParserSense() => "#";

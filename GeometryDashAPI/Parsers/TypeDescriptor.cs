@@ -10,26 +10,32 @@ namespace GeometryDashAPI.Parsers
     public class TypeDescriptor<T, TKey> : IDescriptor<T, TKey> where T : IGameObject
     {
         private readonly TypeDescriptorHelper.Setter<T>[] setters;
+        private readonly Dictionary<string, int> mappings;
         private readonly string sense;
         private readonly Func<T> create;
+        private readonly bool isStruct;
+        private readonly int baseIndex;
 
         public TypeDescriptor()
         {
             var type = typeof(T);
-            var members = GetPropertiesAndFields(type)
-                .Select(member => (member, attribute: member.GetCustomAttribute<GamePropertyAttribute>()))
-                .Where(x => x.attribute != null)
-                .ToArray();
             create = CreateInstanceExpression<T>(type).Compile();
+
             var senseAttribute = type.GetCustomAttribute<SenseAttribute>();
             if (senseAttribute == null)
                 throw new ArgumentException($"Type '{type}' doesn't contains sense attribute", sense);
             sense = senseAttribute.Sense;
+
+            isStruct = type.GetCustomAttribute<AsStructAttribute>() != null;
+
+            var members = GetPropertiesAndFields(type)
+                .Select(member => (member, attribute: member.GetCustomAttribute<GamePropertyAttribute>()))
+                .Where(x => x.attribute != null)
+                .ToArray();
             var createSetter = typeof(TypeDescriptorHelper)
                 .GetMethod(nameof(TypeDescriptorHelper.CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);
 
-            setters = InitSetters(members);
-
+            (setters, baseIndex, mappings) = InitSetters(type, members);
             foreach (var (member, attribute) in members)
             {
                 var memberType = member.GetMemberType();
@@ -38,7 +44,8 @@ namespace GeometryDashAPI.Parsers
                     (Expression<TypeDescriptorHelper.Setter<T>>)createSetterGeneric.Invoke(null,
                         new object[] { member });
                 var setter = setterExpression!.Compile();
-                setters[int.Parse(attribute.Key)] = setter;
+                var setterIndex = int.TryParse(attribute.Key, out var value) ? baseIndex + value : attribute.KeyOverride;
+                setters[setterIndex] = setter;
             }
         }
 
@@ -46,37 +53,63 @@ namespace GeometryDashAPI.Parsers
 
         public T Create(ReadOnlySpan<char> raw)
         {
-            var parser = new LLParserSpan(sense, raw);
             var instance = create();
-            Span<char> key;
-            while ((key = parser.Next()) != null)
+            var parser = new LLParserSpan(sense, raw);
+            
+            if (isStruct)
             {
-                var value = parser.Next();
-                if (value == null)
-                    throw new InvalidOperationException($"Object '{raw.ToString()}' has odd number of nodes");
-                Set(instance, int.Parse(key), value);
+                var position = 0;
+                Span<char> value;
+                while ((value = parser.Next()) != null)
+                {
+                    if (!TrySet(instance, position++, value))
+                        throw new InvalidOperationException("Struct is not fully implemented");
+                }
+            }
+            else
+            {
+                while (parser.TryParseNext(out var key, out var value))
+                {
+                    if (!int.TryParse(key, out var index))
+                    {
+                        var keyString = key.ToString();
+                        var mapped = mappings[keyString];
+                        if (!TrySet(instance, mapped, value))
+                            instance.WithoutLoaded.Add(keyString, value.ToString());
+                        continue;
+                    }
+                    if (!TrySet(instance, baseIndex + index, value))
+                        instance.WithoutLoaded.Add(key.ToString(), value.ToString());
+                }
             }
 
             return instance;
         }
 
-        public void Set(IGameObject instance, int key, ReadOnlySpan<char> raw)
+        private bool TrySet(IGameObject instance, int key, ReadOnlySpan<char> raw)
         {
             if (key < 0)
-                instance.WithoutLoaded.Add(key.ToString(), raw.ToString());
+                return false;
             var setter = setters[key];
-            if (setter != null)
-            {
-                setter((T)instance, raw);
-                return;
-            }
-            instance.WithoutLoaded.Add(key.ToString(), raw.ToString());
+            if (setter == null)
+                return false;
+            setter((T)instance, raw);
+            return true;
         }
 
-        private static TypeDescriptorHelper.Setter<T>[] InitSetters(IEnumerable<(MemberInfo member, GamePropertyAttribute attribute)> members)
+        private static Expression<Func<TB>> CreateInstanceExpression<TB>(Type type)
+        {
+            var ctor = Expression.New(type);
+            var memberInit = Expression.MemberInit(ctor);
+
+            return Expression.Lambda<Func<TB>>(memberInit);
+        }
+
+        private static (TypeDescriptorHelper.Setter<T>[], int baseIndex, Dictionary<string, int> mappings) InitSetters(Type type, IEnumerable<(MemberInfo member, GamePropertyAttribute attribute)> members)
         {
             var keys = new HashSet<string>();
             var maxKeyValue = 0;
+            Dictionary<string, int> mappings = null;
             foreach (var (member, attribute) in members)
             {
                 if (int.TryParse(attribute.Key, out var key))
@@ -89,18 +122,24 @@ namespace GeometryDashAPI.Parsers
                     continue;
                 }
 
-                throw new NotImplementedException("Type descriptors temporary not implemented non int keys");
+                mappings ??= new Dictionary<string, int>();
+                if (attribute.KeyOverride == -1)
+                    throw new InvalidOperationException($"Key override for member '{attribute.Key}' in {type.Name} is not set");
+                mappings.Add(attribute.Key, attribute.KeyOverride);
             }
 
-            return new TypeDescriptorHelper.Setter<T>[maxKeyValue + 1];
-        }
-
-        private static Expression<Func<TB>> CreateInstanceExpression<TB>(Type type)
-        {
-            var ctor = Expression.New(type);
-            var memberInit = Expression.MemberInit(ctor);
-
-            return Expression.Lambda<Func<TB>>(memberInit);
+            if (mappings != null)
+            {
+                var values = mappings.Select(x => x.Value).ToHashSet();
+                for (var i = 0; i < mappings.Count; i++)
+                {
+                    if (!values.Contains(i))
+                        throw new InvalidOperationException($"Be careful with your memory! Use incremental keyOverride property which starts with 0. Miss take on: {i}");
+                }
+            }
+            
+            var baseIndex = mappings?.Count ?? 0;
+            return (new TypeDescriptorHelper.Setter<T>[baseIndex + maxKeyValue + 1], baseIndex, mappings);
         }
 
         private static IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
@@ -117,7 +156,7 @@ namespace GeometryDashAPI.Parsers
         }
     }
 
-    internal class TypeDescriptorHelper
+    public class TypeDescriptorHelper
     {
         private static readonly string ParserOptionsName = "GetOrDefault";
 
@@ -135,15 +174,37 @@ namespace GeometryDashAPI.Parsers
             };
             if (typeof(TProp).IsEnum)
                 return CreateEnumSetter<TProp, TInstance>(field, target, data);
+            if (typeof(TProp).IsGenericType && typeof(TProp).GetGenericTypeDefinition() == typeof(List<>))
+                return CreateArraySetter<TProp, TInstance>(field, target, data, member);
             return CreateParserSetter<TProp, TInstance>(field, data, target);
         }
 
-        private static Expression<Setter<TInstance>> CreateParserSetter<TProp, TInstance>(MemberExpression field, ParameterExpression data, ParameterExpression target)
+        private static Expression<Setter<TInstance>> CreateArraySetter<TProp, TInstance>(MemberExpression field, ParameterExpression data, ParameterExpression target, MemberInfo member)
+        {
+            var arraySeparator = member.GetCustomAttribute<ArraySeparatorAttribute>();
+            if (arraySeparator == null)
+                throw new InvalidOperationException($"Member {member} doesn't contains {typeof(ArraySeparatorAttribute)}");
+            var separatorExpression = Expression.Constant(arraySeparator.Separator);
+            var parserInstanceExpression = Expression.Constant(GeometryDashApi.parser);
+            var parserInstance = GeometryDashApi.parser;
+            var genericDecode = parserInstance.GetType().GetMethod(nameof(parserInstance.DecodeArray), new[] { typeof(ReadOnlySpan<char>), typeof(string) });
+            var decode = genericDecode?.MakeGenericMethod(typeof(TProp).GetGenericArguments()[0]);
+            if (decode == null)
+                throw new InvalidOperationException($"Method T DecodeArray(ReadOnlySpan<char>, string) is not implemented in parser {parserInstance}");
+            
+            var call = Expression.Call(parserInstanceExpression, decode, target, separatorExpression);
+            return Expression.Lambda<Setter<TInstance>>
+            (
+                Expression.Assign(field, Expression.Convert(call, typeof(TProp))), data, target
+            );
+        }
+
+        private static Expression<Setter<TInstance>> CreateParserSetter<TProp, TInstance>(MemberExpression field, ParameterExpression target, ParameterExpression data)
         {
             var parser = GetParserMethod<TProp>(out var instance);
             return Expression.Lambda<Setter<TInstance>>
             (
-                Expression.Assign(field, Expression.Call(instance, parser, data)), target, data
+                Expression.Assign(field, Expression.Call(instance, parser, target)), data, target
             );
         }
 
