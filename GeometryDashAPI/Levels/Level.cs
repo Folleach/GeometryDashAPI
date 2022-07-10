@@ -168,7 +168,8 @@ namespace GeometryDashAPI.Levels
             foreach (var block1 in Blocks)
             {
                 var block = (Block)block1;
-                builder.Append(parser.EncodeBlock(block));
+                throw new NotImplementedException("Encode temporary doesn't implemented");
+                // builder.Append(parser.EncodeBlock(block));
                 builder.Append(';');
             }
 

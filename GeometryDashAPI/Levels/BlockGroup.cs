@@ -46,7 +46,7 @@ namespace GeometryDashAPI.Levels
         public static BlockGroup Parse(string data)
         {
             var result = new BlockGroup();
-            var parser = new LLParser(".", data);
+            var parser = new LLParserSpan(".", data);
             while (true)
             {
                 var idRaw = parser.Next();

@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace GeometryDashAPI.Server
 {
-    public class ServerResponse<T>
+    public class ServerResponse<T> where T : IGameObject
     {
-        private static readonly Regex StatusCodeMatcher = new Regex(@"^(-|)\d+$");
+        private static readonly Regex StatusCodeMatcher = new(@"^(-|)\d+$");
         
         public HttpStatusCode HttpStatusCode { get; }
         
@@ -26,7 +26,7 @@ namespace GeometryDashAPI.Server
             if (match.Success)
                 GeometryDashStatusCode = int.Parse(match.Value);
             else
-                value = (T)GeometryDashApi.GetStringParser(typeof(T))(body);
+                value = GeometryDashApi.parser.Decode<T>(body);
         }
         
         public T GetResultOrDefault()

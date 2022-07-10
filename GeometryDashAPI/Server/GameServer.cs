@@ -114,8 +114,7 @@ namespace GeometryDashAPI.Server
             return await Get<LevelPageResponse>("/database/getGJLevels21.php", query);
         }
 
-        private async Task<ServerResponse<T>> Get<T>(string path, IQuery query)
-            where T: new()
+        private async Task<ServerResponse<T>> Get<T>(string path, IQuery query) where T : IGameObject
         {
             var (statusCode, body) = await network.GetAsync(path, query);
             return new ServerResponse<T>(statusCode, body);

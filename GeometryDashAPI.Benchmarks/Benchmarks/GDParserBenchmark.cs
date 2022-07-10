@@ -11,13 +11,14 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         private string largeRaw;
         private static IGameParser parser;
 
-        [Params(typeof(ObjectParserOld), typeof(ObjectParser))]
+        [Params(typeof(ObjectParser))]
         public Type ParserParam;
 
         [GlobalSetup]
         public void Setup()
         {
-            largeRaw = parser.Encode(new LargeObject());
+            throw new NotImplementedException();
+            // largeRaw = parser.Encode(new LargeObject());
             parser = (IGameParser)Activator.CreateInstance(ParserParam);
             GeometryDashApi.parser = parser;
         }
@@ -25,7 +26,8 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         [Benchmark]
         public void Encode()
         {
-            parser.Encode(new LargeObject());
+            throw new NotImplementedException();
+            // parser.Encode(new LargeObject());
         }
 
         [Benchmark]

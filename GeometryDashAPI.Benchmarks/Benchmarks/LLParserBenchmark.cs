@@ -24,18 +24,6 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         }
 
         [Benchmark]
-        public void Next_Old()
-        {
-            var parser = new LLParser(separator, value);
-            while (true)
-            {
-                var token = parser.Next();
-                if (token == null)
-                    break;
-            }
-        }
-
-        [Benchmark]
         public void Next_New()
         {
             var parser = new LLParserSpan(separator, value);

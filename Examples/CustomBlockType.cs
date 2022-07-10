@@ -23,7 +23,7 @@ namespace Examples
         {
             GeometryDashApi.RegisterBlockType(typeof(MyShakeTrigger), true);
             var levels = new LocalLevels();
-            var level = new LevelOld(levels.GetLevel("Temp"));
+            var level = new Level(levels.GetLevel("Temp"));
         }
     }
 }
