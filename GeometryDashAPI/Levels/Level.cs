@@ -136,10 +136,10 @@ namespace GeometryDashAPI.Levels
 
         protected virtual void LoadColors(ReadOnlySpan<char> colorsData)
         {
-            var parser = new LLParserSpan("|", colorsData);
+            var llp = new LLParserSpan("|", colorsData);
             Span<char> color;
-            while ((color = parser.Next()) != null && color.Length > 0)
-                Colors.AddColor(new Color(color));
+            while ((color = llp.Next()) != null && color.Length > 0)
+                Colors.AddColor(parser.Decode<Color>(color));
         }
 
         protected virtual void LoadBlocks(LLParserSpan llParser)

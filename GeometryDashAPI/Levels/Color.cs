@@ -1,154 +1,40 @@
-﻿using System;
-using GeometryDashAPI.Exceptions;
-using GeometryDashAPI.Levels.Enums;
-using System.Globalization;
-using System.Text;
-using GeometryDashAPI.Parsers;
+﻿using GeometryDashAPI.Attributes;
 
 namespace GeometryDashAPI.Levels
 {
-    public class Color
+    [Sense("_")]
+    public class Color : GameObject
     {
-        const char Sp = '_';
-
-        public short ID { get; internal set; }
-        public byte Red { get; set; } = 255;
-        public byte Green { get; set; } = 255;
-        public byte Blue { get; set; } = 255;
-        public byte Red2 { get; set; } = 255;
-        public byte Green2 { get; set; } = 255;
-        public byte Blue2 { get; set; } = 255;
+        [GameProperty("6", 0, true)] public int Id { get; set; }
+        [GameProperty("1", 255, true)] public byte Red { get; set; } = 255;
+        [GameProperty("2", 255, true)] public byte Green { get; set; } = 255;
+        [GameProperty("3", 255, true)] public byte Blue { get; set; } = 255;
+        [GameProperty("11", 255, true)] public byte Red2 { get; set; } = 255;
+        [GameProperty("12", 255, true)] public byte Green2 { get; set; } = 255;
+        [GameProperty("13", 255, true)] public byte Blue2 { get; set; } = 255;
 
         /// <summary>
         /// -1 - none, 0 - none, 1 - PlayerColor1, 2 - PlayerColor2
         /// </summary>
-        public sbyte PlayerColor { get; set; }
-        public bool Blending { get; set; }
-        public float Opacity { get; set; } = 1f;
-        public bool CopyOpacity { get; set; }
+        [GameProperty("4")] public sbyte PlayerColor { get; set; }
+        [GameProperty("5")] public bool Blending { get; set; }
+        [GameProperty("7", 1f, true)] public float Opacity { get; set; } = 1f;
+        [GameProperty("17")] public bool CopyOpacity { get; set; }
 
-        public Hsv ColorHSV { get; set; }
-        public int TargetChannelID { get; set; }
+        [GameProperty("10")] public Hsv ColorHSV { get; set; }
+        [GameProperty("9")] public int TargetChannelID { get; set; }
 
-        public Color(short id)
+        [GameProperty("15", 1, true)] public int K15 { get; set; } = 1;
+        [GameProperty("18", 0, true)] public int K18 { get; set; }
+        [GameProperty("8", 1, true)] public int K8 { get; set; } = 1;
+
+        public Color()
         {
-            this.ID = id;
         }
-        public Color(ColorType type)
+
+        public Color(int id)
         {
-            this.ID = (short)type;
-        }
-        public Color(short id, byte r, byte g, byte b)
-        {
-            this.ID = id;
-            this.SetColor(r, g, b);
-        }
-        public Color(ColorType type, byte r, byte g, byte b)
-        {
-            this.ID = (short)type;
-            this.SetColor(r, g, b);
-        }
-        public Color(string data)
-        {
-            string[] properties = data.Split('_');
-            for (int i = 0; i < properties.Length - 1; i += 2)
-            {
-                switch (properties[i])
-                {
-                    case "1":
-                        Red = byte.Parse(properties[i + 1]);
-                        break;
-                    case "2":
-                        Green = byte.Parse(properties[i + 1]);
-                        break;
-                    case "3":
-                        Blue = byte.Parse(properties[i + 1]);
-                        break;
-                    case "11":
-                        Red2 = byte.Parse(properties[i + 1]);
-                        break;
-                    case "12":
-                        Green2 = byte.Parse(properties[i + 1]);
-                        break;
-                    case "13":
-                        Blue2 = byte.Parse(properties[i + 1]);
-                        break;
-                    case "4":
-                        PlayerColor = sbyte.Parse(properties[i + 1]);
-                        break;
-                    case "5":
-                        Blending = GameConvert.StringToBool(properties[i + 1], false);
-                        break;
-                    case "6":
-                        ID = short.Parse(properties[i + 1]);
-                        break;
-                    case "7":
-                        Opacity = float.Parse(properties[i + 1], NumberStyles.Any, Culture.FormatProvider);
-                        break;
-                    case "9":
-                        TargetChannelID = int.Parse(properties[i + 1]);
-                        break;
-                    case "10":
-                        ColorHSV = Hsv.Parse(properties[i + 1]);
-                        break;
-                    case "15":
-                        //TODO: Added to class
-                        break;
-                    case "17":
-                        CopyOpacity = GameConvert.StringToBool(properties[i + 1]);
-                        break;
-                    case "18":
-                        //TODO: Added to class
-                        break;
-                    case "8":
-                        //TODO: Added to class
-                        break;
-                    default:
-                        throw new PropertyNotSupportedException(properties[i], properties[i + 1]);
-                }
-            }
-        }
-        
-        public Color(ReadOnlySpan<char> data)
-        {
-            var parser = new LLParserSpan("_", data);
-            while (parser.TryParseNext(out var key, out var value) && value.Length > 0)
-            {
-                if (key.SequenceEqual("1"))
-                    Red = byte.Parse(value);
-                else if (key.SequenceEqual("2"))
-                    Green = byte.Parse(value);
-                else if (key.SequenceEqual("3"))
-                    Blue = byte.Parse(value);
-                else if (key.SequenceEqual("11"))
-                    Red2 = byte.Parse(value);
-                else if (key.SequenceEqual("12"))
-                    Green2 = byte.Parse(value);
-                else if (key.SequenceEqual("13"))
-                    Blue2 = byte.Parse(value);
-                else if (key.SequenceEqual("4"))
-                    PlayerColor = sbyte.Parse(value);
-                else if (key.SequenceEqual("5"))
-                    Blending = GameConvert.StringToBool(value, false);
-                else if (key.SequenceEqual("6"))
-                    ID = short.Parse(value);
-                else if (key.SequenceEqual("7"))
-                    Opacity = float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
-                else if (key.SequenceEqual("9"))
-                    TargetChannelID = int.Parse(value);
-                else if (key.SequenceEqual("10"))
-                    ColorHSV = Hsv.Parse(value);
-                else if (key.SequenceEqual("15"))
-                    ;
-                else if (key.SequenceEqual("17"))
-                    CopyOpacity = GameConvert.StringToBool(value);
-                else if (key.SequenceEqual("18"))
-                    ;
-                else if (key.SequenceEqual("8"))
-                    ;
-                else
-                    throw new PropertyNotSupportedException(key.ToString(), value.ToString());
-            }
+            Id = id;
         }
 
         public void SetColor(byte r, byte g, byte b)
@@ -156,33 +42,6 @@ namespace GeometryDashAPI.Levels
             Red = r;
             Green = g;
             Blue = b;
-        }
-
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append($"1{Sp}{Red}{Sp}" +
-                $"2{Sp}{Green}{Sp}" +
-                $"3{Sp}{Blue}{Sp}" +
-                $"11{Sp}{Red2}{Sp}" +
-                $"12{Sp}{Green2}{Sp}" +
-                $"13{Sp}{Blue2}{Sp}" +
-                $"6{Sp}{ID}{Sp}" +
-                $"7{Sp}{GameConvert.SingleToString(Opacity)}{Sp}" +
-                $"15{Sp}1{Sp}18{Sp}0{Sp}8{Sp}1");
-
-            if (PlayerColor != -1 && PlayerColor != 0)
-                builder.Append($"{Sp}4{Sp}{PlayerColor}");
-            if (Blending)
-                builder.Append($"{Sp}5{Sp}1");
-
-            if (TargetChannelID != 0)
-            {
-                builder.Append($"{Sp}9{Sp}{TargetChannelID}{Sp}10{Sp}{(ColorHSV == null ? new Hsv().ToString() : ColorHSV.ToString())}");
-                if (CopyOpacity)
-                    builder.Append($"{Sp}17{Sp}1");
-            }
-            return builder.ToString();
         }
     }
 }

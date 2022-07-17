@@ -19,6 +19,7 @@ namespace GeometryDashAPI.Parsers
     {
         public static bool GetOrDefault_Boolean__(ReadOnlySpan<char> data) => GameConvert.StringToBool(data);
         public static byte GetOrDefault_Byte__(ReadOnlySpan<char> data) => byte.TryParse(data, out var value) ? value : default;
+        public static sbyte GetOrDefault_SByte__(ReadOnlySpan<char> data) => sbyte.TryParse(data, out var value) ? value : default;
         public static short GetOrDefault_Int16__(ReadOnlySpan<char> data) => short.TryParse(data, out var value) ? value : default;
         public static int GetOrDefault_Int32__(ReadOnlySpan<char> data) => int.TryParse(data, out var value) ? value : default;
         public static int? GetOrDefault_Int32_Y(ReadOnlySpan<char> data) => int.TryParse(data, out var value) ? value : default;

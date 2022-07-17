@@ -4,74 +4,62 @@ using System.Collections.Generic;
 
 namespace GeometryDashAPI.Levels
 {
-    public class ColorList
+    public class ColorList : GameObject
     {
-        protected Dictionary<short, Color> Colors = new Dictionary<short, Color>();
+        private readonly Dictionary<int, Color> colors = new Dictionary<int, Color>();
 
-        public Color this[short id]
+        public Color this[int id]
         {
             get
             {
-                if (!Colors.ContainsKey(id))
-                    Colors.Add(id, new Color(id));
-                return Colors[id];
+                if (!colors.TryGetValue(id, out var color))
+                    colors.Add(id, color = new Color(id));
+                return color;
             }
             set
             {
-                if (value.ID != id)
-                    value.ID = id;
-                Colors[id] = value;
+                if (value.Id != id)
+                    value.Id = id;
+                colors[id] = value;
             }
         }
+
         public Color this[ColorType type]
         {
-            get => this[(short)type];
-            set => this[(short)type] = value;
-        }
-        public int Count
-        {
-            get => Colors.Count;
+            get => this[(int)type];
+            set => this[(int)type] = value;
         }
 
-        public void SetID(short target, short to)
+        public int Count => colors.Count;
+
+        public void SetId(int target, int to)
         {
-            if (!Colors.ContainsKey(target))
+            if (!colors.ContainsKey(target))
                 throw new UnableSetException($"Unable set. Target color '{target}' not found.");
-            if (Colors.ContainsKey(to))
+            if (colors.ContainsKey(to))
                 throw new UnableSetException($"Unable set. Color '{to}' exists.");
-            Color col = Colors[target];
-            Colors.Remove(target);
-            col.ID = to;
-            Colors.Add(to, col);
-        }
-        public void SetID(ColorType target, ColorType to)
-        {
-            SetID((short)target, (short)to);
+            var col = colors[target];
+            colors.Remove(target);
+            col.Id = to;
+            colors.Add(to, col);
         }
 
-        public void Remove(short id)
-        {
-            Colors.Remove(id);
-        }
-        public void Remove(ColorType type)
-        {
-            Remove((short)type);
-        }
+        public void SetId(ColorType target, ColorType to) => SetId((int)target, (int)to);
 
-        public short AddColor(Color color)
-        {
-            if (Colors.ContainsKey(color.ID))
-                Colors[color.ID] = color;
-            else
-                Colors.Add(color.ID, color);
+        public void Remove(int id) => colors.Remove(id);
 
-            return color.ID;
+        public void Remove(ColorType type) => Remove((short)type);
+
+        public int AddColor(Color color)
+        {
+            colors[color.Id] = color;
+            return color.Id;
         }
 
         public List<Color> ToList()
         {
-            List<Color> list = new List<Color>();
-            foreach (var element in Colors)
+            var list = new List<Color>(colors.Count);
+            foreach (var element in colors)
                 list.Add(element.Value);
             return list;
         }
