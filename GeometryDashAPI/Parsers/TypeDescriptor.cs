@@ -175,28 +175,56 @@ namespace GeometryDashAPI.Parsers
             if (typeof(TProp).IsEnum)
                 return CreateEnumSetter<TProp, TInstance>(field, target, data);
             if (typeof(TProp).IsGenericType && typeof(TProp).GetGenericTypeDefinition() == typeof(List<>))
+                return CreateListSetter<TProp, TInstance>(field, target, data, member);
+            if (typeof(TProp).IsArray)
                 return CreateArraySetter<TProp, TInstance>(field, target, data, member);
             return CreateParserSetter<TProp, TInstance>(field, data, target);
         }
 
-        private static Expression<Setter<TInstance>> CreateArraySetter<TProp, TInstance>(MemberExpression field, ParameterExpression data, ParameterExpression target, MemberInfo member)
+        private static Expression<Setter<TInstance>> CreateArraySetter<TProp, TInstance>(MemberExpression field, ParameterExpression target, ParameterExpression data, MemberInfo member)
+        {
+            var arraySeparator = GetArraySeparator(member);
+            var arrayType = typeof(TProp).GetElementType();
+            var separatorExpression = Expression.Constant(arraySeparator.Separator);
+            var parserInstanceExpression = Expression.Constant(GeometryDashApi.parser);
+            var parserInstance = GeometryDashApi.parser;
+            var genericDecode = parserInstance.GetType().GetMethod(nameof(parserInstance.GetArray));
+            var decode = genericDecode?.MakeGenericMethod(arrayType);
+            if (decode == null)
+                throw new InvalidOperationException($"Method T[] DecodeArray(ReadOnlySpan<char>, string) is not implemented in parser {parserInstance}");
+            var parser = GetParserMethod(arrayType, out _);
+            var concreteDelegate = typeof(IGameParser.Parser<>).MakeGenericType(arrayType);
+            var call = Expression.Call(parserInstanceExpression, decode, data, separatorExpression, Expression.Constant(Delegate.CreateDelegate(concreteDelegate, parser)));
+            return Expression.Lambda<Setter<TInstance>>
+            (
+                Expression.Assign(field, Expression.Convert(call, typeof(TProp))), target, data
+            );
+        }
+
+        private static Expression<Setter<TInstance>> CreateListSetter<TProp, TInstance>(MemberExpression field, ParameterExpression target, ParameterExpression data, MemberInfo member)
+        {
+            var arraySeparator = GetArraySeparator(member);
+            var separatorExpression = Expression.Constant(arraySeparator.Separator);
+            var parserInstanceExpression = Expression.Constant(GeometryDashApi.parser);
+            var parserInstance = GeometryDashApi.parser;
+            var genericDecode = parserInstance.GetType().GetMethod(nameof(parserInstance.DecodeList), new[] { typeof(ReadOnlySpan<char>), typeof(string) });
+            var decode = genericDecode?.MakeGenericMethod(typeof(TProp).GetGenericArguments()[0]);
+            if (decode == null)
+                throw new InvalidOperationException($"Method List<T> DecodeList(ReadOnlySpan<char>, string) is not implemented in parser {parserInstance}");
+            
+            var call = Expression.Call(parserInstanceExpression, decode, data, separatorExpression);
+            return Expression.Lambda<Setter<TInstance>>
+            (
+                Expression.Assign(field, Expression.Convert(call, typeof(TProp))), target, data
+            );
+        }
+
+        private static ArraySeparatorAttribute GetArraySeparator(MemberInfo member)
         {
             var arraySeparator = member.GetCustomAttribute<ArraySeparatorAttribute>();
             if (arraySeparator == null)
                 throw new InvalidOperationException($"Member {member} doesn't contains {typeof(ArraySeparatorAttribute)}");
-            var separatorExpression = Expression.Constant(arraySeparator.Separator);
-            var parserInstanceExpression = Expression.Constant(GeometryDashApi.parser);
-            var parserInstance = GeometryDashApi.parser;
-            var genericDecode = parserInstance.GetType().GetMethod(nameof(parserInstance.DecodeArray), new[] { typeof(ReadOnlySpan<char>), typeof(string) });
-            var decode = genericDecode?.MakeGenericMethod(typeof(TProp).GetGenericArguments()[0]);
-            if (decode == null)
-                throw new InvalidOperationException($"Method T DecodeArray(ReadOnlySpan<char>, string) is not implemented in parser {parserInstance}");
-            
-            var call = Expression.Call(parserInstanceExpression, decode, target, separatorExpression);
-            return Expression.Lambda<Setter<TInstance>>
-            (
-                Expression.Assign(field, Expression.Convert(call, typeof(TProp))), data, target
-            );
+            return arraySeparator;
         }
 
         private static Expression<Setter<TInstance>> CreateParserSetter<TProp, TInstance>(MemberExpression field, ParameterExpression target, ParameterExpression data)

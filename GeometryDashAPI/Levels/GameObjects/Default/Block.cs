@@ -23,7 +23,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("20", (short)0)] public short EditorL { get; set; }
         [GameProperty("61", (short)0)] public short EditorL2 { get; set; }
         [GameProperty("103", false)] public bool HighDetail { get; set; }
-        [GameProperty("57", null)] public BlockGroup Group { get; set; }
+        [GameProperty("57")] [ArraySeparator(".")] public int[] Groups { get; set; }
         [GameProperty("64", false)] public bool DontFade { get; set; }
         [GameProperty("67", false)] public bool DontEnter { get; set; }
         [GameProperty("25", 2)] public virtual int ZOrder { get; set; } = 2;

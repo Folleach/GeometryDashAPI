@@ -12,7 +12,7 @@ namespace GeometryDashAPI.Parsers
             return (T)Decode(typeof(T), raw);
         }
 
-        public List<T> DecodeArray<T>(ReadOnlySpan<char> raw, string separator) where T : IGameObject
+        public List<T> DecodeList<T>(ReadOnlySpan<char> raw, string separator) where T : IGameObject
         {
             var parser = new LLParserSpan(separator, raw);
             Span<char> value;
@@ -20,6 +20,21 @@ namespace GeometryDashAPI.Parsers
             while ((value = parser.Next()) != null)
                 list.Add((T)Decode(typeof(T), value));
             return list;
+        }
+
+        public T[] GetArray<T>(ReadOnlySpan<char> raw, string separator, IGameParser.Parser<T> getValue)
+        {
+            var parser = new LLParserSpan(separator, raw);
+            var length = 0;
+            while (parser.Next() != null)
+                length++;
+            Span<char> rawValue;
+            var array = new T[length];
+            parser = new LLParserSpan(separator, raw);
+            var index = 0;
+            while ((rawValue = parser.Next()) != null)
+                array[index++] = getValue(rawValue);
+            return array;
         }
 
         public IGameObject DecodeBlock(ReadOnlySpan<char> raw)

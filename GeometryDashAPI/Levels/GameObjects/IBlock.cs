@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Levels.GameObjects
         short EditorL { get; set; }
         short EditorL2 { get; set; }
         bool HighDetail { get; set; }
-        BlockGroup Group { get; set; }
+        int[] Groups { get; set; }
         bool DontFade { get; set; }
         bool DontEnter { get; set; }
         int ZOrder { get; set; }
