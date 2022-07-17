@@ -47,8 +47,7 @@ public class TypeDescriptorTests
         var instance = descriptor.Create("11:abc!");
         
         Assert.AreEqual(1, instance.WithoutLoaded.Count);
-        Assert.AreEqual("11", instance.WithoutLoaded.FirstOrDefault().Key);
-        Assert.AreEqual("abc!", instance.WithoutLoaded.FirstOrDefault().Value);
+        Assert.AreEqual("11:abc!", instance.WithoutLoaded.FirstOrDefault());
     }
 
     [Test]

@@ -4,6 +4,6 @@ namespace GeometryDashAPI
 {
     public interface IGameObject
     {
-        Dictionary<string, string> WithoutLoaded { get; }
+        List<string> WithoutLoaded { get; }
     }
 }

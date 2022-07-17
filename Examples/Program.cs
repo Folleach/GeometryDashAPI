@@ -103,40 +103,6 @@ namespace Examples
             return int.TryParse(IdRegex.Match(raw.ToString()).Groups["t"].Value, out var value) ? blocks[value] : typeof(BaseBlock);
         }
 
-        private static Dictionary<int, Action<GameObject, string, int, int>> setters = new()
-        {
-            [1] = ((o, s, arg3, arg4) => o.WithoutLoaded = new Dictionary<string, string>())
-        };
-
-        private static Action<GameObject, string, int, int> DefaultSetter =>
-            (o, s, arg3, arg4) => o.WithoutLoaded = new Dictionary<string, string>();
-
-        private static unsafe GameObject ParseBlock(string sense, string raw, int offset, int length)
-        {
-            var span = raw.AsSpan(offset, length);
-            var senseSpan = sense.AsSpan();
-            var parser = new LLParserSpan(senseSpan, span);
-            var type = GetBlockType(span);
-            var instance = (GameObject)null; //Expression.MemberInit(Expression.New(type));
-            Span<char> current;
-            var coff = 0;
-            while ((current = parser.Next()) != null)
-            {
-                int.TryParse(current, out var key);
-                var value = parser.Next();
-                coff += current.Length + sense.Length;
-                if (!setters.TryGetValue(key, out var setter))
-                {
-                    DefaultSetter(instance, raw, 0, 1);
-                    continue;
-                }
-
-                setter(instance, raw, 0, 1);
-            }
-
-            return null;
-        }
-
         private static T Create<T>() where T : struct => new();
 
         private static string Value;

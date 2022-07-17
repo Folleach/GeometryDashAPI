@@ -75,11 +75,11 @@ namespace GeometryDashAPI.Parsers
                         var keyString = key.ToString();
                         var mapped = mappings[keyString];
                         if (!TrySet(instance, mapped, value))
-                            instance.WithoutLoaded.Add(keyString, value.ToString());
+                            instance.WithoutLoaded.Add($"{keyString}{sense}{value.ToString()}");
                         continue;
                     }
                     if (!TrySet(instance, baseIndex + index, value))
-                        instance.WithoutLoaded.Add(key.ToString(), value.ToString());
+                        instance.WithoutLoaded.Add($"{key.ToString()}{sense}{value.ToString()}");
                 }
             }
 

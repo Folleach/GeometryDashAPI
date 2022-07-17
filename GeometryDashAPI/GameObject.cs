@@ -4,6 +4,6 @@ namespace GeometryDashAPI
 {
     public abstract class GameObject : IGameObject
     {
-        public Dictionary<string, string> WithoutLoaded { get; set; } = new();
+        public List<string> WithoutLoaded { get; set; } = new();
     }
 }

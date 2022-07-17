@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using GeometryDashAPI.Parsers;
 using NUnit.Framework;
@@ -29,7 +30,7 @@ namespace GeometryDashAPI.Tests
             
             Assert.AreEqual(9, actual.X);
             Assert.AreEqual(1, actual.WithoutLoaded.Count);
-            Assert.AreEqual("hello", actual.WithoutLoaded["10"]);
+            Assert.AreEqual("10:hello", actual.WithoutLoaded.FirstOrDefault());
         }
 
         [TestCase("10:33:10")]
