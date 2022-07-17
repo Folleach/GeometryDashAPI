@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using csFastFloat;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace GeometryDashAPI
@@ -41,13 +42,7 @@ namespace GeometryDashAPI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float StringToSingle(ReadOnlySpan<char> value)
         {
-            return float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float StringToSingle(string value)
-        {
-            return float.Parse(value, NumberStyles.Any, Culture.FormatProvider);
+            return FastFloatParser.ParseFloat(value, NumberStyles.Any);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -59,13 +54,7 @@ namespace GeometryDashAPI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double StringToDouble(ReadOnlySpan<char> value)
         {
-            return double.Parse(value, NumberStyles.Any, Culture.FormatProvider);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double StringToDouble(string value)
-        {
-            return double.Parse(value, NumberStyles.Any, Culture.FormatProvider);
+            return FastDoubleParser.ParseDouble(value, NumberStyles.Any);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
