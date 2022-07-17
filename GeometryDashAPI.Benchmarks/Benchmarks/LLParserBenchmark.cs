@@ -4,7 +4,7 @@ using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Benchmarks.Benchmarks
 {
-    [DisassemblyDiagnoser]
+    [DisassemblyDiagnoser(exportCombinedDisassemblyReport: true)]
     [MemoryDiagnoser]
     public class LLParserBenchmark
     {

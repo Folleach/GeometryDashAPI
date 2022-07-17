@@ -8,6 +8,7 @@ using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Benchmarks.Benchmarks;
 
+[DisassemblyDiagnoser(exportCombinedDisassemblyReport: true)]
 [MemoryDiagnoser]
 public class ReflectionVsExpression
 {
@@ -24,6 +25,7 @@ public class ReflectionVsExpression
         CreateWithInit<string, int>(nameof(InitObject.Name), nameof(InitObject.X)).Compile();
 
     private static readonly string KeySet = ".123.";
+    private static string KeySetProp => KeySet;
 
     private static readonly string JustObject = "abcdef";
 
@@ -55,19 +57,25 @@ public class ReflectionVsExpression
         "a", "b"
     };
 
-    [Benchmark]
-    [BenchmarkCategory("Dictionary or direct array?")]
-    public string DictionaryGet()
-    {
-        return IntKeys[321];
-    }
+    // [Benchmark]
+    // public string GetByField() => KeySet;
 
-    [Benchmark]
-    [BenchmarkCategory("Dictionary or direct array?")]
-    public string ArrayGet()
-    {
-        return ArrayAsDictionary[1];
-    }
+    // [Benchmark]
+    // public int GetByProperty() => KeySet.Length;
+
+    // [Benchmark]
+    // [BenchmarkCategory("Dictionary or direct array?")]
+    // public string DictionaryGet()
+    // {
+    //     return IntKeys[321];
+    // }
+    //
+    // [Benchmark]
+    // [BenchmarkCategory("Dictionary or direct array?")]
+    // public string ArrayGet()
+    // {
+    //     return ArrayAsDictionary[1];
+    // }
     
     // [Benchmark]
     // public int MapGet()
