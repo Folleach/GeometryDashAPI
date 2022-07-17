@@ -10,7 +10,5 @@ namespace GeometryDashAPI.Server.Responses
         public UserInfoDto User { get; set; }
         
         [GameProperty("1")] public Pagination Page { get; set; }
-        
-        public override string GetParserSense() => "#";
     }
 }

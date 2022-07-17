@@ -3,6 +3,7 @@ using GeometryDashAPI.Attributes;
 
 namespace GeometryDashAPI.Server.Dtos
 {
+    [Sense("~|~")]
     public class MusicInfoDto : GameObject
     {
         [GameProperty("1")] public int MusicId { get; set; }
@@ -15,7 +16,5 @@ namespace GeometryDashAPI.Server.Dtos
             get => Uri.UnescapeDataString(url);
             set => url = Uri.EscapeDataString(value);
         }
-        
-        public override string GetParserSense() => "~|~";
     }
 }

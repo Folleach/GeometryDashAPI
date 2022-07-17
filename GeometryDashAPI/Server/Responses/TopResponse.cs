@@ -10,7 +10,5 @@ namespace GeometryDashAPI.Server.Responses
         [GameProperty("0")]
         [ArraySeparator("|")]
         public List<AccountDto> Users { get; set; }
-        
-        public override string GetParserSense() => "||";
     }
 }

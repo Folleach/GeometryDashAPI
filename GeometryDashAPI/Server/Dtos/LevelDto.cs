@@ -2,6 +2,7 @@
 
 namespace GeometryDashAPI.Server.Dtos
 {
+    [Sense(":")]
     public class LevelDto : LevelPreviewDto
     {
         [GameProperty("4")]
@@ -26,7 +27,5 @@ namespace GeometryDashAPI.Server.Dtos
         
         [GameProperty("40")]
         public bool LowDetail { get; set; }
-
-        public override string GetParserSense() => ":";
     }
 }

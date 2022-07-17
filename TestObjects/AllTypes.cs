@@ -20,7 +20,5 @@ namespace TestObjects
         public double Double { get; set; }
         [GameProperty("7")]
         public bool Bool { get; set; }
-
-        public override string GetParserSense() => ",";
     }
 }

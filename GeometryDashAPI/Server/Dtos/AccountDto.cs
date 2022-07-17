@@ -2,6 +2,7 @@
 
 namespace GeometryDashAPI.Server.Dtos
 {
+    [Sense(":")]
     public class AccountDto : GameObject
     {
         [GameProperty("1")] public string Name { get; set; }
@@ -45,7 +46,5 @@ namespace GeometryDashAPI.Server.Dtos
         [GameProperty("48")] public int ExplosionId { get; set; }
         [GameProperty("49")] public int Moderator { get; set; }
         [GameProperty("50")] public int CommentHistoryState { get; set; }
-        
-        public override string GetParserSense() => ":";
     }
 }

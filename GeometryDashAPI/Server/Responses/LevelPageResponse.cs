@@ -24,7 +24,5 @@ namespace GeometryDashAPI.Server.Responses
         
         [GameProperty("4")]
         public string Hash { get; set; }
-        
-        public override string GetParserSense() => "#";
     }
 }

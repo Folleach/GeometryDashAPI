@@ -45,7 +45,5 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         {
             Id = id;
         }
-        
-        public override string GetParserSense() => ",";
     }
 }

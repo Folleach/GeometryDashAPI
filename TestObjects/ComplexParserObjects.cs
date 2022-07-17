@@ -21,8 +21,6 @@ namespace TestObjects
         [ArraySeparator("~")]
         public List<ComplexStruct> StructArray { get; set; }
 
-        public override string GetParserSense() => "#";
-
         public static readonly string ExampleInput = "A:2:1:31:B:23#10:12#A:1~A:3~A:5#1:2~3:4"; // Give from this string
 
         // this object
@@ -58,8 +56,6 @@ namespace TestObjects
     {
         [GameProperty("0")] public int X { get; set; }
         [GameProperty("1")] public int Y { get; set; }
-        
-        public override string GetParserSense() => ":";
     }
 
     [Sense(":")]
@@ -71,7 +67,5 @@ namespace TestObjects
         public int A { get; set; }
         [GameProperty("B", keyOverride: 1)]
         public int B { get; set; }
-
-        public override string GetParserSense() => ":";
     }
 }

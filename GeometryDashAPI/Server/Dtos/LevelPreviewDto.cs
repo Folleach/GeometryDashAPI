@@ -106,7 +106,5 @@ namespace GeometryDashAPI.Server.Dtos
         
         [GameProperty("47")]
         public int? EditorTimeCopies { get; set; }
-        
-        public override string GetParserSense() => ":";
     }
 }

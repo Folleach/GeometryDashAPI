@@ -8,7 +8,5 @@ namespace GeometryDashAPI.Server.Responses
     public class AccountInfoResponse : GameObject
     {
         [GameProperty("0")] public AccountDto Account { get; set; }
-        
-        public override string GetParserSense() => "||";
     }
 }

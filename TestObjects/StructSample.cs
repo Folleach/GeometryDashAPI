@@ -9,7 +9,5 @@ namespace TestObjects
     {
         [GameProperty("0")] public ObjectSample FirstObject { get; set; }
         [GameProperty("1")] public LargeObject SecondObject { get; set; }
-        
-        public override string GetParserSense() => "~";
     }
 }

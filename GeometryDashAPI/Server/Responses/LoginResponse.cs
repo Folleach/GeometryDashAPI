@@ -7,7 +7,5 @@ namespace GeometryDashAPI.Server.Responses
     {
         [GameProperty("0")] public int AccountId { get; set; }
         [GameProperty("1")] public int UserId { get; set; }
-        
-        public override string GetParserSense() => ",";
     }
 }
