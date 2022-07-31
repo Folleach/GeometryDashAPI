@@ -59,7 +59,7 @@ namespace GeometryDashAPI.Parsers
             if (isStruct)
             {
                 var position = 0;
-                Span<char> value;
+                ReadOnlySpan<char> value;
                 while ((value = parser.Next()) != null)
                 {
                     if (!TrySet(instance, position++, value))

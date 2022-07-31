@@ -111,5 +111,15 @@ namespace GeometryDashAPI.Tests
 
             actual.Should().BeEquivalentTo(expected);
         }
+
+        [Test]
+        public void GetArray()
+        {
+            var actual = parser.GetArray("33,1,33,2,33,3,33,4,33,5,33,6,33,7,33,8,33,9", ",", Parsers.Parsers.GetOrDefault_Int32__);
+
+            var expected = new[] { 33,1,33,2,33,3,33,4,33,5,33,6,33,7,33,8,33,9 };
+
+            actual.Should().BeEquivalentTo(expected);
+        }
     }
 }

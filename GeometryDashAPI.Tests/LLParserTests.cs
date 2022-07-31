@@ -36,12 +36,30 @@ namespace GeometryDashAPI.Tests
 
             var result = new List<string>();
 
-            Span<char> next = null;
+            ReadOnlySpan<char> next = null;
             while ((next = parser.Next()) != null)
                 result.Add(next.ToString());
             
             Assert.AreEqual(expected.Length, result.Count);
             result.ToArray().Should().Equal(expected);
+        }
+
+        [TestCase("", 0)]
+        [TestCase(".", 1)]
+        [TestCase("a.", 1)]
+        [TestCase("a.a", 2)]
+        [TestCase("..", 2)]
+        [TestCase("a.a.a", 3)]
+        [TestCase(".a.a", 3)]
+        [TestCase("a.a.", 2)]
+        [TestCase("a...", 3)]
+        public void CountOfSense(string input, int expected)
+        {
+            var parser = new LLParserSpan(".", input);
+
+            var actual = parser.GetCountOfValues();
+            
+            Assert.AreEqual(expected, actual);
         }
     }
 }

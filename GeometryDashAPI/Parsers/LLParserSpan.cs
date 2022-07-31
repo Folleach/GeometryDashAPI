@@ -22,7 +22,7 @@ namespace GeometryDashAPI.Parsers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Span<char> Next()
+        public unsafe ReadOnlySpan<char> Next()
         {
             var startIndex = index;
             fixed (char* pointer = value)
@@ -43,7 +43,7 @@ namespace GeometryDashAPI.Parsers
 
                         if (isSense)
                         {
-                            var span = new Span<char>(current, index - startIndex);
+                            var span = new ReadOnlySpan<char>(current, index - startIndex);
                             index += senseLength;
                             return span;
                         }
@@ -57,6 +57,46 @@ namespace GeometryDashAPI.Parsers
             }
 
             return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe int GetCountOfValues()
+        {
+            var startIndex = 0;
+            var currentIndex = 0;
+            var count = 0;
+            fixed (char* pointer = value)
+            {
+                fixed (char* sensePointer = sense)
+                {
+                    while (currentIndex < valueLength)
+                    {
+                        var isSense = true;
+                        for (var i = 0; i < senseLength && currentIndex + i < valueLength; i++)
+                        {
+                            if (*(pointer + currentIndex + i) == *(sensePointer + i))
+                                continue;
+                            isSense = false;
+                            break;
+                        }
+
+                        if (isSense)
+                        {
+                            startIndex = currentIndex += senseLength;
+                            count++;
+                        }
+                        else
+                        {
+                            currentIndex++;
+                        }
+                    }
+
+                    if (currentIndex != startIndex)
+                        count++;
+                }
+            }
+
+            return count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

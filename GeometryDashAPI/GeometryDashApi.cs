@@ -8,6 +8,7 @@ using GeometryDashAPI.Parsers;
 
 [assembly: InternalsVisibleTo("GeometryDashAPI.Tests")]
 [assembly: InternalsVisibleTo("GeometryDashAPI.Benchmarks")]
+[assembly: InternalsVisibleTo("Examples")]
 
 namespace GeometryDashAPI
 {
