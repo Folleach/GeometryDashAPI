@@ -50,7 +50,7 @@ namespace GeometryDashAPI
         {
             if (base64 == null)
                 return null;
-            var wrongIndex = base64.IndexOf(' ', StringComparison.Ordinal);
+            var wrongIndex = base64.IndexOf(" ", StringComparison.Ordinal);
             return WebEncoders.Base64UrlDecode(base64, 0, wrongIndex >= 0 ? wrongIndex : base64.Length);
         }
         
@@ -63,7 +63,7 @@ namespace GeometryDashAPI
         {
             if (base64 == null)
                 return null;
-            var wrongIndex = base64.IndexOf(' ', StringComparison.Ordinal);
+            var wrongIndex = base64.IndexOf(" ", StringComparison.Ordinal);
             return Encoding.ASCII.GetString(WebEncoders.Base64UrlDecode(base64, 0, wrongIndex >= 0 ? wrongIndex : base64.Length));
         }
     }
