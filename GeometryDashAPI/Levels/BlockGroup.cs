@@ -35,7 +35,11 @@ namespace GeometryDashAPI.Levels
                 var idRaw = parser.Next();
                 if (idRaw == null)
                     break;
+#if NETSTANDARD2_1
                 if (!int.TryParse(idRaw, out var id))
+#else
+                if (!int.TryParse(idRaw.ToString(), out var id))
+#endif
                     throw new Exception($"Can't parse group id in: {raw}");
                 result.Add(id);
             }

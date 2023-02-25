@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;netcoreapp2.2</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
