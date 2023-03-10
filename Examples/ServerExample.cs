@@ -12,7 +12,7 @@ namespace Examples
     {
         private const string USERNAME = "Folleach";
         private const string PASSWORD = "Your password here";
-        
+
         public async void Start()
         {
             var server = new GameServer();

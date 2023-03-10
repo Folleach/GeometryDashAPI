@@ -31,19 +31,19 @@ using Newtonsoft.Json;
 
 namespace Examples
 {
-    //This class for the only test.
-    class Program
+    // This class for the only test.
+    public class Program
     {
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
-            
+
             Console.WriteLine("Call 'F'");
             F();
             Console.ReadLine();
             Console.WriteLine("'F' called");
-            //Console.ReadKey();
+            // Console.ReadKey();
         }
 
         private static void F()
