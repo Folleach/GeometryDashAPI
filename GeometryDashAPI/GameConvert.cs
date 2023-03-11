@@ -54,7 +54,7 @@ namespace GeometryDashAPI
         
         public static string ToBase64String(string value)
         {
-            return UrlBase64.Encode(Encoding.ASCII.GetBytes(value));
+            return UrlBase64.Encode(Encoding.ASCII.GetBytes(value), PaddingPolicy.Preserve);
         }
 
         public static string FromBase64String(string base64)
