@@ -30,7 +30,7 @@ namespace GeometryDashAPI.Server
                 .AddToChain(GetIdentifier())
                 .AddProperty(new Property("type", type.GetAttributeOfSelected<OriginalNameAttribute>().OriginalName))
                 .AddProperty(new Property("count", count));
-            return await Get<TopResponse>("/database/getGJScores20.php", query);
+            return await Get<TopResponse>("/getGJScores20.php", query);
         }
 
         public async Task<ServerResponse<LevelPageResponse>> GetLevels(GetLevelsQuery getLevelsQuery)
@@ -38,7 +38,7 @@ namespace GeometryDashAPI.Server
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
                 .AddToChain(getLevelsQuery);
-            return await Get<LevelPageResponse>("/database/getGJLevels21.php", query);
+            return await Get<LevelPageResponse>("/getGJLevels21.php", query);
         }
 
         public async Task<ServerResponse<LevelPageResponse>> GetFeatureLevels(int page)
@@ -58,7 +58,7 @@ namespace GeometryDashAPI.Server
                 .AddProperty(new Property("password", password))
                 .AddProperty(new Property("sID", 76561198946149263))
                 .AddProperty(new Property("secret", "Wmfv3899gc9"));
-            return await Get<LoginResponse>("/database/accounts/loginGJAccount.php", query);
+            return await Get<LoginResponse>("/accounts/loginGJAccount.php", query);
         }
 
         public async Task<ServerResponse<AccountCommentPageResponse>> GetAccountComments(int accountId, int page)
@@ -68,7 +68,7 @@ namespace GeometryDashAPI.Server
                 .AddProperty(new Property("accountID", accountId))
                 .AddProperty(new Property("page", page))
                 .AddProperty(new Property("total", 0));
-            return await Get<AccountCommentPageResponse>("/database/getGJAccountComments20.php", query);
+            return await Get<AccountCommentPageResponse>("/getGJAccountComments20.php", query);
         }
 
         public async Task<ServerResponse<UserResponse>> GetUserByName(string name)
@@ -78,7 +78,7 @@ namespace GeometryDashAPI.Server
                 .AddProperty(new Property("str", name))
                 .AddProperty(new Property("total", 0))
                 .AddProperty(new Property("page", 0));
-            return await Get<UserResponse>("/database/getGJUsers20.php", query);
+            return await Get<UserResponse>("/getGJUsers20.php", query);
         }
 
         public async Task<ServerResponse<LevelResponse>> DownloadLevel(int id)
@@ -88,7 +88,7 @@ namespace GeometryDashAPI.Server
                 .AddProperty(new Property("levelID", id))
                 .AddProperty(new Property("inc", 0))
                 .AddProperty(new Property("extras", 0));
-            return await Get<LevelResponse>("/database/downloadGJLevel22.php", query);
+            return await Get<LevelResponse>("/downloadGJLevel22.php", query);
         }
 
         public async Task<ServerResponse<AccountInfoResponse>> GetAccountInfo(int accountId)
@@ -97,7 +97,7 @@ namespace GeometryDashAPI.Server
                 .AddToChain(OnlineQuery.Default)
                 .AddToChain(GetIdentifier())
                 .AddProperty(new Property("targetAccountID", accountId));
-            return await Get<AccountInfoResponse>("/database/getGJUserInfo20.php", query);
+            return await Get<AccountInfoResponse>("/getGJUserInfo20.php", query);
         }
 
         public async Task<ServerResponse<LevelPageResponse>> GetMyLevels(PasswordQuery account, int userId, int page)
@@ -110,7 +110,7 @@ namespace GeometryDashAPI.Server
                 QueryString = userId.ToString(),
                 Page = page
             });
-            return await Get<LevelPageResponse>("/database/getGJLevels21.php", query);
+            return await Get<LevelPageResponse>("/getGJLevels21.php", query);
         }
 
         private async Task<ServerResponse<T>> Get<T>(string path, IQuery query)

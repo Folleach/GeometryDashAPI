@@ -10,18 +10,14 @@ namespace GeometryDashAPI.Server
     public class Network
     {
         private readonly IFactory<HttpClient> httpClientFactory;
+        private readonly string server;
         private readonly Func<string, bool> responseFilter;
-        public Encoding DataEncoding { get; }
         public int Timeout { get; set; } = 30_000;
 
-        public Network() : this(Encoding.ASCII)
+        public Network(string server = "http://www.boomlings.com/database", IFactory<HttpClient> httpClientFactory = null, Func<string, bool> responseFilter = null)
         {
-        }
-
-        public Network(Encoding encoding, IFactory<HttpClient> httpClientFactory = null, Func<string, bool> responseFilter = null)
-        {
-            DataEncoding = encoding;
             this.httpClientFactory = httpClientFactory ?? new DefaultHttpClientFactory();
+            this.server = server;
             this.responseFilter = responseFilter;
         }
         
@@ -35,7 +31,7 @@ namespace GeometryDashAPI.Server
             using var httpClient = httpClientFactory.Create();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
-            using var response = await httpClient.PostAsync($"http://www.boomlings.com{path}",
+            using var response = await httpClient.PostAsync($"{server}{path}",
                 new StringContent(properties.ToString(), Encoding.UTF8, "application/x-www-form-urlencoded"));
 
             var result = await response.Content.ReadAsStringAsync();
