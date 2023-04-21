@@ -54,12 +54,13 @@ namespace GeometryDashAPI.Data
                 index = new Dictionary<string, Dictionary<int, int>>();
             else
                 index.Clear();
-            for (int i = 0; i < levels.Count; ++i)
+            
+            for (var i = 0; i < levels.Count; ++i)
             {
                 var level = levels[i];
-                if (!index.ContainsKey(level.Name))
-                    index.Add(level.Name, new Dictionary<int, int>());
-                index[level.Name].Add(level.Revision, i);
+                var revisionIndexMap = index.GetOrCreate(level.Name, _ => new Dictionary<int, int>());
+                if (!revisionIndexMap.ContainsKey(level.Revision))
+                    revisionIndexMap.Add(level.Revision, i);
             }
         }
 
