@@ -1,13 +1,10 @@
 ﻿using System;
 using GeometryDashAPI.Data.Models;
-using GeometryDashAPI.Exceptions;
-using GeometryDashAPI.Levels.Enums;
 using GeometryDashAPI.Levels.GameObjects;
 using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Parsers;
-using Microsoft.Net.Http.Headers;
 
 namespace GeometryDashAPI.Levels
 {
