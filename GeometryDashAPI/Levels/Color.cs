@@ -43,5 +43,12 @@ namespace GeometryDashAPI.Levels
             Green = g;
             Blue = b;
         }
+
+        public string AsHex() => $"#{Red:X2}{Green:X2}{Blue:X2}";
+
+        public override string ToString()
+        {
+            return $"(id = {Id}, color = {AsHex()})";
+        }
     }
 }

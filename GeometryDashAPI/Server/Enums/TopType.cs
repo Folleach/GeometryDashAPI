@@ -7,6 +7,6 @@ namespace GeometryDashAPI.Server.Enums
         [OriginalName("top")] Top,
         [OriginalName("friends")] Friends,
         [OriginalName("relative")] Global,
-        [OriginalName("creators")] Creaotrs
+        [OriginalName("creators")] Creators
     }
 }

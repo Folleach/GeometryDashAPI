@@ -1,11 +1,11 @@
 ﻿namespace GeometryDashAPI.Levels.Enums
 {
-    public enum GameMode : byte
+    public enum GameMode
     {
         Cube = 0,
         Ship,
         Ball,
-        Dird,
+        Bird,
         Dart,
         Robot,
         Spider
