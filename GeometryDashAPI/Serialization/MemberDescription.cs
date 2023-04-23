@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using GeometryDashAPI.Attributes;
 
-namespace GeometryDashAPI
+namespace GeometryDashAPI.Serialization
 {
     public class MemberDescription<TAttribute>
     {

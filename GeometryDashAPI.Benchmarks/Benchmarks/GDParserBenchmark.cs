@@ -1,6 +1,6 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 using TestObjects;
 
 namespace GeometryDashAPI.Benchmarks.Benchmarks
@@ -9,9 +9,9 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
     public class GdParserBenchmark
     {
         private string largeRaw;
-        private static IGameParser parser;
+        private static IGameSerializer serializer;
 
-        [Params(typeof(ObjectParser))]
+        [Params(typeof(ObjectSerializer))]
         public Type ParserParam;
 
         [GlobalSetup]
@@ -19,8 +19,8 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         {
             throw new NotImplementedException();
             // largeRaw = parser.Encode(new LargeObject());
-            parser = (IGameParser)Activator.CreateInstance(ParserParam);
-            GeometryDashApi.parser = parser;
+            serializer = (IGameSerializer)Activator.CreateInstance(ParserParam);
+            GeometryDashApi.Serializer = serializer;
         }
 
         [Benchmark]
@@ -33,7 +33,7 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         [Benchmark]
         public void Decode()
         {
-            parser.Decode<LargeObject>(largeRaw);
+            serializer.Decode<LargeObject>(largeRaw);
         }
     }
 }

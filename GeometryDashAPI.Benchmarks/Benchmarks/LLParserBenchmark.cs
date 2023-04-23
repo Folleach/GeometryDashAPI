@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using BenchmarkDotNet.Attributes;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Benchmarks.Benchmarks
 {

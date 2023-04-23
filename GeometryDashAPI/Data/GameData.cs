@@ -1,9 +1,9 @@
 ﻿using GeometryDashAPI.Data.Enums;
 using GeometryDashAPI.Memory;
-using GeometryDashAPI.Parser;
 using System;
 using System.IO;
 using System.Text;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Data
 {

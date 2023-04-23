@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 using TestObjects;
 
@@ -11,7 +11,7 @@ public class TypeDescriptorTests
     [Test]
     public void ShouldCreate()
     {
-        var descriptor = new TypeDescriptor<ObjectSample, int>();
+        var descriptor = new TypeDescriptor<ObjectSample>();
 
         var instance = descriptor.Create();
         
@@ -21,7 +21,7 @@ public class TypeDescriptorTests
     [Test]
     public void ShouldCreateWithInit()
     {
-        var descriptor = new TypeDescriptor<AllTypes, int>();
+        var descriptor = new TypeDescriptor<AllTypes>();
 
         var instance = descriptor.Create("1,abc,2,200");
         
@@ -32,7 +32,7 @@ public class TypeDescriptorTests
     [Test]
     public void ShouldDecode()
     {
-        var descriptor = new TypeDescriptor<ObjectSample, int>();
+        var descriptor = new TypeDescriptor<ObjectSample>();
 
         var instance = descriptor.Create("33:1.9");
         
@@ -42,7 +42,7 @@ public class TypeDescriptorTests
     [Test]
     public void ShouldSaveToWithoutLoad()
     {
-        var descriptor = new TypeDescriptor<ObjectSample, int>();
+        var descriptor = new TypeDescriptor<ObjectSample>();
         
         var instance = descriptor.Create("11:abc!");
         
@@ -53,7 +53,7 @@ public class TypeDescriptorTests
     [Test]
     public void ShouldParseEnumItself()
     {
-        var descriptor = new TypeDescriptor<ObjectWithEnum, int>();
+        var descriptor = new TypeDescriptor<ObjectWithEnum>();
         
         var instance = descriptor.Create("1:33");
         

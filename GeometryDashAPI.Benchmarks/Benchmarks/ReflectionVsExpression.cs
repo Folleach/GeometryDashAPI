@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using GeometryDashAPI.Levels.GameObjects.Triggers;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Benchmarks.Benchmarks;
 
@@ -29,7 +29,7 @@ public class ReflectionVsExpression
 
     private static readonly string JustObject = "abcdef";
 
-    private static readonly TypeDescriptor<MoveTrigger, int> descriptor = new();
+    private static readonly TypeDescriptor<MoveTrigger> descriptor = new();
     private static readonly string ValueToSet = "20.2";
 
     private static readonly PropertyInfo MoveXProperty = typeof(MoveTrigger).GetProperty(nameof(MoveTrigger.MoveX), BindingFlags.Instance | BindingFlags.Public);

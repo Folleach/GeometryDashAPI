@@ -4,13 +4,13 @@ using GeometryDashAPI.Levels.GameObjects;
 using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Levels
 {
     public class Level
     {
-        internal static IGameParser parser = new ObjectParser();
+        internal static IGameSerializer Serializer = new ObjectSerializer();
         
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
@@ -62,7 +62,7 @@ namespace GeometryDashAPI.Levels
                 data = Decompress(data);
             var parser = new LLParserSpan(";", data);
             var header = parser.Next();
-            Options = Level.parser.Decode<LevelOptions>(header);
+            Options = Level.Serializer.Decode<LevelOptions>(header);
             LoadBlocks(parser);
         }
 
@@ -71,7 +71,7 @@ namespace GeometryDashAPI.Levels
             ReadOnlySpan<char> rawBlock;
             while ((rawBlock = llParser.Next()) != null && rawBlock.Length > 0)
             {
-                var block = parser.DecodeBlock(rawBlock);
+                var block = Serializer.DecodeBlock(rawBlock);
                 Blocks.Add((Block)block);
             }
         }

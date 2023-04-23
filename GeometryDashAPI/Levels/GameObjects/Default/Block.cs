@@ -7,9 +7,9 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
     [Sense(",")]
     public class Block : GameObject, IBlock
     {
-        [GameProperty("1", 0, true)] public int Id { get; set; }
-        [GameProperty("2", 0, true)] public float PositionX { get; set; }
-        [GameProperty("3", 0, true)] public float PositionY { get; set; }
+        [GameProperty("1", 0, true, Order = 1)] public int Id { get; set; }
+        [GameProperty("2", 0f, true, Order = 2)] public float PositionX { get; set; }
+        [GameProperty("3", 0f, true, Order = 3)] public float PositionY { get; set; }
         [GameProperty("4", false)] public bool HorizontalReflection { get; set; }
         [GameProperty("5", false)] public bool VerticalReflection { get; set; }
         [GameProperty("6", 0)] public int Rotation { get; set; }

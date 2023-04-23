@@ -26,7 +26,7 @@ namespace GeometryDashAPI.Server
             if (match.Success)
                 GeometryDashStatusCode = int.Parse(match.Value);
             else
-                value = GeometryDashApi.parser.Decode<T>(body);
+                value = GeometryDashApi.Serializer.Decode<T>(body);
         }
         
         public T GetResultOrDefault()

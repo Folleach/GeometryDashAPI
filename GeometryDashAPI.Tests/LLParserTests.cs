@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests

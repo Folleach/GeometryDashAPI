@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Server
 {

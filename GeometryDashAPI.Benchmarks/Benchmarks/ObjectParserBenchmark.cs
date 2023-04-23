@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Benchmarks.Benchmarks;
 
@@ -7,11 +7,11 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks;
 [MemoryDiagnoser]
 public class ObjectParserBenchmark
 {
-    private static IGameParser parser = new ObjectParser();
+    private static IGameSerializer serializer = new ObjectSerializer();
 
     [Benchmark]
     public int[] GetArray()
     {
-        return parser.GetArray("33,1,33,2,33,3,33,4,33,5,33,6,33,7,33,8,33,9", ",", Parsers.Parsers.GetOrDefault_Int32__);
+        return serializer.GetArray("33,1,33,2,33,3,33,4,33,5,33,6,33,7,33,8,33,9", ",", Parsers.GetOrDefault_Int32__);
     }
 }

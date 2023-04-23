@@ -2,7 +2,7 @@
 using System.Net;
 using BenchmarkDotNet.Attributes;
 using GeometryDashAPI.Levels;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 using GeometryDashAPI.Server;
 using GeometryDashAPI.Server.Responses;
 
@@ -18,7 +18,7 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         public void SetUp()
         {
             levelRaw = File.ReadAllText(@"C:\Users\Andrey\Documents\GitHub\GeometryDashAPI\cromulent.txt");
-            Level.parser = new ObjectParser();
+            Level.Serializer = new ObjectSerializer();
         }
 
         [Benchmark]

@@ -1,46 +1,45 @@
 ﻿using FluentAssertions;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 using TestObjects;
 
-namespace GeometryDashAPI.Tests
+namespace GeometryDashAPI.Tests;
+
+[TestFixture]
+public class StructParserTests
 {
-    [TestFixture]
-    public class StructParserTests
+    private static ObjectSerializer serializer = new();
+
+    [Test]
+    public void Decode_SampleStruct_ShouldBeCorrect()
     {
-        private static ObjectParser parser = new();
+        var input = "33:1~8:444";
 
-        [Test]
-        public void Decode_SampleStruct_ShouldBeCorrect()
+        var actual = serializer.Decode<StructSample>(input);
+
+        var expected = new StructSample()
         {
-            var input = "33:1~8:444";
-
-            var actual = parser.Decode<StructSample>(input);
-
-            var expected = new StructSample()
+            FirstObject = new ObjectSample()
             {
-                FirstObject = new ObjectSample()
-                {
-                    X = 1
-                },
-                SecondObject = new LargeObject()
-                {
-                    x8 = 444
-                }
-            };
+                X = 1
+            },
+            SecondObject = new LargeObject()
+            {
+                x8 = 444
+            }
+        };
 
-            actual.Should().BeEquivalentTo(expected);
-        }
+        actual.Should().BeEquivalentTo(expected);
+    }
 
-        [Test]
-        public void Decode_ComplexParserObject_ShouldBeCorrect()
-        {
-            var input = ComplexParserObject.ExampleInput;
-            var expected = ComplexParserObject.ExampleExpected;
+    [Test]
+    public void Decode_ComplexParserObject_ShouldBeCorrect()
+    {
+        var input = ComplexParserObject.ExampleInput;
+        var expected = ComplexParserObject.ExampleExpected;
 
-            var actual = parser.Decode<ComplexParserObject>(input);
+        var actual = serializer.Decode<ComplexParserObject>(input);
 
-            actual.Should().BeEquivalentTo(expected);
-        }
+        actual.Should().BeEquivalentTo(expected);
     }
 }

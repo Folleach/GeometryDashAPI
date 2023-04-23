@@ -63,9 +63,9 @@ namespace TestObjects
     {
         [GameProperty("1")]
         public int X { get; set; }
-        [GameProperty("A", keyOverride: 0)]
+        [GameProperty("A", KeyOverride = 0)]
         public int A { get; set; }
-        [GameProperty("B", keyOverride: 1)]
+        [GameProperty("B", KeyOverride = 1)]
         public int B { get; set; }
     }
 }

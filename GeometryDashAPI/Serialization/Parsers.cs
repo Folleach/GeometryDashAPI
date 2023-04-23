@@ -4,7 +4,7 @@ using GeometryDashAPI.Server;
 
 // ReSharper disable UnusedMember.Local
 
-namespace GeometryDashAPI.Parsers
+namespace GeometryDashAPI.Serialization
 {
     // note: The names are dependent!
     // Used for TypeDescriptor

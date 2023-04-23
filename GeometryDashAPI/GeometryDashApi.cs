@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Levels.GameObjects.Default;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 
 [assembly: InternalsVisibleTo("GeometryDashAPI.Tests")]
 [assembly: InternalsVisibleTo("GeometryDashAPI.Benchmarks")]
@@ -14,7 +14,7 @@ namespace GeometryDashAPI
 {
     public class GeometryDashApi
     {
-        internal static IGameParser parser = new ObjectParser();
+        internal static ObjectSerializer Serializer = new();
 
         private static readonly Dictionary<int, Type> BlockTypes = new();
 

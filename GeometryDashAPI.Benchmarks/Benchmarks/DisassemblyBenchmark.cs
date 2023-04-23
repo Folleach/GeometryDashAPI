@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 using TestObjects;
 
 namespace GeometryDashAPI.Benchmarks.Benchmarks;
@@ -10,7 +10,7 @@ public class DisassemblyBenchmark
     [Benchmark]
     public ObjectSample CreateByDescriptor()
     {
-        var descriptor = new TypeDescriptor<ObjectSample, int>();
+        var descriptor = new TypeDescriptor<ObjectSample>();
         return descriptor.Create("33:2");
     }
 }

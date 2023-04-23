@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace GeometryDashAPI.Parsers
+namespace GeometryDashAPI.Serialization
 {
     // ReSharper disable once InconsistentNaming
     public ref struct LLParserSpan
