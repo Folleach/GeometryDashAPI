@@ -269,8 +269,11 @@ namespace GeometryDashAPI.Serialization
             if (append == null)
                 throw new InvalidOperationException($"method '{nameof(StringBuilder.Append)}' is not contains in {typeof(StringBuilder)}");
 
+            // destination.Append(key);
             var appendKeyCall = Expression.Call(printerParameterBuilder, append, Expression.Convert(Expression.Constant(attribute.Key), typeof(ReadOnlySpan<char>)));
+            // destination.Append(separator);
             var appendSenseCall = Expression.Call(printerParameterBuilder, append, Expression.Convert(Expression.Constant(sense), typeof(ReadOnlySpan<char>)));
+            // destination.Append(value);
             var appendValueCall = CreateAppendValueCall(memberType, field, printerParameterBuilder, append, member);
 
             Expression print = Expression.Block(appendKeyCall, appendSenseCall, appendValueCall);
@@ -337,7 +340,7 @@ namespace GeometryDashAPI.Serialization
             if (typeof(IGameObject).IsAssignableFrom(type))
                 return CreateGameObjectPrinter(type, field, printerParameterBuilder);
             if (type.IsEnum)
-                return CreateEnumPrinter(type, field, printerParameterBuilder);
+                return CreateEnumPrinter(type, field, append, printerParameterBuilder);
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
             {
                 var toArrayMethod = type.GetMethod(nameof(List<object>.ToArray), BindingFlags.Public | BindingFlags.Instance);
@@ -371,11 +374,14 @@ namespace GeometryDashAPI.Serialization
             return Expression.Call(Expression.Convert(descriptor, descriptorType), copyTo, field, printerParameterBuilder);
         }
 
-        private static Expression CreateEnumPrinter(Type type, Expression field, ParameterExpression printerParameterBuilder)
+        private static Expression CreateEnumPrinter(
+            Type type, // todo: use enum type to select the type instead of Int32 constant
+            Expression field,
+            MethodInfo append,
+            ParameterExpression printerParameterBuilder)
         {
-            var (serializerExp, serializer) = GetSerializer();
-
-            throw new NotImplementedException();
+            var valuePrinter = typeof(Printers).GetMethod($"{PredefinedMethodPrefix}_{nameof(Int32)}", BindingFlags.Static | BindingFlags.Public);
+            return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, Expression.Convert(field, typeof(int))));
         }
 
         private static Expression CreateArrayPrinter(Type type, Expression field, ParameterExpression printerParameterBuilder,
