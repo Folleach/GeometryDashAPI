@@ -384,62 +384,25 @@ namespace GeometryDashAPI.Serialization
             return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, Expression.Convert(field, typeof(int))));
         }
 
-        private static Expression CreateArrayPrinter(Type type, Expression field, ParameterExpression printerParameterBuilder,
+        private static Expression CreateArrayPrinter(Type type, Expression array, ParameterExpression destination,
             MethodInfo append, MemberInfo member, Type elementType)
         {
             var printArray = typeof(Printers)
                 .GetMethod(nameof(Printers.PrintArray))
                 ?.MakeGenericMethod(elementType);
+            if (printArray == null)
+                throw new InvalidOperationException($"{nameof(Printers.PrintArray)} is not exists in class {nameof(Printers)}");
             var separator = Expression.Constant(GetArraySeparator(member).Separator);
-            Expression valuePrinter;
-            if (typeof(IGameObject).IsAssignableFrom(elementType))
-            {
-                var printerDelegate = typeof(Printers.PrinterAppend<>).MakeGenericType(elementType);
-
-                var (serializerExp, serializer) = GetSerializer();
-                var genericGetDescriptor = serializer.GetType()
-                    .GetMethod(nameof(serializer.GetDescriptor), BindingFlags.Instance | BindingFlags.NonPublic);
-                var getDescriptor = genericGetDescriptor?.MakeGenericMethod(type);
-                var descriptor = Expression.Call(serializerExp, getDescriptor);
-
-                var descriptorType = typeof(TypeDescriptor<>).MakeGenericType(type);
-                var copyTo = descriptorType.GetMethod("CopyTo");
-                Expression.Call(Expression.Convert(descriptor, descriptorType), copyTo, field, printerParameterBuilder);
-                /*
-                 * CopyTo(instance, destination)
-                 * 
-                 */
-                // 
-                var printer = typeof(Printers).GetMethod(
-                    $"{PredefinedMethodPrefix}_{elementType?.Name}",
-                    BindingFlags.Static | BindingFlags.Public);
-                var printAppendElement = Expression.Parameter(elementType, "element");
-                valuePrinter = Expression.Call(printer, printAppendElement);
-                var printAppendDestination = Expression.Parameter(typeof(StringBuilder), "destination");
-                var callAppend = Expression.Call(printAppendDestination, append, valuePrinter);
-
-                valuePrinter = Expression.Lambda(printerDelegate, callAppend, printAppendElement, printAppendDestination);
-            }
-            else
-            {
-                var printer = typeof(Printers).GetMethod(
-                    $"{PredefinedMethodPrefix}_{elementType?.Name}",
-                    BindingFlags.Static | BindingFlags.Public);
-                var printAppendElement = Expression.Parameter(elementType, "element");
-                valuePrinter = Expression.Call(printer, printAppendElement);
-                var lType = typeof(Printers.PrinterAppend<>).MakeGenericType(elementType);
-                var printAppendDestination = Expression.Parameter(typeof(StringBuilder), "destination");
-                var callAppend = Expression.Call(printAppendDestination, append, valuePrinter);
-
-                valuePrinter = Expression.Lambda(lType, callAppend, printAppendElement, printAppendDestination);
-            }
+            var instanceParameter = Expression.Parameter(elementType, "arrayItem");
+            var appendValueCall = CreateAppendValueCall(elementType, instanceParameter, destination, append, member);
+            Expression appendValueLambda = Expression.Lambda(typeof(Printers.PrinterAppend<>).MakeGenericType(elementType), appendValueCall, instanceParameter, destination);
 
             return Expression.Call(
                 printArray,
-                field,
+                array,
                 separator,
-                printerParameterBuilder,
-                valuePrinter);
+                destination,
+                appendValueLambda);
         }
 
         private static Expression CreateSimpleValueAppender(
