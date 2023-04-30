@@ -11,7 +11,8 @@ using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests.Integration;
 
-[TestFixture]
+[TestFixture(Explicit = true, Reason = "use a lot of levels to compare compability with Geometry Dash")]
+[Category("Integration")]
 public class LevelResponseTest
 {
     private const string PROCESS_DATA_PATH_ENV = "GDAPI_TESTS_CONTENTS";
