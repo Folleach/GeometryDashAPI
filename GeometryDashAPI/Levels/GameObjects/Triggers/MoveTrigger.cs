@@ -18,7 +18,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
             set => easingType = (byte) value;
         }
         [GameProperty("30", (byte)Easing.None, true)] private byte easingType = (byte)Easing.None;
-        [GameProperty("85", 2f, true)] public float EasingTime { get; set; } = 2f;
+        [GameProperty("85", 2f)] public float EasingTime { get; set; } = 2f;
 
         public MoveTrigger() : base(901)
         {

@@ -2,7 +2,7 @@
 
 namespace GeometryDashAPI.Levels.GameObjects
 {
-    public interface IBlock
+    public interface IBlock : IGameObject
     {
         int Id { get; set; }
         float PositionX { get; set; }

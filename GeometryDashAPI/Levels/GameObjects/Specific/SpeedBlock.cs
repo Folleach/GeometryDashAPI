@@ -19,7 +19,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
         [GameProperty("24", (short)Layer.B2)] protected override short zLayer { get; set; } = (short)Layer.B2;
         [GameProperty("25", -6)] public override int ZOrder { get; set; } = -6;
 
-        [GameProperty("13", true)]
+        [GameProperty("13", true, true)]
         public bool Using { get; set; } = true;
 
         public SpeedBlockId BlockType

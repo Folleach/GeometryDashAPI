@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace GeometryDashAPI.Serialization
@@ -7,6 +9,8 @@ namespace GeometryDashAPI.Serialization
     public class ObjectSerializer : IGameSerializer
     {
         private static Dictionary<Type, IDescriptor<IGameObject>> descriptors = new();
+
+        private static ConcurrentDictionary<Type, Action<IGameObject, StringBuilder>> copiersCache = new();
 
         public T Decode<T>(ReadOnlySpan<char> raw) where T : IGameObject
         {
@@ -21,6 +25,23 @@ namespace GeometryDashAPI.Serialization
             var builder = new StringBuilder();
             copyDescriptor.CopyTo(value, builder);
             return builder.ToString();
+        }
+
+        public Action<IGameObject, StringBuilder> GetCopier(Type type) => copiersCache.GetOrAdd(type, CreateCopier);
+
+        private static Action<IGameObject, StringBuilder> CreateCopier(Type type)
+        {
+            Expression descriptor = Expression.Constant(descriptors.GetOrCreate(type, CreateDescriptor));
+            var instance = Expression.Parameter(typeof(IGameObject), "instance");
+            var destination = Expression.Parameter(typeof(StringBuilder), "destination");
+            descriptor = Expression.Convert(descriptor, typeof(ICopyDescriptor<>).MakeGenericType(type));
+
+            var method = typeof(ICopyDescriptor<>).MakeGenericType(type).GetMethod("CopyTo");
+            if (method == null)
+                throw new InvalidOperationException($"method 'CopyTo' not found in descriptor for type: {type}");
+
+            var call = Expression.Call(descriptor, method, Expression.Convert(instance, type), destination);
+            return (Action<IGameObject, StringBuilder>)Expression.Lambda(call, instance, destination).Compile();
         }
 
         public List<T> DecodeList<T>(ReadOnlySpan<char> raw, string separator) where T : IGameObject
@@ -67,7 +88,8 @@ namespace GeometryDashAPI.Serialization
         /// <summary>
         /// Uses in <see cref="TypeDescriptor{T}"/>
         /// </summary>
-        internal IDescriptor<T> GetDescriptor<T>() => (IDescriptor<T>)descriptors.GetOrCreate(typeof(T), CreateDescriptor);
+        internal IDescriptor<T> GetDescriptor<T>() where T : IGameObject
+            => (IDescriptor<T>)descriptors.GetOrCreate(typeof(T), CreateDescriptor);
 
         private static IGameObject Decode(Type type, ReadOnlySpan<char> raw)
         {

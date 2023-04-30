@@ -5,7 +5,7 @@ using GeometryDashAPI.Levels.Enums;
 namespace GeometryDashAPI.Levels
 {
     [Sense(",")]
-    public class LevelOptions : IGameObject
+    public class LevelOptions : GameObject
     {
         [GameProperty("kS38", KeyOverride = 0)]
         [ArraySeparator("|")]
@@ -58,7 +58,5 @@ namespace GeometryDashAPI.Levels
         
         [GameProperty("kA11", KeyOverride = 16)]
         public int Ka11 { get; set; }
-
-        public List<string> WithoutLoaded { get; }
     }
 }

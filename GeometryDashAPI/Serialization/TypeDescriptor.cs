@@ -69,7 +69,7 @@ namespace GeometryDashAPI.Serialization
         {
             var instance = create();
             var parser = new LLParserSpan(sense, raw);
-            
+
             if (isStruct)
             {
                 var position = 0;

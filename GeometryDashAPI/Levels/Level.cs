@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using GeometryDashAPI.Data.Models;
 using GeometryDashAPI.Levels.GameObjects;
-using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Serialization;
+using Microsoft.Extensions.Primitives;
 
 namespace GeometryDashAPI.Levels
 {
@@ -14,11 +15,11 @@ namespace GeometryDashAPI.Levels
         
         public const string DefaultLevelString = "H4sIAAAAAAAAC6WQ0Q3CMAxEFwqSz4nbVHx1hg5wA3QFhgfn4K8VRfzci-34Kcq-1V7AZnTCg5UeQUBwQc3GGzgRZsaZICKj09iJBzgU5tcU-F-xHCryjhYuSZy5fyTK3_iI7JsmTjX2y2umE03ZV9RiiRAmoZVX6jyr80ZPbHUZlY-UYAzWNlJTmIBi9yfXQXYGDwIAAA==";
 
-        public ColorList Colors { get; private set; }
+        public List<Color> Colors => Options.Colors;
         public BlockList Blocks { get; private set; }
 
         public int CountBlock => Blocks.Count;
-        public int CountColor => Colors.Count;
+        public int CountColor => Options.Colors.Count;
 
         public LevelOptions Options { get; set; }
 
@@ -42,7 +43,6 @@ namespace GeometryDashAPI.Levels
 
         protected virtual void Initialize()
         {
-            Colors = new ColorList();
             Blocks = new BlockList();
         }
 
@@ -53,7 +53,7 @@ namespace GeometryDashAPI.Levels
 
         public void AddColor(Color color)
         {
-            Colors.AddColor(color);
+            Options.Colors.Add(color);
         }
 
         protected virtual void Load(string data, bool compressed)
@@ -76,29 +76,22 @@ namespace GeometryDashAPI.Levels
             }
         }
 
-        public override string ToString()
+        public string SaveAsString(bool compress = true)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("kS38,");
-            List<Color> colorList = Colors.ToList();
-            foreach (Color color in colorList)
-                builder.Append($"{color.ToString()}|");
+            var builder = new StringBuilder();
+            builder.Append(GeometryDashApi.Serializer.Encode(Options));
 
-            // builder.Append($",kA13,{MusicOffset},kA15,{kA15},kA16,{kA16},kA14,{kA14},kA6,{Background}," +
-            //     $"kA7,{Ground},kA17,{kA17},kA18,{Fonts},kS39,{kS39},kA2,{(byte)GameMode}," +
-            //     $"kA3,{GameConvert.BoolToString(Mini)},kA8,{GameConvert.BoolToString(Dual)}," +
-            //     $"kA4,{(byte)PlayerSpeed},kA9,{kA9},kA10,{GameConvert.BoolToString(TwoPlayerMode)},kA11,{kA11};");
-
-            foreach (var block1 in Blocks)
+            foreach (var block in Blocks)
             {
-                var block = (Block)block1;
-                throw new NotImplementedException("Encode temporary doesn't implemented");
-                // builder.Append(parser.EncodeBlock(block));
                 builder.Append(';');
+                GeometryDashApi.Serializer.GetCopier(block.GetType()).Invoke(block, builder);
             }
 
-            byte[] bytes = Crypt.GZipCompress(Encoding.ASCII.GetBytes(builder.ToString()));
-            return GameConvert.ToBase64(bytes);
+            builder.Append(';');
+
+            if (compress)
+                return Compress(builder.ToString());
+            return builder.ToString();
         }
 
         public static string Decompress(string data)
@@ -106,6 +99,11 @@ namespace GeometryDashAPI.Levels
             if (data[0] == 'e' && data[1] == 'J')
                 return Crypt.ZLibDecompress(GameConvert.FromBase64(data));
             return Crypt.GZipDecompress(GameConvert.FromBase64(data));
+        }
+
+        public static string Compress(string level)
+        {
+            return GameConvert.ToBase64(Crypt.GZipCompress(Encoding.UTF8.GetBytes(level)));
         }
     }
 }
