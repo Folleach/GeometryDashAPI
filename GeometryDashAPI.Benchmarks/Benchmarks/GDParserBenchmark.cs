@@ -9,7 +9,7 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
     public class GdParserBenchmark
     {
         private string largeRaw;
-        private static IGameSerializer serializer;
+        private static ObjectSerializer serializer;
 
         [Params(typeof(ObjectSerializer))]
         public Type ParserParam;
@@ -19,7 +19,7 @@ namespace GeometryDashAPI.Benchmarks.Benchmarks
         {
             throw new NotImplementedException();
             // largeRaw = parser.Encode(new LargeObject());
-            serializer = (IGameSerializer)Activator.CreateInstance(ParserParam);
+            serializer = (ObjectSerializer)Activator.CreateInstance(ParserParam);
             GeometryDashApi.Serializer = serializer;
         }
 
