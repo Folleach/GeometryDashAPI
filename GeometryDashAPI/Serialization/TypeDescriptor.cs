@@ -380,7 +380,7 @@ namespace GeometryDashAPI.Serialization
             MethodInfo append,
             ParameterExpression printerParameterBuilder)
         {
-            var valuePrinter = typeof(Printers).GetMethod($"{PredefinedMethodPrefix}_{nameof(Int32)}", BindingFlags.Static | BindingFlags.Public);
+            var valuePrinter = typeof(Printers).GetMethod($"{PredefinedMethodPrefix}_{nameof(Int32)}__", BindingFlags.Static | BindingFlags.Public);
             return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, Expression.Convert(field, typeof(int))));
         }
 
@@ -411,7 +411,9 @@ namespace GeometryDashAPI.Serialization
             MethodInfo append,
             Expression getValue)
         {
-            var valuePrinter = typeof(Printers).GetMethod($"{PredefinedMethodPrefix}_{type.Name}", BindingFlags.Static | BindingFlags.Public);
+            var valuePrinter = typeof(Printers).GetMethod(GeneratePredefinedName(type), BindingFlags.Static | BindingFlags.Public);
+            if (valuePrinter == null)
+                throw new InvalidOperationException($"can't find predefined method '{GeneratePredefinedName(type)}' in {nameof(Printers)}");
             return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, getValue));
         }
 
@@ -498,7 +500,7 @@ namespace GeometryDashAPI.Serialization
             }
 
             var parserType = typeof(Parsers);
-            var parserName = GenerateParserName(propType);
+            var parserName = GeneratePredefinedName(propType);
             var parser = parserType.GetMethod(parserName, BindingFlags.Static | BindingFlags.Public);
 
             serializerExp = null;
@@ -507,7 +509,7 @@ namespace GeometryDashAPI.Serialization
             return parser;
         }
 
-        private static string GenerateParserName(Type type)
+        private static string GeneratePredefinedName(Type type)
         {
             if (type.IsGenericType)
                 return $"{PredefinedMethodPrefix}_{type.GetGenericArguments()[0].Name}_Y";

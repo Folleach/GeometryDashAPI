@@ -115,4 +115,53 @@ public class ObjectParserTests
 
         actual.Should().BeEquivalentTo(expected);
     }
+
+    [Test]
+    public void NullableField_Encode_HasValue()
+    {
+        var input = new WithNullable()
+        {
+            Value = 12
+        };
+
+        var actual = serializer.Encode(input).ToString();
+
+        actual.Should().Be("3:12");
+    }
+    
+    [Test]
+    public void NullableField_Decode_HasValue()
+    {
+        var input = "3:44";
+
+        var actual = serializer.Decode<WithNullable>(input);
+
+        actual.Value.Should().Be(44);
+    }
+
+    [Test]
+    public void NullableField_Encode_Null()
+    {
+        var input = new WithNullable()
+        {
+            Value = null
+        };
+
+        var actual = serializer.Encode(input).ToString();
+
+        actual.Should().BeEmpty();
+    }
+
+    [Test]
+    public void NullableField_Encode_Zero()
+    {
+        var input = new WithNullable()
+        {
+            Value = 0
+        };
+
+        var actual = serializer.Encode(input).ToString();
+
+        actual.Should().Be("3:0");
+    }
 }
