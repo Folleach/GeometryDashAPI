@@ -1,4 +1,4 @@
-﻿using GeometryDashAPI;
+﻿using System;
 using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests
@@ -22,6 +22,15 @@ namespace GeometryDashAPI.Tests
         public void StringToBool(bool expected, string value, bool isReverse)
         {
             Assert.AreEqual(expected, GameConvert.StringToBool(value, isReverse));
+        }
+
+        [TestCase(true, "1", false)]
+        [TestCase(false, "0", false)]
+        [TestCase(false, "1", true)]
+        [TestCase(true, "0", true)]
+        public void StringToBool_Span(bool expected, string value, bool isReverse)
+        {
+            Assert.AreEqual(expected, GameConvert.StringToBool(value.AsSpan(), isReverse));
         }
 
         [TestCase("1", 1f)]
