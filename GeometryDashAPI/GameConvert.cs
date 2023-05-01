@@ -12,25 +12,19 @@ namespace GeometryDashAPI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string BoolToString(bool value, bool isReverse = false)
         {
-            if (isReverse)
-                return value ? "0" : "1";
-            return value ? "1" : "0";
+            return value ^ isReverse ? "1" : "0";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StringToBool(ReadOnlySpan<char> value, bool isReverse = false)
         {
-            if (isReverse)
-                return value.CompareTo("0", StringComparison.Ordinal) == 0;
-            return value.CompareTo("1", StringComparison.Ordinal) == 0;
+            return (value.CompareTo("1", StringComparison.Ordinal) == 0) ^ isReverse;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StringToBool(string value, bool isReverse = false)
         {
-            if (isReverse)
-                return value == "0";
-            return value == "1";
+            return value == "1" ^ isReverse;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
