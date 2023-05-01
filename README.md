@@ -18,6 +18,62 @@ Now you can see examples [here](https://github.com/Folleach/GeometryDashAPI/tree
 
 ## Introduce
 
+### LLParserSpan
+A zero-allocation alternative for [Split](https://learn.microsoft.com/ru-ru/dotnet/api/system.string.split?view=net-8.0) method on string
+
+For example
+```cs
+var input = "x1,x2,x3,x4";
+var separator = ",";
+var parser = new LLParserSpan(separator, input);
+```
+
+There are a few things you can do here
+#### 1. Find the number of array count
+```csharp
+Console.WriteLine(parser.GetCountOfValues());
+```
+Output:
+```
+4
+```
+
+#### 2. Enumerate a values of input
+```csharp
+ReadOnlySpan<char> value;
+while ((value = parser.Next()) != null)
+    Console.WriteLine(value.ToString());
+```
+Output:
+```
+x1
+x2
+x3
+x4
+```
+
+#### 3. Enumerate a values as key value pairs
+```csharp
+while (parser.TryParseNext(out var key, out var value))
+    Console.WriteLine($"{key} = {value}");
+```
+Output:
+```
+x1 = x2
+x3 = x4
+```
+
+Benchmark
+
+|                       Method | ItemsCount | ValueLength |      Mean |     Error |    StdDev | Code Size |   Gen0 |   Gen1 | Allocated |
+|----------------------------- |----------- |------------ |----------:|----------:|----------:|----------:|-------:|-------:|----------:|
+| LLParserSpan_EnumerateValues |      10000 |           1 |  63.53 us |  1.240 us |  1.967 us |     341 B |      - |      - |         - |
+|        Split_EnumerateValues |      10000 |           1 | 293.70 us |  5.780 us |  8.289 us |     880 B | 3.4180 | 0.9766 |  320025 B |
+| LLParserSpan_EnumerateValues |      10000 |           5 | 176.33 us |  2.805 us |  2.624 us |     341 B |      - |      - |         - |
+|        Split_EnumerateValues |      10000 |           5 | 296.32 us |  5.674 us | 10.516 us |     880 B | 4.3945 | 1.9531 |  400025 B |
+| LLParserSpan_EnumerateValues |      10000 |          20 | 688.86 us | 10.436 us |  9.252 us |     341 B |      - |      - |       1 B |
+|        Split_EnumerateValues |      10000 |          20 | 542.46 us | 10.635 us | 18.904 us |     880 B | 7.8125 | 2.9297 |  720025 B |
+
 ### TypeDescriptor\<T\>
 Uses for serialize and deserialize classes in GeometryDash _csv like_ format.  
 Made to convert any contracts as quickly as possible. Uses the expression inside compilation
