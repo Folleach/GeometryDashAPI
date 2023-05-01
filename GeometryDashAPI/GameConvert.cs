@@ -36,7 +36,7 @@ namespace GeometryDashAPI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string SingleToString(float value)
         {
-            return string.Format(Culture.FormatProvider, "{0}", value);
+            return value.ToString(Culture.FormatProvider);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -48,7 +48,7 @@ namespace GeometryDashAPI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string DoubleToString(double value)
         {
-            return string.Format(Culture.FormatProvider, "{0}", value);
+            return value.ToString(Culture.FormatProvider);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

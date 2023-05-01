@@ -8,9 +8,9 @@ namespace GeometryDashAPI.Levels
         [GameProperty("1", 255, true, Order = 1)] public byte Red { get; set; } = 255;
         [GameProperty("2", 255, true, Order = 2)] public byte Green { get; set; } = 255;
         [GameProperty("3", 255, true, Order = 3)] public byte Blue { get; set; } = 255;
-        [GameProperty("11", 255, true, Order = 4)] public byte Red2 { get; set; } = 255;
-        [GameProperty("12", 255, true, Order = 5)] public byte Green2 { get; set; } = 255;
-        [GameProperty("13", 255, true, Order = 6)] public byte Blue2 { get; set; } = 255;
+        [GameProperty("11", 255, Order = 4)] public byte Red2 { get; set; } = 255;
+        [GameProperty("12", 255, Order = 5)] public byte Green2 { get; set; } = 255;
+        [GameProperty("13", 255, Order = 6)] public byte Blue2 { get; set; } = 255;
 
         /// <summary>
         /// -1 - none, 0 - none, 1 - PlayerColor1, 2 - PlayerColor2
@@ -26,7 +26,7 @@ namespace GeometryDashAPI.Levels
         [GameProperty("17")] public bool CopyOpacity { get; set; }
         [GameProperty("10")] public Hsv ColorHSV { get; set; }
         [GameProperty("9")] public int TargetChannelID { get; set; }
-        [GameProperty("18", 0, true)] public int K18 { get; set; }
+        [GameProperty("18", 0)] public int K18 { get; set; }
 
         public Color()
         {

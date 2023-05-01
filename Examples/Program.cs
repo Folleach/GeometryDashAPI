@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Levels.GameObjects.Specific;
+using GeometryDashAPI.Serialization;
 using GeometryDashAPI.Server.Dtos;
 using GeometryDashAPI.Server.Responses;
 using JetBrains.Profiler.Api;
@@ -47,6 +48,13 @@ namespace Examples
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
             
+            var input = "x1,x2,x3,x4";
+            var separator = ",";
+            var parser = new LLParserSpan(separator, input);
+
+            while (parser.TryParseNext(out var key, out var value))
+                Console.WriteLine($"{key}={value}");
+            return;
             F();
         }
 

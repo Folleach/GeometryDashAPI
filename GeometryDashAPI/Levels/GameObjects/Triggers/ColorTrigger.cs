@@ -16,7 +16,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         [GameProperty("17", false, Order = OrderTriggerBase + 6)] public bool Blending { get; set; }
 
-        [GameProperty("23", 0, true, Order = OrderTriggerBase + 10)] public int ColorId { get; set; }
+        [GameProperty("23", 0, Order = OrderTriggerBase + 10)] public int ColorId { get; set; }
 
         [GameProperty("15", false)] public bool PlayerColor1 { get; set; }
         [GameProperty("16", false)] public bool PlayerColor2 { get; set; }

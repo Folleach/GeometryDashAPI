@@ -87,7 +87,11 @@ namespace GeometryDashAPI.Serialization
                     if (!int.TryParse(key, out var index))
                     {
                         var keyString = key.ToString();
-                        var mapped = mappings[keyString];
+                        if (!mappings.TryGetValue(keyString, out var mapped))
+                        {
+                            instance.WithoutLoaded.Add($"{key.ToString()}{sense}{value.ToString()}");
+                            continue;
+                        }
                         if (!TrySet(instance, mapped, value))
                             instance.WithoutLoaded.Add($"{keyString}{sense}{value.ToString()}");
                         continue;

@@ -11,6 +11,7 @@ namespace GeometryDashAPI
         {
             cultureInfo = (CultureInfo)CultureInfo.InvariantCulture.Clone();
             cultureInfo.NumberFormat.CurrencyDecimalSeparator = ".";
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
         }
 
         public static IFormatProvider FormatProvider

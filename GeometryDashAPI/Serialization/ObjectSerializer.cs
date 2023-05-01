@@ -8,7 +8,7 @@ namespace GeometryDashAPI.Serialization
 {
     public class ObjectSerializer : IGameSerializer
     {
-        private static Dictionary<Type, IDescriptor<IGameObject>> descriptors = new();
+        private static ConcurrentDictionary<Type, IDescriptor<IGameObject>> descriptors = new();
 
         private static ConcurrentDictionary<Type, Action<IGameObject, StringBuilder>> copiersCache = new();
 
@@ -19,7 +19,7 @@ namespace GeometryDashAPI.Serialization
 
         public ReadOnlySpan<char> Encode<T>(T value) where T : IGameObject
         {
-            var descriptor = descriptors.GetOrCreate(typeof(T), CreateDescriptor);
+            var descriptor = descriptors.GetOrAdd(typeof(T), CreateDescriptor);
             if (descriptor is not ICopyDescriptor<T> copyDescriptor)
                 throw new InvalidOperationException($"descriptor is not implement '{typeof(ICopyDescriptor<T>)}'");
             var builder = new StringBuilder();
@@ -31,7 +31,7 @@ namespace GeometryDashAPI.Serialization
 
         private static Action<IGameObject, StringBuilder> CreateCopier(Type type)
         {
-            Expression descriptor = Expression.Constant(descriptors.GetOrCreate(type, CreateDescriptor));
+            Expression descriptor = Expression.Constant(descriptors.GetOrAdd(type, CreateDescriptor));
             var instance = Expression.Parameter(typeof(IGameObject), "instance");
             var destination = Expression.Parameter(typeof(StringBuilder), "destination");
             descriptor = Expression.Convert(descriptor, typeof(ICopyDescriptor<>).MakeGenericType(type));
@@ -89,11 +89,11 @@ namespace GeometryDashAPI.Serialization
         /// Uses in <see cref="TypeDescriptor{T}"/>
         /// </summary>
         internal IDescriptor<T> GetDescriptor<T>() where T : IGameObject
-            => (IDescriptor<T>)descriptors.GetOrCreate(typeof(T), CreateDescriptor);
+            => (IDescriptor<T>)descriptors.GetOrAdd(typeof(T), CreateDescriptor);
 
         private static IGameObject Decode(Type type, ReadOnlySpan<char> raw)
         {
-            var descriptor = descriptors.GetOrCreate(type, CreateDescriptor);
+            var descriptor = descriptors.GetOrAdd(type, CreateDescriptor);
             return descriptor.Create(raw);
         }
 
