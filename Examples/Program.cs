@@ -34,27 +34,20 @@ using Newtonsoft.Json;
 
 namespace Examples
 {
-    class TestObject
+    public class TestObject
     {
         public int Value { get; set; }
         public string X { get; set; }
     }
     
     //This class for the only test.
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
-            
-            var input = "x1,x2,x3,x4";
-            var separator = ",";
-            var parser = new LLParserSpan(separator, input);
 
-            while (parser.TryParseNext(out var key, out var value))
-                Console.WriteLine($"{key}={value}");
-            return;
             F();
         }
 
