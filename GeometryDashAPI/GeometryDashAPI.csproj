@@ -5,13 +5,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Folleach</Authors>
     <NeutralLanguage>en</NeutralLanguage>
-    <Version>0.1.1</Version>
     <Description>API for game Geometry Dash</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Folleach/GeometryDashAPI</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>api, geometry, dash</PackageTags>
-    <PackageVersion>0.1.16</PackageVersion>
     <LangVersion>9</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

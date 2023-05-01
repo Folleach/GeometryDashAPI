@@ -28,11 +28,13 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+    - name: Set Version
+      run: echo ${{ github.ref_name }} | sed -r "s/^v/GDAPI_VERSION=/" >> $GITHUB_ENV
     - name: Restore dependencies
       run: dotnet restore ./GeometryDashAPI.sln
     - name: Release build
       run: dotnet build -c Release ./GeometryDashAPI/GeometryDashAPI.csproj
     - name: Pack
-      run: dotnet pack -c Release -o ./pack/ ./GeometryDashAPI/GeometryDashAPI.csproj
+      run: dotnet pack -c Release -o ./pack/ /p:PackageVersion=$GDAPI_VERSION ./GeometryDashAPI/GeometryDashAPI.csproj
     - name: Push to NuGet
       run: dotnet nuget push ./pack/GeometryDashAPI*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
