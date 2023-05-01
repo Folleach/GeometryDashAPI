@@ -144,3 +144,12 @@ Console.WriteLine(builder.ToString()); // will return 1:Folleach:2:1:3:NULL
 ```
 
 Also you can define some arrays or `List<T>` in your contract.
+
+## Used libraries
+| Name        | Link                                                 |
+|-------------|------------------------------------------------------|
+| SharpZipLib | [GitHub](https://github.com/icsharpcode/SharpZipLib) |
+| csFastFloat | [GitHub](https://github.com/CarlVerret/csFastFloat)  |
+| UrlBase64   | [GitHub](https://github.com/neosmart/UrlBase64)      |
+
+
