@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GeometryDashAPI.Parsers;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Levels
 {

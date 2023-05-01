@@ -5,7 +5,6 @@ using GeometryDashAPI.Levels.GameObjects;
 using System.Text;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Serialization;
-using Microsoft.Extensions.Primitives;
 
 namespace GeometryDashAPI.Levels
 {

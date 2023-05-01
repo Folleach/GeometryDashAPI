@@ -24,7 +24,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using GeometryDashAPI.Levels.GameObjects.Default;
 using GeometryDashAPI.Levels.GameObjects.Specific;
-using GeometryDashAPI.Parsers;
 using GeometryDashAPI.Server.Dtos;
 using GeometryDashAPI.Server.Responses;
 using Newtonsoft.Json;
