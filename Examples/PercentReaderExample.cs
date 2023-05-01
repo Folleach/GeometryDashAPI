@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Examples
 {
-    class PercentReader
+    public class PercentReader
     {
         public delegate void PercentDelegate(int percent);
         public event PercentDelegate PercentChanged;
@@ -17,19 +17,19 @@ namespace Examples
 
         public int RefreshDelay { get; set; }
 
-        public PercentReader(int delay, bool backgroud)
+        public PercentReader(int delay, bool background)
         {
             RefreshDelay = delay;
             Game.Initialize(Access.PROCESS_VM_READ);
             Module = Game.GetModule("GeometryDash.exe");
-            Checker = new Thread(Check) { IsBackground = backgroud };
+            Checker = new Thread(Check) { IsBackground = background };
         }
 
         public void Start() => Checker.Start();
 
-        void Check()
+        private void Check()
         {
-            int oldPercent = 0;
+            var oldPercent = 0;
             while (true)
             {
                 IntPtr ptr = IntPtr.Add(Game.Read<IntPtr>(Module, new int[] { 0x003222D0, 0x164, 0x124, 0xB4, 0x3C0 }), 0x12C);
@@ -51,7 +51,7 @@ namespace Examples
         }
     }
 
-    class PercentReaderExample
+    public class PercentReaderExample
     {
         public static void Invoke()
         {

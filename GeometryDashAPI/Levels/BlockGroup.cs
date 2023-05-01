@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GeometryDashAPI.Serialization;
+using GeometryDashAPI.Parsers;
 
 namespace GeometryDashAPI.Levels
 {
@@ -42,7 +42,7 @@ namespace GeometryDashAPI.Levels
 
             return result;
         }
-        
+
         public static BlockGroup Parse(string data)
         {
             var result = new BlockGroup();
@@ -52,7 +52,11 @@ namespace GeometryDashAPI.Levels
                 var idRaw = parser.Next();
                 if (idRaw == null)
                     break;
+#if NETSTANDARD2_1
                 if (!int.TryParse(idRaw, out var id))
+#else
+                if (!int.TryParse(idRaw.ToString(), out var id))
+#endif
                     throw new Exception($"Can't parse group id in: {data}");
                 result.Add(id);
             }

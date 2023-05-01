@@ -1,4 +1,4 @@
-# GeometryDashAPI [![Build Status](https://travis-ci.org/Folleach/GeometryDashAPI.svg?branch=master)](https://travis-ci.org/Folleach/GeometryDashAPI)
+# GeometryDashAPI
 Library for working with game data.
 
 

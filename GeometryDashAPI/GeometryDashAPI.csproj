@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Folleach</Authors>
     <NeutralLanguage>en</NeutralLanguage>
@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/Folleach/GeometryDashAPI</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>api, geometry, dash</PackageTags>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -24,9 +24,9 @@
 
   <ItemGroup>
     <PackageReference Include="csFastFloat" Version="4.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="SharpZipLib.NETStandard" Version="1.0.7" />
+    <PackageReference Include="UrlBase64" Version="0.1.2" />
   </ItemGroup>
 
   <ItemGroup>

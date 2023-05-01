@@ -1,9 +1,7 @@
-﻿using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
-using csFastFloat;
-using Microsoft.AspNetCore.WebUtilities;
+using NeoSmart.Utils;
 
 namespace GeometryDashAPI
 {
@@ -60,7 +58,7 @@ namespace GeometryDashAPI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64(byte[] value)
         {
-            return WebEncoders.Base64UrlEncode(value);
+            return UrlBase64.Encode(value, PaddingPolicy.Preserve);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -68,14 +66,13 @@ namespace GeometryDashAPI
         {
             if (base64 == null)
                 return null;
-            var wrongIndex = base64.IndexOf(' ', StringComparison.Ordinal);
-            return WebEncoders.Base64UrlDecode(base64, 0, wrongIndex >= 0 ? wrongIndex : base64.Length);
+            return UrlBase64.Decode(base64);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64String(string value)
         {
-            return WebEncoders.Base64UrlEncode(Encoding.ASCII.GetBytes(value));
+            return UrlBase64.Encode(Encoding.ASCII.GetBytes(value), PaddingPolicy.Preserve);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -83,8 +80,7 @@ namespace GeometryDashAPI
         {
             if (base64 == null)
                 return null;
-            var wrongIndex = base64.IndexOf(' ', StringComparison.Ordinal);
-            return Encoding.ASCII.GetString(WebEncoders.Base64UrlDecode(base64, 0, wrongIndex >= 0 ? wrongIndex : base64.Length));
+            return Encoding.ASCII.GetString(UrlBase64.Decode(base64));
         }
     }
 }
