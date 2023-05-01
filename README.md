@@ -21,7 +21,10 @@ Where `y` is this a small fix [bug]
 Sometimes there are `-alpha` suffix appears.  
 This is means experiment release for include this library to other projects
 
-major 0 will be change to 1 when library will support most features of game
+Major 0 will be change to 1 when library will support most features of game
+
+Every version should contains a tag, with prefix `v`.  
+Example: `v1.2.3-alpha`
 
 ## Examples
 Now you can see examples [here](https://github.com/Folleach/GeometryDashAPI/tree/master/Examples).
