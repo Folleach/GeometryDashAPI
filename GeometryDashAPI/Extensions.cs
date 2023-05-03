@@ -29,5 +29,50 @@ namespace GeometryDashAPI
                 dictionary.Add(key, value = create(key));
             return value;
         }
+
+        public static GameType GetGameType(this OfficialLevel level)
+        {
+            return level switch
+            {
+                OfficialLevel.StereoMadness => GameType.Default,
+                OfficialLevel.BackOnTrack => GameType.Default,
+                OfficialLevel.Polargeist => GameType.Default,
+                OfficialLevel.DryOut => GameType.Default,
+                OfficialLevel.BaseAfterBase => GameType.Default,
+                OfficialLevel.CantLetGo => GameType.Default,
+                OfficialLevel.Jumper => GameType.Default,
+                OfficialLevel.TimeMachine => GameType.Default,
+                OfficialLevel.Cycles => GameType.Default,
+                OfficialLevel.xStep => GameType.Default,
+                OfficialLevel.Clutterfunk => GameType.Default,
+                OfficialLevel.TheoryOfEverything => GameType.Default,
+                OfficialLevel.ElectromanAdventures => GameType.Default,
+                OfficialLevel.Clubstep => GameType.Default,
+                OfficialLevel.Electrodynamix => GameType.Default,
+                OfficialLevel.HexagonForce => GameType.Default,
+                OfficialLevel.BlastProcessing => GameType.Default,
+                OfficialLevel.TheoryOfEverything2 => GameType.Default,
+                OfficialLevel.GeometricalDominator => GameType.Default,
+                OfficialLevel.Deadlocked => GameType.Default,
+                OfficialLevel.Fingerdash => GameType.Default,
+                OfficialLevel.TheChallenge => GameType.Default,
+
+                OfficialLevel.TheSevenSeas => GameType.Meltdown,
+                OfficialLevel.VikingArena => GameType.Meltdown,
+                OfficialLevel.AirborneRobots => GameType.Meltdown,
+
+                OfficialLevel.Payload => GameType.World,
+                OfficialLevel.BeastMode => GameType.World,
+                OfficialLevel.Machina => GameType.World,
+                OfficialLevel.Years => GameType.World,
+                OfficialLevel.Frontlines => GameType.World,
+                OfficialLevel.SpacePirates => GameType.World,
+                OfficialLevel.Striker => GameType.World,
+                OfficialLevel.Embers => GameType.World,
+                OfficialLevel.Round1 => GameType.World,
+                OfficialLevel.MonsterDanceOff => GameType.World,
+                _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
+            };
+        }
     }
 }

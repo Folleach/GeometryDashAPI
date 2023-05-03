@@ -93,11 +93,16 @@ namespace GeometryDashAPI.Levels
             return builder.ToString();
         }
 
+        // see signatures https://en.wikipedia.org/wiki/List_of_file_signatures
         public static string Decompress(string data)
         {
-            if (data[0] == 'e' && data[1] == 'J')
-                return Crypt.ZLibDecompress(GameConvert.FromBase64(data));
-            return Crypt.GZipDecompress(GameConvert.FromBase64(data));
+            var bytes = GameConvert.FromBase64(data);
+            if (bytes[0] == 0x78)
+                return Crypt.ZLibDecompress(bytes);
+            if (bytes[0] == 0x1F && bytes[1] == 0x8B)
+                return Crypt.GZipDecompress(bytes);
+            throw new InvalidOperationException(
+                "Unsupported data signature. There is no gzip and zlib. Please check your level data. If your level is correct and works in the game, please create an issue: https://github.com/Folleach/GeometryDashAPI/issues. Or fix it yourself: https://github.com/Folleach/GeometryDashAPI/blob/master/GeometryDashAPI/Levels/Level.cs");
         }
 
         public static string Compress(string level)
