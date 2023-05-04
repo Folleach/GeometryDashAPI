@@ -7,56 +7,56 @@ namespace GeometryDashAPI.Levels
     [Sense(",")]
     public class LevelOptions : GameObject
     {
-        [GameProperty("kS38", KeyOverride = 0)]
-        [ArraySeparator("|")]
+        [GameProperty("kS38", alwaysSet: true, KeyOverride = 0)]
+        [ArraySeparator("|", SeparatorAtTheEnd = true)]
         public List<Color> Colors { get; set; }
 
-        [GameProperty("kA13", KeyOverride = 1)]
+        [GameProperty("kA13", alwaysSet: true, KeyOverride = 1)]
         public float MusicOffset { get; set; }
 
-        [GameProperty("kA15", KeyOverride = 2)]
+        [GameProperty("kA15", alwaysSet: true, KeyOverride = 2)]
         public int Ka15 { get; set; }
 
-        [GameProperty("kA16", KeyOverride = 3)]
+        [GameProperty("kA16", alwaysSet: true, KeyOverride = 3)]
         public int Ka16 { get; set; }
 
-        [GameProperty("kA14", KeyOverride = 4)]
+        [GameProperty("kA14", alwaysSet: true, KeyOverride = 4)]
         public string Ka14 { get; set; }
 
-        [GameProperty("kA6", KeyOverride = 5)]
+        [GameProperty("kA6", alwaysSet: true, KeyOverride = 5)]
         public short Background { get; set; }
 
-        [GameProperty("kA7", KeyOverride = 6)]
+        [GameProperty("kA7", alwaysSet: true, KeyOverride = 6)]
         public short Ground { get; set; }
 
-        [GameProperty("kA17", KeyOverride = 7)]
+        [GameProperty("kA17", alwaysSet: true, KeyOverride = 7)]
         public int Ka17 { get; set; }
 
-        [GameProperty("kA18", KeyOverride = 8)]
+        [GameProperty("kA18", alwaysSet: true, KeyOverride = 8)]
         public short Font { get; set; }
 
-        [GameProperty("kS39", KeyOverride = 9)]
+        [GameProperty("kS39", alwaysSet: true, KeyOverride = 9)]
         public int Ks39 { get; set; }
 
-        [GameProperty("kA2", KeyOverride = 10)]
+        [GameProperty("kA2", alwaysSet: true, KeyOverride = 10)]
         public GameMode GameMode { get; set; }
 
-        [GameProperty("kA3", KeyOverride = 11)]
+        [GameProperty("kA3", alwaysSet: true, KeyOverride = 11)]
         public bool IsMini { get; set; }
 
-        [GameProperty("kA8", KeyOverride = 12)]
+        [GameProperty("kA8", alwaysSet: true, KeyOverride = 12)]
         public bool IsDual { get; set; }
 
-        [GameProperty("kA4", KeyOverride = 13)]
+        [GameProperty("kA4", alwaysSet: true, KeyOverride = 13)]
         public SpeedType PlayerSpeed { get; set; }
 
-        [GameProperty("kA9", KeyOverride = 14)]
+        [GameProperty("kA9", alwaysSet: true, KeyOverride = 14)]
         public int Ka9 { get; set; }
 
-        [GameProperty("kA10", KeyOverride = 15)]
+        [GameProperty("kA10", alwaysSet: true, KeyOverride = 15)]
         public bool IsTwoPlayerMode { get; set; }
 
-        [GameProperty("kA11", KeyOverride = 16)]
+        [GameProperty("kA11", alwaysSet: true, KeyOverride = 16)]
         public int Ka11 { get; set; }
 
         [GameProperty("kA1", KeyOverride = 17)]

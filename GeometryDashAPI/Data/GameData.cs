@@ -39,7 +39,7 @@ namespace GeometryDashAPI.Data
             GC.Collect();
         }
 
-        public virtual bool Save(string fullName = null)
+        public virtual bool TrySave(string fullName = null)
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
             byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(this.DataPlist)));
@@ -51,14 +51,14 @@ namespace GeometryDashAPI.Data
             return true;
         }
 
-        public virtual bool Save(bool CheckRunningGame, string fullName = null)
+        public virtual bool TrySave(bool checkRunningGame, string fullName = null)
         {
-            if (CheckRunningGame)
+            if (checkRunningGame)
             {
                 if (GameProcess.GameCount() > 0)
                     return false;
             }
-            return this.Save(fullName);
+            return this.TrySave(fullName);
         }
     }
 }

@@ -45,11 +45,13 @@ namespace GeometryDashAPI
 
         public static byte[] GZipCompress(byte[] data)
         {
-            using var outStream = new MemoryStream();
-            using var gzipStream = new GZipStream(outStream, CompressionMode.Compress);
-            using var srcStream = new MemoryStream(data);
-            srcStream.CopyTo(gzipStream);
-            return outStream.ToArray();
+            using var memory = new MemoryStream();
+            using (var destination = new GZipStream(memory, CompressionMode.Compress))
+            {
+                using (var memoryStream2 = new MemoryStream(data))
+                    memoryStream2.CopyTo(destination);
+            }
+            return memory.ToArray();
         }
     }
 }

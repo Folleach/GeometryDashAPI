@@ -20,11 +20,15 @@ namespace GeometryDashAPI.Data.Models
             get => DataLevel.ContainsKey("k3") ? Encoding.ASCII.GetString(Convert.FromBase64String(DataLevel["k3"])) : "";
             set => DataLevel["k3"] = Convert.ToBase64String(Encoding.ASCII.GetBytes(value));
         }
-        public string LevelString
+
+        public Level Level
         {
-            get => DataLevel.ContainsKey("k4") ? DataLevel ["k4"] : Level.DefaultLevelString;
-            set => DataLevel["k4"] = value;
+            get => new Level(LevelString, compressed: true);
+            set => DataLevel["k4"] = value.SaveAsString();
         }
+
+        public string LevelString => DataLevel.ContainsKey("k4") ? DataLevel ["k4"] : Level.DefaultLevelString;
+
         public string AuthorName
         {
             get => DataLevel["k5"];
