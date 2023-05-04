@@ -145,6 +145,19 @@ Console.WriteLine(builder.ToString()); // will return 1:Folleach:2:1:3:NULL
 
 Also you can define some arrays or `List<T>` in your contract.
 
+## Testing
+There are GeometryDashAPI.Tests project for testing, it's contains
+
+todo: set a links to files with tests
+
+- Unit tests (**runs in CI**)
+- Integration test for server response on a large data set (**do not runs in CI**)  
+  It's needs to set `GDAPI_TESTS_CONTENTS` env variable that points to the folder with the `levels` file.  
+  `levels` should contains a geometry dash response from server in each line
+- Integration test for game resources (**do not runs in CI**)  
+  It's needs to set `GDAPI_TESTS_RESOURCES` env variable that points to the `Resources` folder of game
+
+
 ## Used libraries
 | Name        | Link                                                 |
 |-------------|------------------------------------------------------|

@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests;
 
-[TestFixture]
+[TestFixture(Explicit = true, Reason = "it needs a game resources")]
 public class GameResourcesTests
 {
     private const string ResourcesDataPathEnv = "GDAPI_TESTS_RESOURCES";
