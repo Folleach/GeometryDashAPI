@@ -396,17 +396,21 @@ namespace GeometryDashAPI.Serialization
                 ?.MakeGenericMethod(elementType);
             if (printArray == null)
                 throw new InvalidOperationException($"{nameof(Printers.PrintArray)} is not exists in class {nameof(Printers)}");
-            var separator = Expression.Constant(GetArraySeparator(member).Separator);
+            var arraySense = GetArraySeparator(member);
+            var separator = Expression.Constant(arraySense.Separator);
             var instanceParameter = Expression.Parameter(elementType, "arrayItem");
             var appendValueCall = CreateAppendValueCall(elementType, instanceParameter, destination, append, member);
             Expression appendValueLambda = Expression.Lambda(typeof(Printers.PrinterAppend<>).MakeGenericType(elementType), appendValueCall, instanceParameter, destination);
 
-            return Expression.Call(
+            Expression body = Expression.Call(
                 printArray,
                 array,
                 separator,
                 destination,
                 appendValueLambda);
+            if (arraySense.SeparatorAtTheEnd)
+                body = Expression.Block(body, Expression.Call(destination, append, Expression.Convert(separator, typeof(ReadOnlySpan<char>))));
+            return body;
         }
 
         private static Expression CreateSimpleValueAppender(
