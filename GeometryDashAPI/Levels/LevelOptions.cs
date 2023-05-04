@@ -7,7 +7,7 @@ namespace GeometryDashAPI.Levels
     [Sense(",")]
     public class LevelOptions : GameObject
     {
-        [GameProperty("kS38", alwaysSet: true, KeyOverride = 0)]
+        [GameProperty("kS38", KeyOverride = 0)]
         [ArraySeparator("|", SeparatorAtTheEnd = true)]
         public List<Color> Colors { get; set; }
 
@@ -20,7 +20,7 @@ namespace GeometryDashAPI.Levels
         [GameProperty("kA16", alwaysSet: true, KeyOverride = 3)]
         public int Ka16 { get; set; }
 
-        [GameProperty("kA14", alwaysSet: true, KeyOverride = 4)]
+        [GameProperty("kA14", KeyOverride = 4)]
         public string Ka14 { get; set; }
 
         [GameProperty("kA6", alwaysSet: true, KeyOverride = 5)]
