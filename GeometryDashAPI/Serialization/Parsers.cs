@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Server;
 
@@ -30,5 +31,6 @@ namespace GeometryDashAPI.Serialization
         public static BlockGroup GetOrDefault_BlockGroup__(ReadOnlySpan<char> data) => BlockGroup.Parse(data);
         public static Hsv GetOrDefault_Hsv__(ReadOnlySpan<char> data) => Hsv.Parse(data);
         public static Pagination GetOrDefault_Pagination__(ReadOnlySpan<char> data) => Pagination.Parse(data);
+        public static Guidelines GetOrDefault_Guidelines__(ReadOnlySpan<char> data) => Guidelines.Parse(data);
     }
 }

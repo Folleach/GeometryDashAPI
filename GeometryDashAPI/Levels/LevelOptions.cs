@@ -21,7 +21,7 @@ namespace GeometryDashAPI.Levels
         public int Ka16 { get; set; }
 
         [GameProperty("kA14", KeyOverride = 4)]
-        public string Ka14 { get; set; }
+        public Guidelines Guidelines { get; set; }
 
         [GameProperty("kA6", alwaysSet: true, KeyOverride = 5)]
         public short Background { get; set; }

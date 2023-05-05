@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using GeometryDashAPI.Levels;
 
@@ -20,6 +21,7 @@ namespace GeometryDashAPI.Serialization
         public static ReadOnlySpan<char> GetOrDefault_String__(string value) => value.ToString();
         public static ReadOnlySpan<char> GetOrDefault_BlockGroup__(BlockGroup value) => value.ToString();
         public static ReadOnlySpan<char> GetOrDefault_Hsv__(Hsv value) => Hsv.Parse(value);
+        public static ReadOnlySpan<char> GetOrDefault_Guidelines__(Guidelines value) => Guidelines.Parse(value);
 
         public delegate void PrinterAppend<in TInstance>(TInstance instance, StringBuilder destination);
         public static void PrintArray<T>(T[] array, string separator, StringBuilder destination, PrinterAppend<T> append)
