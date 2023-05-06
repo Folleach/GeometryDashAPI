@@ -17,6 +17,12 @@ namespace GeometryDashAPI.Levels
         public List<Color> Colors => Options.Colors;
         public BlockList Blocks { get; private set; }
 
+        public Guidelines Guidelines
+        {
+            get => Options.Guidelines;
+            set => Options.Guidelines = value;
+        }
+
         public int CountBlock => Blocks.Count;
         public int CountColor => Options.Colors.Count;
 
