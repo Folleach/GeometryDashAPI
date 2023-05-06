@@ -2,6 +2,7 @@
 using GeometryDashAPI.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace GeometryDashAPI.Levels
 {
@@ -11,9 +12,9 @@ namespace GeometryDashAPI.Levels
 
         public static string Parse(Guidelines guidelines)
         {
-            string res = string.Empty;
-            guidelines.ForEach(x => res += $"{x.Timestamp}{SEPERATOR}{GetStringFromGuidelineColor(x.Color)}");
-            return res + "~";
+            StringBuilder builder = new();
+            guidelines.ForEach(x => builder.Append(GameConvert.DoubleToString(x.Timestamp)).Append(SEPERATOR).Append(GetStringFromGuidelineColor(x.Color)).Append(SEPERATOR));
+            return builder.ToString();
         }
 
         public static Guidelines Parse(ReadOnlySpan<char> raw)

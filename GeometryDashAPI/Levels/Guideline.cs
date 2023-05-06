@@ -5,9 +5,15 @@ using System.Text;
 
 namespace GeometryDashAPI.Levels
 {
-    public class Guideline
+    public struct Guideline
     {
         public double Timestamp { get; set; }
         public GuidelineColor Color { get; set; }
+
+        public override string ToString()
+        {
+            return $"TimeStamp: {GameConvert.DoubleToString(Timestamp)}, " +
+            $"Color: {Color}";
+        }
     }
 }
