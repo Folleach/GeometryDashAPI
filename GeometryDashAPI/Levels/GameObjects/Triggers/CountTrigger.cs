@@ -11,5 +11,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         {
             IsTrigger = true;
         }
+
+        public override string ToString() => "CountTrigger";
     }
 }

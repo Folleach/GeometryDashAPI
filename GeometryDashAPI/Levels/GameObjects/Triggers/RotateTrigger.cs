@@ -3,6 +3,7 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Triggers
 {
+    [GameBlock(1346)]
     public class RotateTrigger : Trigger
     {
         public int TargetGroupID { get; set; }
@@ -16,6 +17,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         public RotateTrigger() : base(1346)
         {
+            IsTrigger = true;
         }
 
         public RotateTrigger(string[] data)
@@ -57,18 +59,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
                     return;
             }
         }
-        
-        public override string ToString()
-        {
-            return $"{base.ToString()}" +
-                $",51,{TargetGroupID}" +
-                $",71,{CenterGroupID}" +
-                $",70,{(LockObjectRotation == true? "1": "0")}" +
-                $",68,{Degrees}" +
-                $",69,{Times360}" +
-                $",10,{GameConvert.SingleToString(Time)}" +
-                $",30,{(byte)EasingType}" +
-                $",85,{GameConvert.SingleToString(EasingTime)}";
-        }
+
+        public override string ToString() => "RotateTrigger";
     }
 }
