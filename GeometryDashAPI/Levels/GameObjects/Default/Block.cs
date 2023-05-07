@@ -49,5 +49,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         {
             Id = id;
         }
+
+        public override string ToString() => $"Type: {GetType().Name}, ID: {Id}, Position: (x: {PositionX}, y: {PositionY})";
     }
 }

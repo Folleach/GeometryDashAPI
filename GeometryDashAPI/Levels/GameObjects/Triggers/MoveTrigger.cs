@@ -7,7 +7,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
     [GameBlock(901)]
     public class MoveTrigger : Trigger
     {
-        [GameProperty("51", 0, true, Order = OrderTriggerBase + 1)] public int TargetGroupId { get; set; } = 0;
+        [GameProperty("51", 0, true, Order = OrderTriggerBase + 1)] public int TargetGroupID { get; set; }
 
         [GameProperty("28", 0f, true, Order = OrderTriggerBase + 2)] public float MoveX { get; set; } = 0f;
         [GameProperty("29", 0f, true, Order = OrderTriggerBase + 3)] public float MoveY { get; set; } = 0f; 
@@ -27,7 +27,5 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         {
             IsTrigger = true;
         }
-
-        public override string ToString() => "MoveTrigger";
     }
 }

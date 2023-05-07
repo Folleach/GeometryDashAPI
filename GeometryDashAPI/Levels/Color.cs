@@ -1,4 +1,6 @@
 ﻿using GeometryDashAPI.Attributes;
+using GeometryDashAPI.Levels.Structures;
+using System;
 
 namespace GeometryDashAPI.Levels
 {
@@ -50,5 +52,13 @@ namespace GeometryDashAPI.Levels
         {
             return $"(id = {Id}, color = {AsHex()})";
         }
+
+        public static string RgbToHex(RgbColor rgb) => $"{rgb.Red:X2}{rgb.Green:X2}{rgb.Blue:X2}";
+        public static RgbColor HexToRgb(ReadOnlySpan<char> hex) => new()
+        {
+            Red = (byte)((byte.Parse(hex.Slice(1, 2)) >> 16) & 0xFF),
+            Green = (byte)((byte.Parse(hex.Slice(3, 2)) >> 8) & 0xFF),
+            Blue = (byte)(byte.Parse(hex.Slice(5, 2)) & 0xFF)
+        };
     }
 }

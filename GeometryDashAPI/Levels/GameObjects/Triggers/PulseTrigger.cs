@@ -19,7 +19,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("49", Order = OrderTriggerBase + 9)] public Hsv HsvValue { get; set; }
 
         [GameProperty("50", Order = OrderTriggerBase + 12)] public int ColorID { get; set; }
-        [GameProperty("51", 0, true, Order = OrderTriggerBase + 1)] public int TargetID { get; set; } = 0;
+        [GameProperty("51", 0, true, Order = OrderTriggerBase + 1)] public int TargetGroupID { get; set; } = 0;
 
         [GameProperty("52", TargetType.Channel, Order = OrderTriggerBase + 6)] public TargetType TargetType { get; set; }
 
@@ -32,6 +32,5 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         {
             IsTrigger = true;
         }
-        public override string ToString() => "PulseTrigger";
     }
 }
