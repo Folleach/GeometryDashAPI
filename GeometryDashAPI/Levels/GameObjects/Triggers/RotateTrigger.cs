@@ -14,7 +14,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("85", 2f, true, Order = OrderTriggerBase + 5)] public float EasingTime { get; set; } = 2f;
         [GameProperty("68", 0, true, Order = OrderTriggerBase + 6)] public int Degrees { get; set; }
         [GameProperty("69", 0, true, Order = OrderTriggerBase + 7)] public int Times360 { get; set; }
-        [GameProperty("70", false, true, Order = OrderTriggerBase + 8)] public bool LockObjectRotation { get; set; } = false;
+        [GameProperty("70", false, true, Order = OrderTriggerBase + 8)] public bool LockObjectRotation { get; set; }
 
         public RotateTrigger() : base(1346)
         {

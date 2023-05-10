@@ -1,14 +1,11 @@
 ﻿using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Levels.GameObjects.Default;
-using System;
 
 namespace GeometryDashAPI.Levels.GameObjects.Triggers
 {
     [GameBlock(899)]
     public class ColorTrigger : Trigger
     {
-        public System.Drawing.Color Color { get; set;}
-
         [GameProperty("7", (byte)255, true, Order = OrderTriggerBase + 1)] public byte Red { get; set; } = 255;
         [GameProperty("8", (byte)255, true, Order = OrderTriggerBase + 2)] public byte Green { get; set; } = 255;
         [GameProperty("9", (byte)255, true, Order = OrderTriggerBase + 3)] public byte Blue { get; set; } = 255;

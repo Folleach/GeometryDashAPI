@@ -21,7 +21,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         [GameProperty("71", 0, Order = OrderTriggerBase + 7)] public int TargetPosGroupID { get; set; }
         [GameProperty("100", false, Order = OrderTriggerBase + 8)] public bool UseTarget { get; set; }
-        [GameProperty("101", TargetPosGroupType.All, Order = OrderTriggerBase + 8)] public TargetPosGroupType TargetPosGroup { get; set; }        
+        [GameProperty("101", TargetPosGroupType.All, Order = OrderTriggerBase + 8)] public TargetPosGroupType TargetPosGroup { get; set; } = TargetPosGroupType.All;   
 
         public MoveTrigger() : base(901)
         {

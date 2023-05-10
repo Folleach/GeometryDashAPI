@@ -15,7 +15,7 @@ namespace GeometryDashAPI.Data
 
         public GameData(GameDataType type)
         {
-            this.GameDataFile = $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type.ToString()}.dat";
+            this.GameDataFile = $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type}.dat";
             this.Load();
         }
 
@@ -39,26 +39,24 @@ namespace GeometryDashAPI.Data
             GC.Collect();
         }
 
+        public virtual bool TrySave(bool checkRunningGame, string fullName = null)
+        {
+            if (checkRunningGame && GameProcess.GameCount() > 0)
+                return false;
+
+            return this.TrySave(fullName);
+        }
+
         public virtual bool TrySave(string fullName = null)
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
             byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(this.DataPlist)));
             string base64 = GameConvert.ToBase64(gzipc);
-            if (fullName == null)
-                File.WriteAllBytes(this.GameDataFile,  Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
-            else
-                File.WriteAllBytes(fullName, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
+
+            File.WriteAllBytes(fullName ?? this.GameDataFile, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
             return true;
         }
 
-        public virtual bool TrySave(bool checkRunningGame, string fullName = null)
-        {
-            if (checkRunningGame)
-            {
-                if (GameProcess.GameCount() > 0)
-                    return false;
-            }
-            return this.TrySave(fullName);
-        }
+        public virtual bool TrySave() => this.TrySave(GameDataFile);
     }
 }

@@ -57,7 +57,7 @@ namespace GeometryDashAPI.Levels
         public bool IsTwoPlayerMode { get; set; }
 
         [GameProperty("kA11", alwaysSet: true, KeyOverride = 16)]
-        public int Ka11 { get; set; }
+        public bool IsFlippedGravity { get; set; }
 
         [GameProperty("kA1", KeyOverride = 17)]
         public int Ka1 { get; set; }

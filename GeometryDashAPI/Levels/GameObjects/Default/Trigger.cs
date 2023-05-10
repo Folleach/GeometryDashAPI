@@ -6,9 +6,9 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
     {
         internal const int OrderTriggerBase = 103;
 
-        [GameProperty("11", false, Order = 100)] public bool TouchTrigger { get; set; }
-        [GameProperty("62", false, Order = 101)] public bool SpawnTrigger { get; set; }
-        [GameProperty("87", false, Order = 102)] public bool MultiTrigger { get; set; }
+        [GameProperty("11", false, Order = 100)] public bool TouchTrigger { get; set; } = false;
+        [GameProperty("62", false, Order = 101)] public bool SpawnTrigger { get; set; } = false;
+        [GameProperty("87", false, Order = 102)] public virtual bool MultiTrigger { get; set; } = false;
 
         public Trigger()
         {
