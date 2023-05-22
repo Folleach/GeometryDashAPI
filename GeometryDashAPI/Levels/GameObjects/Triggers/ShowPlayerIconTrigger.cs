@@ -7,7 +7,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
     {
         public ShowPlayerIconTrigger() : base(1613)
         {
-            IsTrigger = true;
         }
     }
 }

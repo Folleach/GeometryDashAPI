@@ -12,7 +12,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         public AlphaTrigger() : base(1007)
         {
-            IsTrigger = true;
         }
     }
 }

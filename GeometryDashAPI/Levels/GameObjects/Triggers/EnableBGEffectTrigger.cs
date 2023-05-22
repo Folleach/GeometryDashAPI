@@ -3,11 +3,10 @@
 namespace GeometryDashAPI.Levels.GameObjects.Triggers
 {
     [GameBlock(1818)]
-    public class EnableBGEffectTrigger : Trigger
+    public class EnableBgEffectTrigger : Trigger
     {
-        public EnableBGEffectTrigger() : base(1818)
+        public EnableBgEffectTrigger() : base(1818)
         {
-            IsTrigger = true;
         }
     }
 }

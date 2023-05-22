@@ -12,10 +12,12 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
 
         public Trigger()
         {
+            IsTrigger = true;
         }
 
         public Trigger(int id) : base(id)
         {
+            IsTrigger = true;
         }
     }
 }

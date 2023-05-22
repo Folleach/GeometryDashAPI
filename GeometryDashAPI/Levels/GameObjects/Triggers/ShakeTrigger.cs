@@ -20,7 +20,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         public ShakeTrigger() : base(1520)
         {
-            IsTrigger = true;
         }
     }
 }

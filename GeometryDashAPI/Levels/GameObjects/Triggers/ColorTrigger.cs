@@ -26,7 +26,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         public ColorTrigger() : base(899)
         {
-            IsTrigger = true;
         }
     }
 }

@@ -30,7 +30,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         public PulseTrigger() : base(1006)
         {
-            IsTrigger = true;
         }
     }
 }

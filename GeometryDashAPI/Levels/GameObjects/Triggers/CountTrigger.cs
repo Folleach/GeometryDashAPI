@@ -10,7 +10,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         public CountTrigger() : base(1611)
         {
-            IsTrigger = true;
         }
     }
 }

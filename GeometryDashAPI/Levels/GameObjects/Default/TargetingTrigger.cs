@@ -11,7 +11,8 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("77", 0, Order = OrderTriggerBase + 3)] public int TargetCount { get; set; }
         [GameProperty("56", false, Order = OrderTriggerBase + 4)] public bool ActivateGroup { get; set; }
 
-        public TargetingTrigger(int id) : base(id)
-        { }
+        protected TargetingTrigger(int id) : base(id)
+        {
+        }
     }
 }

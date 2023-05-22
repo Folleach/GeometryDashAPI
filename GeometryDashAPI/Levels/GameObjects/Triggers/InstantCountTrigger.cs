@@ -11,7 +11,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
 
         public InstantCountTrigger() : base(1811)
         {
-            IsTrigger = true;
         }
     }
 }

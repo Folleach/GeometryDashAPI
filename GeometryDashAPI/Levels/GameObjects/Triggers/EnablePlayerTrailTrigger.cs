@@ -7,7 +7,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
     {
         public EnablePlayerTrailTrigger() : base(32)
         {
-            IsTrigger = true;
         }
     }
 }
