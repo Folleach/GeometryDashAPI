@@ -1,7 +1,7 @@
 ﻿namespace GeometryDashAPI.Levels.Enums
 {
-    public enum PulseModeType : byte
+    public enum ToggleMode : byte
     {
-        Color, Hsv
+        None, On, Off
     }
 }

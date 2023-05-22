@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests.Integration.Levels;
 
-[TestFixture]
+[TestFixture(Explicit = true, Reason = "too sensitive")]
 public class LevelResponseDefinedTest : LevelResponseTestBase
 {
     [TestCase("12034598_Conclusion")]

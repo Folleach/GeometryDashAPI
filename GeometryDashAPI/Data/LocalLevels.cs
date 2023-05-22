@@ -33,13 +33,6 @@ namespace GeometryDashAPI.Data
 
         private LocalLevels(string fullName, bool preventLoading) : base(fullName ?? fullName)
         {
-            
-        }
-
-        public override void Load()
-        {
-            base.Load();
-            this.LoadLevels();
         }
 
         private void LoadLevels()
