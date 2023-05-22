@@ -27,7 +27,7 @@ namespace Examples
             { // Loading and saving level.
                 LocalLevels levels = new LocalLevels();
                 Level lvl = new Level(levels.GetLevel("Level name"));
-                levels.GetLevel("Level name").Level = lvl;
+                levels.GetLevel("Level name").SaveLevel(lvl);
                 levels.TrySave();
             }
         }
