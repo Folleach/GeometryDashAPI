@@ -4,28 +4,39 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace GeometryDashAPI.Serialization
 {
     public class Plist : Dictionary<string, dynamic>
     {
+        private static readonly XmlReaderSettings xmlSettings = new XmlReaderSettings()
+        {
+            DtdProcessing = DtdProcessing.Ignore,
+            XmlResolver = null
+        };
+
         public Plist()
         {
         }
 
-        public Plist(byte[] bytes)
+        public Plist(byte[] bytes) : this(new MemoryStream(bytes))
         {
-            this.Load(new MemoryStream(bytes));
         }
 
-        private void Load(MemoryStream stream)
+        public Plist(Stream stream)
         {
-            base.Clear();
+            Load(stream);
+        }
 
-            XDocument doc = XDocument.Load(stream);
-            XElement plist = doc.Element("plist");
-            XElement dict = plist.Element("dict");
+        private void Load(Stream stream)
+        {
+            Clear();
+
+            var document = XDocument.Load(XmlReader.Create(stream, xmlSettings));
+            var plist = document.Element("plist");
+            var dict = plist.Element("dict");
 
             IEnumerable<XElement> dictElements = dict.Elements();
             this.Parse(this, dictElements);
