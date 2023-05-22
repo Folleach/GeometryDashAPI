@@ -62,7 +62,7 @@ namespace GeometryDashAPI.Data
             byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(DataPlist)));
             string base64 = GameConvert.ToBase64(gzipc);
 
-            File.WriteAllBytes(fullName ?? this.GameDataFile, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
+            File.WriteAllBytes(fullName ?? gameDataFile, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
             return true;
         }
     }
