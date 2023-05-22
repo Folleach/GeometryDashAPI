@@ -21,12 +21,6 @@ namespace GeometryDashAPI.Data.Models
             set => DataLevel["k3"] = Convert.ToBase64String(Encoding.ASCII.GetBytes(value));
         }
 
-        public Level Level
-        {
-            get => new Level(LevelString, compressed: true);
-            set => DataLevel["k4"] = value.SaveAsString();
-        }
-
         public string LevelString => DataLevel.ContainsKey("k4") ? DataLevel ["k4"] : Level.DefaultLevelString;
 
         public string AuthorName
@@ -136,6 +130,9 @@ namespace GeometryDashAPI.Data.Models
             this.KeyInDict = key;
             this.DataLevel = dict;
         }
+
+        public Level LoadLevel() => new(LevelString, compressed: true);
+        public void SaveLevel(Level level) => DataLevel["k4"] = level.SaveAsString();
 
         public override string ToString()
         {

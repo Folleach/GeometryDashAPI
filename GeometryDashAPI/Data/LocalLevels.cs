@@ -3,6 +3,8 @@ using GeometryDashAPI.Data.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace GeometryDashAPI.Data
 {
@@ -27,6 +29,11 @@ namespace GeometryDashAPI.Data
         public LocalLevels(string fullName) : base(fullName)
         {
             this.LoadLevels();
+        }
+
+        private LocalLevels(string fullName, bool preventLoading) : base(fullName ?? fullName)
+        {
+            
         }
 
         public override void Load()
@@ -115,6 +122,11 @@ namespace GeometryDashAPI.Data
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public static Task<LocalLevels> LoadAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
