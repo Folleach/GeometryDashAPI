@@ -11,11 +11,14 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("84", 0f, false, Order = OrderTriggerBase + 3)] public float Interval { get; set; }
 
         // robtop 300iq coder
-        [GameProperty("87", false, Order = 102)] private bool _multiTrigger { get; set; }
+        [GameProperty("87", false, Order = 102)]
+        private bool multiTrigger;
+
+        [GameProperty("87", false, Order = 102, IgnoreField = true)]
         public override bool MultiTrigger
         {
-            get => !_multiTrigger;
-            set => _multiTrigger = value;
+            get => !multiTrigger;
+            set => multiTrigger = !value;
         }
 
         public ShakeTrigger() : base(1520)

@@ -10,7 +10,7 @@ namespace GeometryDashAPI.Serialization
 {
     public class TypeDescriptor<T> : IDescriptor<T>, ICopyDescriptor<T> where T : IGameObject
     {
-        private readonly TypeDescriptorHelper.Setter<T>[] setters;
+        private readonly SetterInfo<T>[] setters;
         private readonly PrinterInfo<T>[] printers;
         private readonly Dictionary<string, int> mappings;
         private readonly string sense;
@@ -33,6 +33,7 @@ namespace GeometryDashAPI.Serialization
             var members = GetPropertiesAndFields(type)
                 .Select(member => (member, attribute: member.GetCustomAttribute<GamePropertyAttribute>()))
                 .Where(x => x.attribute != null)
+                .Where(x => !x.attribute.IgnoreField)
                 .ToArray();
             var createSetter = typeof(TypeDescriptorHelper)
                 .GetMethod(nameof(TypeDescriptorHelper.CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);
@@ -47,7 +48,7 @@ namespace GeometryDashAPI.Serialization
                         new object[] { member });
                 var setter = setterExpression!.Compile();
                 var setterIndex = int.TryParse(attribute.Key, out var value) ? baseIndex + value : attribute.KeyOverride;
-                setters[setterIndex] = setter;
+                setters[setterIndex] = new SetterInfo<T>(setter, attribute, member);
             }
 
             printers = InitPrinters(members);
@@ -137,10 +138,10 @@ namespace GeometryDashAPI.Serialization
         {
             if (key < 0)
                 return false;
-            var setter = setters[key];
-            if (setter == null)
+            var info = setters[key];
+            if (info.Setter == null)
                 return false;
-            setter((T)instance, raw);
+            info.Setter((T)instance, raw);
             return true;
         }
 
@@ -187,7 +188,7 @@ namespace GeometryDashAPI.Serialization
             return Expression.Lambda<Func<TB>>(memberInit);
         }
 
-        private static (TypeDescriptorHelper.Setter<T>[], int baseIndex, Dictionary<string, int> mappings) InitSetters(Type type, IEnumerable<(MemberInfo member, GamePropertyAttribute attribute)> members)
+        private static (SetterInfo<T>[], int baseIndex, Dictionary<string, int> mappings) InitSetters(Type type, IEnumerable<(MemberInfo member, GamePropertyAttribute attribute)> members)
         {
             var keys = new HashSet<string>();
             var maxKeyValue = 0;
@@ -221,7 +222,7 @@ namespace GeometryDashAPI.Serialization
             }
             
             var baseIndex = mappings?.Count ?? 0;
-            return (new TypeDescriptorHelper.Setter<T>[baseIndex + maxKeyValue + 1], baseIndex, mappings);
+            return (new SetterInfo<T>[baseIndex + maxKeyValue + 1], baseIndex, mappings);
         }
 
         private static IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
@@ -238,7 +239,7 @@ namespace GeometryDashAPI.Serialization
         }
     }
 
-    internal class TypeDescriptorHelper
+    public class TypeDescriptorHelper
     {
         private static readonly string PredefinedMethodPrefix = "GetOrDefault";
 

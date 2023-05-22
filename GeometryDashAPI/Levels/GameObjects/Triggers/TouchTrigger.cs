@@ -13,11 +13,14 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("89", false, false, Order = OrderTriggerBase + 4)] public bool DualMode { get; set; } = false;
 
         // robtop 300iq coder
-        [GameProperty("87", false, Order = 102)] private bool _multiTrigger { get; set; }
+        [GameProperty("87", false, Order = 102)]
+        private bool multiTrigger;
+
+        [GameProperty("87", false, Order = 102, IgnoreField = true)]
         public override bool MultiTrigger
         {
-            get => !_multiTrigger; // todo: strange things, because value flips in one case
-            set => _multiTrigger = value;
+            get => !multiTrigger;
+            set => multiTrigger = !value;
         }
 
         public TouchTrigger() : base(1595)
