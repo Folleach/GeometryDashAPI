@@ -3,6 +3,7 @@ using GeometryDashAPI.Memory;
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Data
@@ -11,41 +12,49 @@ namespace GeometryDashAPI.Data
     {
         public Plist DataPlist { get; protected set; }
 
-        private string GameDataFile;
+        private readonly string gameDataFile;
 
         public GameData(GameDataType type)
         {
-            this.GameDataFile = $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type.ToString()}.dat";
-            this.Load();
+            gameDataFile = $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type.ToString()}.dat";
+            Load().GetAwaiter().GetResult();
         }
 
         public GameData(string fullName)
         {
-            this.GameDataFile = fullName;
-            this.Load();
+            gameDataFile = fullName;
+            Load().GetAwaiter().GetResult();
         }
 
-        public virtual void Load()
+        protected GameData(string fullName, bool preventLoading)
         {
-            if (!File.Exists(this.GameDataFile))
+            gameDataFile = fullName;
+            if (preventLoading)
+                return;
+            Load().GetAwaiter().GetResult();
+        }
+
+        public async Task Load()
+        {
+            if (!File.Exists(gameDataFile))
                 throw new FileNotFoundException();
 
-            //File > Byte > XOR > ToString > Replace > Base64 > Gzip
-            byte[] data = File.ReadAllBytes(this.GameDataFile);
-            string datazip = Encoding.ASCII.GetString(Crypt.XOR(data, 0xB)).Split('\0')[0];
-            string resultPlist = Crypt.GZipDecompress(GameConvert.FromBase64(datazip));
+            // File > Bytes > XOR > ToString > Replace > Base64 > Gzip
+            var data = await File.ReadAllBytesAsync(gameDataFile);
+            var dataZip = Encoding.ASCII.GetString(Crypt.XOR(data, 0xB)).Split('\0')[0];
+            var resultPlist = Crypt.GZipDecompress(GameConvert.FromBase64(dataZip));
 
-            this.DataPlist = new Plist(Encoding.ASCII.GetBytes(resultPlist));
+            DataPlist = new Plist(Encoding.ASCII.GetBytes(resultPlist));
             GC.Collect();
         }
 
         public virtual bool TrySave(string fullName = null)
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
-            byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(this.DataPlist)));
+            byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(DataPlist)));
             string base64 = GameConvert.ToBase64(gzipc);
             if (fullName == null)
-                File.WriteAllBytes(this.GameDataFile,  Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
+                File.WriteAllBytes(gameDataFile,  Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
             else
                 File.WriteAllBytes(fullName, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
             return true;
@@ -58,7 +67,7 @@ namespace GeometryDashAPI.Data
                 if (GameProcess.GameCount() > 0)
                     return false;
             }
-            return this.TrySave(fullName);
+            return TrySave(fullName);
         }
     }
 }
