@@ -18,8 +18,8 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("48", PulseModeType.Color, Order = OrderTriggerBase + 5)] public PulseModeType PulseMode { get; set; } = PulseModeType.Color;
         [GameProperty("49", Order = OrderTriggerBase + 9)] public Hsv HsvValue { get; set; }
 
-        [GameProperty("50", Order = OrderTriggerBase + 12)] public int ColorID { get; set; }
-        [GameProperty("51", 0, true, Order = OrderTriggerBase + 1)] public int TargetGroupID { get; set; } = 0;
+        [GameProperty("50", Order = OrderTriggerBase + 12)] public int ColorId { get; set; }
+        [GameProperty("51", 0, true, Order = OrderTriggerBase + 1)] public int TargetGroupId { get; set; } = 0;
 
         [GameProperty("52", TargetType.Channel, Order = OrderTriggerBase + 6)] public TargetType TargetType { get; set; } = TargetType.Channel;
 
