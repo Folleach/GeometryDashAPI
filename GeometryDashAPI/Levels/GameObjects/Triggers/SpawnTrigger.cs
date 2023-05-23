@@ -7,7 +7,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
     public class SpawnTrigger : Trigger
     {
         [GameProperty("51", 0, true, Order = OrderTriggerBase + 1)] public int TargetGroupId { get; set; }
-        [GameProperty("51", 0f, false, Order = OrderTriggerBase + 2)] public float Delay { get; set; }
         [GameProperty("102", false, false, Order = OrderTriggerBase + 3)] public float EditorDisable { get; set; }
 
         public SpawnTrigger() : base(1268)
