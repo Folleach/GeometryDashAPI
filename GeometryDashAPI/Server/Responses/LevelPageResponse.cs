@@ -5,6 +5,7 @@ using GeometryDashAPI.Server.Dtos;
 namespace GeometryDashAPI.Server.Responses
 {
     [Sense("#")]
+    [AsStruct]
     public class LevelPageResponse : GameObject
     {
         [GameProperty("0")]
