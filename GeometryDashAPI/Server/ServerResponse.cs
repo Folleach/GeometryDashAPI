@@ -23,12 +23,14 @@ namespace GeometryDashAPI.Server
             HttpStatusCode = statusCode;
             raw = body;
             var match = StatusCodeMatcher.Match(body);
+            if (body.IndexOf("error code: ", StringComparison.Ordinal) == 0)
+                GeometryDashStatusCode = -1; // because "error code" looks like error from cloudflare (GeometryDash uses cloudflare as a proxy)
             if (match.Success)
                 GeometryDashStatusCode = int.Parse(match.Value);
             else
                 value = GeometryDashApi.Serializer.Decode<T>(body);
         }
-        
+
         public T GetResultOrDefault()
         {
             return value;
