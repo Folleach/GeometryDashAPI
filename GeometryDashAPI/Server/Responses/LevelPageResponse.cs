@@ -10,15 +10,15 @@ namespace GeometryDashAPI.Server.Responses
     {
         [GameProperty("0")]
         [ArraySeparator("|")]
-        public List<LevelPreviewDto> Levels { get; set; }
+        public List<LevelPreview> Levels { get; set; }
         
         [GameProperty("1")]
         [ArraySeparator("|")]
-        public List<AuthorIdsDto> Authors { get; set; }
+        public List<AuthorIds> Authors { get; set; }
         
         [GameProperty("2")]
         [ArraySeparator("~:~")]
-        public List<MusicInfoDto> Musics { get; set; }
+        public List<MusicInfo> Musics { get; set; }
         
         [GameProperty("3")]
         public Pagination Page { get; set; }

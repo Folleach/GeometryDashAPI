@@ -3,7 +3,7 @@
 namespace GeometryDashAPI.Server.Dtos
 {
     [Sense("~")]
-    public class AccountCommentDto : GameObject
+    public class AccountComment : GameObject
     {
         [GameProperty("2")] private string comment;
         public string Comment

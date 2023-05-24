@@ -9,7 +9,7 @@ namespace GeometryDashAPI.Server
         public int TotalCount { get; private set; }
         public int RangeIn { get; private set; }
         public int RangeOut { get; private set; }
-        public int CountOnPage => (RangeOut - RangeIn + 1);
+        public int CountOnPage => RangeOut - RangeIn;
 
         public Pagination()
         {

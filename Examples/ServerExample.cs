@@ -63,7 +63,7 @@ namespace Examples
             Console.WriteLine();
         }
 
-        private void ShowComment(List<AccountCommentDto> commentsComments)
+        private void ShowComment(List<AccountComment> commentsComments)
         {
             Console.WriteLine("Comments:");
             foreach (var comment in commentsComments)

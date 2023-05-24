@@ -1,8 +1,5 @@
 ﻿using GeometryDashAPI.Server;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GeometryDashAPI.Tests
 {
@@ -20,12 +17,12 @@ namespace GeometryDashAPI.Tests
         [TestCase(7, 0, 5, 2, false)]
         
         [TestCase(3, 0, 10, 0, true)]
-        [TestCase(20, 11, 20, 1, true)]
-        [TestCase(20, 11, 20, 2, false)]
+        [TestCase(20, 10, 20, 1, true)]
+        [TestCase(20, 10, 20, 2, false)]
         [TestCase(0, 0, 0, 0, false)]
-        public void Pagination_HasPage(int total, int left, int right, int page, bool has)
+        public void Pagination_HasPage(int total, int rangeIn, int rangeOut, int page, bool has)
         {
-            Assert.AreEqual(has, new Pagination(total, left, right).HasPage(page));
+            Assert.AreEqual(has, new Pagination(total, rangeIn, rangeOut).HasPage(page));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace GeometryDashAPI.Server.Responses
     {
         [GameProperty("0")]
         [ArraySeparator("|")]
-        public List<AccountCommentDto> Comments { get; set; }
+        public List<AccountComment> Comments { get; set; }
         
         [GameProperty("1")]
         public Pagination Page { get; set; }

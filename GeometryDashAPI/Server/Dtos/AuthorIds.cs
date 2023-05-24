@@ -4,7 +4,7 @@ namespace GeometryDashAPI.Server.Dtos
 {
     [AsStruct]
     [Sense(":")]
-    public class AuthorIdsDto : GameObject
+    public class AuthorIds : GameObject
     {
         [GameProperty("0")] public int UserId { get; set; }
         [GameProperty("1")] public string UserName { get; set; }

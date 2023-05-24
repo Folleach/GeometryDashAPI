@@ -138,6 +138,8 @@ namespace GeometryDashAPI.Serialization
         {
             if (key < 0)
                 return false;
+            if (key >= setters.Length)
+                return false;
             var info = setters[key];
             if (info.Setter == null)
                 return false;

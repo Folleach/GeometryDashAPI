@@ -9,6 +9,6 @@ namespace GeometryDashAPI.Server.Responses
     {
         [GameProperty("0")]
         [ArraySeparator("|")]
-        public List<AccountDto> Users { get; set; }
+        public List<Account> Users { get; set; }
     }
 }

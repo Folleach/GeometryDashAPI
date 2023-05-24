@@ -3,14 +3,14 @@
 namespace GeometryDashAPI.Server.Dtos
 {
     [Sense(":")]
-    public class AccountDto : GameObject
+    public class Account : GameObject
     {
         [GameProperty("1")] public string Name { get; set; }
         [GameProperty("2")] public int UserId { get; set; }
         [GameProperty("3")] public int Starts { get; set; }
         [GameProperty("4")] public int Demons { get; set; }
         [GameProperty("6")] public int Rank { get; set; }
-        [GameProperty("7")] public int Highlight { get; }
+        [GameProperty("7")] public int Highlight { get; set; }
         [GameProperty("8")] public int CreatorPoints { get; set; }
         [GameProperty("9")] public int IconPrev { get; set; }
         [GameProperty("10")] public int Color1 { get; set; }

@@ -7,6 +7,6 @@ namespace GeometryDashAPI.Server.Responses
     [AsStruct]
     public class AccountInfoResponse : GameObject
     {
-        [GameProperty("0")] public AccountDto Account { get; set; }
+        [GameProperty("0")] public Account Account { get; set; }
     }
 }

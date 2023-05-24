@@ -4,7 +4,7 @@ using GeometryDashAPI.Attributes;
 namespace GeometryDashAPI.Server.Dtos
 {
     [Sense("~|~")]
-    public class MusicInfoDto : GameObject
+    public class MusicInfo : GameObject
     {
         [GameProperty("1")] public int MusicId { get; set; }
         [GameProperty("2")] public string MusicName { get; set; }

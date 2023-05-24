@@ -3,7 +3,7 @@
 namespace GeometryDashAPI.Server.Dtos
 {
     [Sense(":")]
-    public class LevelDto : LevelPreviewDto
+    public class LevelInfo : LevelPreview
     {
         [GameProperty("4")]
         public string LevelString { get; set; }

@@ -5,14 +5,14 @@ using GeometryDashAPI.Server.Enums;
 namespace GeometryDashAPI.Server.Dtos
 {
     [Sense(":")]
-    public class LevelPreviewDto : GameObject
+    public class LevelPreview : GameObject
     {
         [GameProperty("1")]
         public int Id { get; set; }
-        
+
         [GameProperty("2")]
         public string Name { get; set; }
-        
+
         [GameProperty("3")]
         private string description;
         public string Description
