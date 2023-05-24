@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 
 namespace GeometryDashAPI.Server
 {
@@ -18,6 +19,7 @@ namespace GeometryDashAPI.Server
         {
             HttpStatusCode = statusCode;
             raw = body;
+            Console.WriteLine($"status code: {HttpStatusCode}");
             if (ServerResponseHelper.ErrorCodeRegex.Match(body).Success)
             {
                 GeometryDashStatusCode = -1; // because "error code" looks like error from cloudflare (GeometryDash uses cloudflare as a proxy)
