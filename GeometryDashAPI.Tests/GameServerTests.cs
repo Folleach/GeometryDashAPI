@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests;
 
-[TestFixture]
+[TestFixture(Explicit = true, Reason = "Geometry Dash does not allow to do request from github action workers")]
 public class GameServerTests
 {
     [Test]
