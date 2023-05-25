@@ -3,6 +3,7 @@ using GeometryDashAPI.Data.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace GeometryDashAPI.Data
@@ -120,10 +121,17 @@ namespace GeometryDashAPI.Data
             return GetEnumerator();
         }
 
-        public static async Task<LocalLevels> LoadAsync(string fileName = null)
+        public static async Task<LocalLevels> LoadFileAsync(string? fileName = null)
         {
             var local = new LocalLevels(fileName ?? ResolveFileName(GameDataType.LocalLevels), preventLoading: true);
             await local.Load();
+            return local;
+        }
+
+        public static LocalLevels LoadFile(string? fileName = null)
+        {
+            var local = new LocalLevels(fileName ?? ResolveFileName(GameDataType.LocalLevels), preventLoading: true);
+            local.Load().GetAwaiter().GetResult();
             return local;
         }
     }
