@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -36,20 +35,20 @@ namespace GeometryDashAPI.Serialization
 
             var document = XDocument.Load(XmlReader.Create(stream, xmlSettings));
             var plist = document.Element("plist");
+            if (plist == null)
+                throw new InvalidOperationException("'plist' element is not found in the xml file");
             var dict = plist.Element("dict");
+            if (dict == null)
+                throw new InvalidOperationException("'dict' element is not found in the xml file");
 
-            IEnumerable<XElement> dictElements = dict.Elements();
-            this.Parse(this, dictElements);
+            var dictElements = dict.Elements();
+            Parse(this, dictElements);
         }
 
         private void Parse(Plist dict, IEnumerable<XElement> elements)
         {
-            for (int i = 0; i < elements.Count(); i += 2)
-            {
-                XElement key = elements.ElementAt(i);
-                XElement value = elements.ElementAt(i + 1);
+            foreach (var (key, value) in elements.Pairs())
                 dict[key.Value] = ParseValue(value);
-            }
         }
 
         private dynamic ParseValue(XElement val)
@@ -73,7 +72,7 @@ namespace GeometryDashAPI.Serialization
                     return false;
                 case "dict":
                 case "d":
-                    Plist plist = new Plist();
+                    var plist = new Plist();
                     Parse(plist, val.Elements());
                     return plist;
                 default:
@@ -83,8 +82,8 @@ namespace GeometryDashAPI.Serialization
 
         public static string PlistToString(Plist plist)
         {
-            string head = "<?xml version=\"1.0\"?><plist version=\"1.0\" gjver=\"2.0\"><dict>";
-            string end = "</dict></plist>";
+            var head = "<?xml version=\"1.0\"?><plist version=\"1.0\" gjver=\"2.0\"><dict>";
+            var end = "</dict></plist>";
             return $"{head}{PTS(plist)}{end}";
         }
 
@@ -101,15 +100,10 @@ namespace GeometryDashAPI.Serialization
                 else if (element.Value is float)
                     builder.Append($"<r>{element.Value.ToString().Replace(',', '.')}</r>");
                 else if (element.Value is bool)
+                    builder.Append(element.Value ? "<t />" : "<f />");
+                else if (element.Value is Plist value)
                 {
-                    if (element.Value)
-                        builder.Append("<t />");
-                    else
-                        builder.Append("<f />");
-                }
-                else if (element.Value is Plist)
-                {
-                    if ((element.Value as Plist).Values.Count == 0)
+                    if (value.Values.Count == 0)
                     {
                         builder.Append("<d />");
                         continue;
