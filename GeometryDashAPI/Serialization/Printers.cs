@@ -21,7 +21,7 @@ namespace GeometryDashAPI.Serialization
         public static ReadOnlySpan<char> GetOrDefault_String__(string value) => value.ToString();
         public static ReadOnlySpan<char> GetOrDefault_BlockGroup__(BlockGroup value) => value.ToString();
         public static ReadOnlySpan<char> GetOrDefault_Hsv__(Hsv value) => Hsv.Parse(value);
-        public static ReadOnlySpan<char> GetOrDefault_Pagination__(Pagination data) => "todo: implement print pagination";
+        public static ReadOnlySpan<char> GetOrDefault_Pagination__(Pagination value) => Pagination.Serialize(value);
         public static ReadOnlySpan<char> GetOrDefault_Guidelines__(Guidelines value) => Guidelines.Parse(value);
 
         public delegate void PrinterAppend<in TInstance>(TInstance instance, StringBuilder destination);

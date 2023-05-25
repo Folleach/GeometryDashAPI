@@ -45,7 +45,7 @@ namespace GeometryDashAPI.Server
             return result;
         }
 
-        public static string Parse(Pagination pagination)
+        public static string Serialize(Pagination pagination)
         {
             return $"{pagination.TotalCount}:{pagination.RangeIn}:{pagination.RangeOut}";
         }
