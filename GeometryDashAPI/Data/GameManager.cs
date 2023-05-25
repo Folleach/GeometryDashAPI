@@ -1,4 +1,6 @@
-﻿using GeometryDashAPI.Data.Enums;
+﻿using System.IO;
+using System.Threading.Tasks;
+using GeometryDashAPI.Data.Enums;
 
 namespace GeometryDashAPI.Data
 {
@@ -121,8 +123,19 @@ namespace GeometryDashAPI.Data
         {
         }
 
-        public GameManager(string fullName) : base(fullName)
+        public GameManager(string fileName) : base(fileName)
         {
+        }
+
+        private GameManager(string fileName, bool preventLoading) : base(fileName, preventLoading)
+        {
+        }
+        
+        public static async Task<GameManager> LoadAsync(string fileName = null)
+        {
+            var local = new GameManager(fileName ?? ResolveFileName(GameDataType.GameManager), preventLoading: true);
+            await local.Load();
+            return local;
         }
     }
 }

@@ -3,7 +3,6 @@ using GeometryDashAPI.Data.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace GeometryDashAPI.Data
@@ -23,26 +22,30 @@ namespace GeometryDashAPI.Data
 
         public LocalLevels() : base(GameDataType.LocalLevels)
         {
-            this.LoadLevels();
         }
 
-        public LocalLevels(string fullName) : base(fullName)
+        public LocalLevels(string fileName) : base(fileName)
         {
-            this.LoadLevels();
         }
 
-        private LocalLevels(string fullName, bool preventLoading) : base(fullName ?? fullName)
+        private LocalLevels(string fileName, bool preventLoading) : base(fileName, preventLoading)
         {
+        }
+
+        public override async Task Load()
+        {
+            await base.Load();
+            LoadLevels();
         }
 
         private void LoadLevels()
         {
-            this.levels = new List<LevelCreatorModel>();
+            levels = new List<LevelCreatorModel>();
             foreach (var a in DataPlist["LLM_01"])
             {
                 if (a.Key == "_isArr")
                     continue;
-                LevelCreatorModel level = new LevelCreatorModel(a.Key, a.Value);
+                var level = new LevelCreatorModel(a.Key, a.Value);
                 levels.Add(level);
             }
             RecalculateIndex();
@@ -67,7 +70,7 @@ namespace GeometryDashAPI.Data
         [Obsolete("Use the instance.GetLevel(name, revision)")]
         public LevelCreatorModel GetLevelByName(string levelName)
         {
-            return this.levels.Find(x => x.Name == levelName);
+            return levels.Find(x => x.Name == levelName);
         }
 
         public LevelCreatorModel GetLevel(string levelName, int revision = 0)
@@ -96,11 +99,11 @@ namespace GeometryDashAPI.Data
             return index.ContainsKey(levelName) && index[levelName].ContainsKey(revision);
         }
 
-        public void Remove(params LevelCreatorModel[] levels)
+        public void Remove(params LevelCreatorModel[] items)
         {
-            foreach (var level in levels)
+            foreach (var level in items)
             {
-                this.levels.Remove(level);
+                levels.Remove(level);
                 DataPlist["LLM_01"].Remove(level.KeyInDict);
             }
             RecalculateIndex();
@@ -117,9 +120,11 @@ namespace GeometryDashAPI.Data
             return GetEnumerator();
         }
 
-        public static Task<LocalLevels> LoadAsync()
+        public static async Task<LocalLevels> LoadAsync(string fileName = null)
         {
-            throw new NotImplementedException();
+            var local = new LocalLevels(fileName ?? ResolveFileName(GameDataType.LocalLevels), preventLoading: true);
+            await local.Load();
+            return local;
         }
     }
 }

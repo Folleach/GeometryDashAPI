@@ -2,6 +2,7 @@
 using GeometryDashAPI.Memory;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using GeometryDashAPI.Serialization;
@@ -16,28 +17,28 @@ namespace GeometryDashAPI.Data
 
         public GameData(GameDataType type)
         {
-            gameDataFile = $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type}.dat";
+            gameDataFile = ResolveFileName(type);
             Load().GetAwaiter().GetResult();
         }
 
-        public GameData(string fullName)
+        public GameData(string fileName)
         {
-            gameDataFile = fullName;
+            gameDataFile = fileName;
             Load().GetAwaiter().GetResult();
         }
 
-        protected GameData(string fullName, bool preventLoading)
+        protected GameData(string fileName, bool preventLoading)
         {
-            gameDataFile = fullName;
+            gameDataFile = fileName;
             if (preventLoading)
                 return;
             Load().GetAwaiter().GetResult();
         }
 
-        public async Task Load()
+        public virtual async Task Load()
         {
             if (!File.Exists(gameDataFile))
-                throw new FileNotFoundException();
+                throw new FileNotFoundException($"file does not exists: '{gameDataFile}'");
 
             // File > Bytes > XOR > ToString > Replace > Base64 > Gzip
             var data = await File.ReadAllBytesAsync(gameDataFile);
@@ -93,6 +94,13 @@ namespace GeometryDashAPI.Data
             using var memory = new MemoryStream();
             await DataPlist.SaveToStreamAsync(memory);
             await File.WriteAllBytesAsync(fullName ?? gameDataFile, GetFileContent(memory));
+        }
+
+        public static string ResolveFileName(GameDataType type)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type}.dat";
+            throw new InvalidOperationException($"can't resolve the directory with the saves on your operating system: '{RuntimeInformation.OSDescription}. Use certain file name");
         }
 
         private static byte[] GetFileContent(MemoryStream memory)
