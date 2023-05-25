@@ -45,7 +45,6 @@ namespace GeometryDashAPI.Data
             var resultPlist = Crypt.GZipDecompress(GameConvert.FromBase64(dataZip));
 
             DataPlist = new Plist(Encoding.ASCII.GetBytes(resultPlist));
-            GC.Collect();
         }
 
         public virtual bool TrySave(bool checkRunningGame, string fullName = null)
@@ -53,17 +52,53 @@ namespace GeometryDashAPI.Data
             if (checkRunningGame && GameProcess.GameCount() > 0)
                 return false;
 
-            return this.TrySave(fullName);
+            return TrySave(fullName);
         }
 
         public virtual bool TrySave(string fullName = null)
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
-            byte[] gzipc = Crypt.GZipCompress(Encoding.ASCII.GetBytes(Plist.PlistToString(DataPlist)));
-            string base64 = GameConvert.ToBase64(gzipc);
+            using var memory = new MemoryStream();
+            DataPlist.SaveToStreamAsync(memory).GetAwaiter().GetResult();
 
-            File.WriteAllBytes(fullName ?? gameDataFile, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB));
+            var base64 = GameConvert.ToBase64(Crypt.GZipCompress(memory.ToArray()));
+
+            File.WriteAllBytesAsync(fullName ?? gameDataFile, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB)).GetAwaiter().GetResult();
             return true;
+        }
+
+        /// <summary>
+        /// Saves class data to a file as a game save<br/><br/>
+        /// Before saving, make sure that you have closed the game. Otherwise, after closing, the game will overwrite the file<br/>
+        /// </summary>
+        /// <param name="fullName">File to write the data.<br />
+        /// use <b>null</b> value for default resolving
+        /// </param>
+        public void Save(string fullName = null)
+        {
+            using var memory = new MemoryStream();
+            DataPlist.SaveToStream(memory);
+            File.WriteAllBytes(fullName ?? gameDataFile, GetFileContent(memory));
+        }
+
+        /// <summary>
+        /// Saves class data to a file as a game save<br/><br/>
+        /// Before saving, make sure that you have closed the game. Otherwise, after closing, the game will overwrite the file<br/>
+        /// </summary>
+        /// <param name="fullName">File to write the data.<br />
+        /// use <b>null</b> value for default resolving
+        /// </param>
+        public async Task SaveAsync(string fullName = null)
+        {
+            using var memory = new MemoryStream();
+            await DataPlist.SaveToStreamAsync(memory);
+            await File.WriteAllBytesAsync(fullName ?? gameDataFile, GetFileContent(memory));
+        }
+
+        private static byte[] GetFileContent(MemoryStream memory)
+        {
+            var base64 = GameConvert.ToBase64(Crypt.GZipCompress(memory.ToArray()));
+            return Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB);
         }
     }
 }

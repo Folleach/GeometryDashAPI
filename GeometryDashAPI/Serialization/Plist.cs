@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -80,38 +82,67 @@ namespace GeometryDashAPI.Serialization
             }
         }
 
-        public static string PlistToString(Plist plist)
+        public string SaveToString()
         {
-            var head = "<?xml version=\"1.0\"?><plist version=\"1.0\" gjver=\"2.0\"><dict>";
-            var end = "</dict></plist>";
-            return $"{head}{PTS(plist)}{end}";
+            var document = new XDocument();
+            var root = new XElement("plist");
+            root.Add(new XAttribute("version", "1.0"));
+            root.Add(new XAttribute("gjver", "2.0"));
+            root.Add(RecursivePlistToString(this, "dict"));
+            document.Add(root);
+            using var memory = new MemoryStream();
+            SaveToStream(memory);
+            return Encoding.UTF8.GetString(memory.ToArray());
         }
 
-        private static string PTS(Plist plist)
+        public void SaveToStream(Stream stream)
         {
-            StringBuilder builder = new StringBuilder();
-            foreach (KeyValuePair<string, dynamic> element in plist)
+            var document = CreateDocumentFromThis();
+            document.Save(stream, SaveOptions.DisableFormatting);
+        }
+
+        public async Task SaveToStreamAsync(Stream stream)
+        {
+            var document = CreateDocumentFromThis();
+            await document.SaveAsync(stream, SaveOptions.DisableFormatting, CancellationToken.None);
+        }
+
+        private XDocument CreateDocumentFromThis()
+        {
+            var document = new XDocument();
+            var root = new XElement("plist");
+            root.Add(new XAttribute("version", "1.0"));
+            root.Add(new XAttribute("gjver", "2.0"));
+            root.Add(RecursivePlistToString(this, "dict"));
+            document.Add(root);
+            return document;
+        }
+
+        private static XElement RecursivePlistToString(Plist plist, string dictName)
+        {
+            var dict = new XElement(dictName);
+            foreach (var element in plist)
             {
-                builder.Append($"<k>{element.Key}</k>");
+                dict.Add(new XElement("k", element.Key));
                 if (element.Value is string)
-                    builder.Append($"<s>{element.Value}</s>");
+                    dict.Add(new XElement("s", element.Value));
                 else if (element.Value is int)
-                    builder.Append($"<i>{element.Value}</i>");
+                    dict.Add(new XElement("i", element.Value));
                 else if (element.Value is float)
-                    builder.Append($"<r>{element.Value.ToString().Replace(',', '.')}</r>");
+                    dict.Add(new XElement("r", GameConvert.SingleToString(element.Value)));
                 else if (element.Value is bool)
-                    builder.Append(element.Value ? "<t />" : "<f />");
+                    dict.Add(new XElement(element.Value ? "t" : "f"));
                 else if (element.Value is Plist value)
                 {
                     if (value.Values.Count == 0)
                     {
-                        builder.Append("<d />");
+                        dict.Add(new XElement("d"));
                         continue;
                     }
-                    builder.Append($"<d>{PTS(element.Value)}</d>");
+                    dict.Add(RecursivePlistToString(element.Value, "d"));
                 }
             }
-            return builder.ToString().Replace("&", "&amp;");
+            return dict;
         }
     }
 }
