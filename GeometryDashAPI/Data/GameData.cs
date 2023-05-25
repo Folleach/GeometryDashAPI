@@ -100,7 +100,7 @@ namespace GeometryDashAPI.Data
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type}.dat";
-            throw new InvalidOperationException($"can't resolve the directory with the saves on your operating system: '{RuntimeInformation.OSDescription}. Use certain file name");
+            throw new InvalidOperationException($"can't resolve the directory with the saves on your operating system: '{RuntimeInformation.OSDescription}'. Use certain file name");
         }
 
         private static byte[] GetFileContent(MemoryStream memory)

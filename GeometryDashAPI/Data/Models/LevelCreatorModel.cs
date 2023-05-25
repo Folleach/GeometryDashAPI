@@ -98,7 +98,7 @@ namespace GeometryDashAPI.Data.Models
         {
             get => DataLevel.ContainsKey("k45");
         }
-        public int MusicID
+        public int MusicId
         {
             get => CustomMusic ? DataLevel["k45"] : DataLevel.ContainsKey("k8") ? DataLevel ["k8"] : 0;
         }
@@ -114,7 +114,7 @@ namespace GeometryDashAPI.Data.Models
             set => DataLevel["kI2"] = value;
         }
 
-        public void SetMusicID(bool custom, int id)
+        public void SetMusicId(bool custom, int id)
         {
             if (custom)
                 DataLevel["k45"] = id;
