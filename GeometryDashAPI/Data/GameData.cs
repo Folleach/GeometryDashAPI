@@ -11,44 +11,29 @@ namespace GeometryDashAPI.Data
 {
     public class GameData
     {
-        public Plist DataPlist { get; protected set; }
+        public Plist DataPlist { get; set; }
 
-        private readonly string gameDataFile;
+        private readonly GameDataType type;
 
-        public GameData(GameDataType type)
+        protected GameData(GameDataType type)
         {
-            gameDataFile = ResolveFileName(type);
-            Load().GetAwaiter().GetResult();
+            this.type = type;
         }
 
-        public GameData(string fileName)
+        public virtual async Task Load(string fileName)
         {
-            gameDataFile = fileName;
-            Load().GetAwaiter().GetResult();
-        }
-
-        protected GameData(string fileName, bool preventLoading)
-        {
-            gameDataFile = fileName;
-            if (preventLoading)
-                return;
-            Load().GetAwaiter().GetResult();
-        }
-
-        public virtual async Task Load()
-        {
-            if (!File.Exists(gameDataFile))
-                throw new FileNotFoundException($"file does not exists: '{gameDataFile}'");
+            if (!File.Exists(fileName))
+                throw new FileNotFoundException($"file does not exists: '{fileName}'");
 
             // File > Bytes > XOR > ToString > Replace > Base64 > Gzip
-            var data = await File.ReadAllBytesAsync(gameDataFile);
+            var data = await File.ReadAllBytesAsync(fileName);
             var dataZip = Encoding.ASCII.GetString(Crypt.XOR(data, 0xB)).Split('\0')[0];
             var resultPlist = Crypt.GZipDecompress(GameConvert.FromBase64(dataZip));
 
             DataPlist = new Plist(Encoding.ASCII.GetBytes(resultPlist));
         }
 
-        public virtual bool TrySave(bool checkRunningGame, string fullName = null)
+        public virtual bool TrySave(bool checkRunningGame, string? fullName = null)
         {
             if (checkRunningGame && GameProcess.GameCount() > 0)
                 return false;
@@ -56,7 +41,7 @@ namespace GeometryDashAPI.Data
             return TrySave(fullName);
         }
 
-        public virtual bool TrySave(string fullName = null)
+        public virtual bool TrySave(string? fullName = null)
         {
             //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
             using var memory = new MemoryStream();
@@ -64,7 +49,7 @@ namespace GeometryDashAPI.Data
 
             var base64 = GameConvert.ToBase64(Crypt.GZipCompress(memory.ToArray()));
 
-            File.WriteAllBytesAsync(fullName ?? gameDataFile, Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB)).GetAwaiter().GetResult();
+            File.WriteAllBytesAsync(fullName ?? ResolveFileName(type), Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB)).GetAwaiter().GetResult();
             return true;
         }
 
@@ -75,11 +60,11 @@ namespace GeometryDashAPI.Data
         /// <param name="fullName">File to write the data.<br />
         /// use <b>null</b> value for default resolving
         /// </param>
-        public void Save(string fullName = null)
+        public void Save(string? fullName = null)
         {
             using var memory = new MemoryStream();
             DataPlist.SaveToStream(memory);
-            File.WriteAllBytes(fullName ?? gameDataFile, GetFileContent(memory));
+            File.WriteAllBytes(fullName ?? ResolveFileName(type), GetFileContent(memory));
         }
 
         /// <summary>
@@ -89,11 +74,11 @@ namespace GeometryDashAPI.Data
         /// <param name="fullName">File to write the data.<br />
         /// use <b>null</b> value for default resolving
         /// </param>
-        public async Task SaveAsync(string fullName = null)
+        public async Task SaveAsync(string? fullName = null)
         {
             using var memory = new MemoryStream();
             await DataPlist.SaveToStreamAsync(memory);
-            await File.WriteAllBytesAsync(fullName ?? gameDataFile, GetFileContent(memory));
+            await File.WriteAllBytesAsync(fullName ?? ResolveFileName(type), GetFileContent(memory));
         }
 
         public static string ResolveFileName(GameDataType type)

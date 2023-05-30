@@ -3,6 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using GeometryDashAPI.Data;
+using GeometryDashAPI.Data.Models;
+using GeometryDashAPI.Levels;
+using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Levels.GameObjects.Specific;
+using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests;
@@ -14,6 +19,9 @@ public class GameDataTests
 
     private static readonly string GameManager1Path = Path.Combine("data", "saves", "CCGameManager1.dat");
     private static readonly string LocalLevels1Path = Path.Combine("data", "saves", "CCLocalLevels1.dat");
+
+    private static readonly string GameManagerEmptyPath = Path.Combine("data", "saves", "CCGameManagerEmpty.dat");
+    private static readonly string LocalLevelsEmptyPath = Path.Combine("data", "saves", "CCLocalLevelsEmpty.dat");
 
     [SetUp]
     public void SetUp()
@@ -32,7 +40,7 @@ public class GameDataTests
     [Test]
     public void LocalLevels_Load()
     {
-        var local = new LocalLevels(LocalLevels1Path);
+        var local = LocalLevels.LoadFile(LocalLevels1Path);
 
         local.LevelExists("test1", 0).Should().Be(true);
         local.GetLevel("test1").Description.Should().Be("for tests");
@@ -77,7 +85,7 @@ public class GameDataTests
     [Test]
     public void GameManager_Load()
     {
-        var game = new GameManager(GameManager1Path);
+        var game = GameManager.LoadFile(GameManager1Path);
 
         game.PlayerCube.Should().Be(1);
     }
@@ -128,5 +136,65 @@ public class GameDataTests
 
         local.LevelExists("test1").Should().BeFalse();
         local.FirstOrDefault()?.Name.Should().Be(input);
+    }
+
+    [Test]
+    public async Task LocalLevels_CreateNew()
+    {
+        var local = await LocalLevels.LoadFileAsync(LocalLevelsEmptyPath);
+        var localNew = LocalLevels.CreateNew();
+
+        local.DataPlist.Should().BeEquivalentTo(localNew.DataPlist);
+    }
+
+    [Test]
+    public async Task LocalLevels_CreateNewWithLevel()
+    {
+        var local = await LocalLevels.LoadFileAsync(LocalLevels1Path);
+        var localNew = LocalLevels.CreateNew();
+
+        // because this properties isn't present in new level
+        local.GetLevel("test1").DataLevel.Remove("k3");
+        local.GetLevel("test1").DataLevel.Remove("k47");
+        local.GetLevel("test1").DataLevel.Remove("k48");
+        local.GetLevel("test1").DataLevel.Remove("k80");
+
+        // restore to default in prepared file
+        local.GetLevel("test1").DataLevel["kI1"] = 0;
+        local.GetLevel("test1").DataLevel["kI2"] = 0;
+        local.GetLevel("test1").DataLevel["kI3"] = 0;
+        (local.GetLevel("test1").DataLevel["kI6"] as Plist)?.Clear();
+
+        var level = new Level();
+
+        localNew.AddLevel(LevelCreatorModel.CreateNew("test1", "Player", level));
+        local.GetLevel("test1").SaveLevel(level);
+
+        local.DataPlist.Should().BeEquivalentTo(localNew.DataPlist);
+    }
+
+    [Test]
+    public async Task GameManager_CreateNew()
+    {
+        var manager = await GameManager.LoadFileAsync(GameManagerEmptyPath);
+        var managerNew = GameManager.CreateNew();
+
+        manager.DataPlist.Should().BeEquivalentTo(managerNew.DataPlist);
+    }
+
+    [Test]
+    public void LocalLevels_RemoveTest()
+    {
+        var local = LocalLevels.CreateNew();
+        var toRemove = LevelCreatorModel.CreateNew("test1", "me");
+
+        local.AddLevel(toRemove);
+        local.AddLevel(LevelCreatorModel.CreateNew("test2", "me"));
+        
+        local.Remove(toRemove).Should().BeFalse();
+        local.LevelExists("test1").Should().BeTrue();
+
+        local.Remove(local.GetLevel("test1")).Should().BeTrue();
+        local.LevelExists("test1").Should().BeFalse();
     }
 }

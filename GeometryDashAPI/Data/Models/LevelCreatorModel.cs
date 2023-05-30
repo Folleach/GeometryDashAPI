@@ -1,14 +1,14 @@
 ﻿using GeometryDashAPI.Levels;
 using System;
-using System.Collections.Generic;
 using System.Text;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Data.Models
 {
     public class LevelCreatorModel
     {
-        public Dictionary<string, dynamic> DataLevel { get; protected set; }
-        internal string KeyInDict { get; private set; }
+        internal string? KeyInDict { get; private set; }
+        public Plist DataLevel { get; set; }
 
         public string Name
         {
@@ -21,7 +21,7 @@ namespace GeometryDashAPI.Data.Models
             set => DataLevel["k3"] = Convert.ToBase64String(Encoding.ASCII.GetBytes(value));
         }
 
-        public string LevelString => DataLevel.ContainsKey("k4") ? DataLevel ["k4"] : Level.DefaultLevelString;
+        public string LevelString => DataLevel.ContainsKey("k4") ? DataLevel["k4"] : Level.DefaultLevelString;
 
         public string AuthorName
         {
@@ -125,10 +125,10 @@ namespace GeometryDashAPI.Data.Models
             }
         }
 
-        public LevelCreatorModel(string key, Dictionary<string, dynamic> dict)
+        public LevelCreatorModel(string? key, Plist dict)
         {
-            this.KeyInDict = key;
-            this.DataLevel = dict;
+            KeyInDict = key;
+            DataLevel = dict;
         }
 
         public Level LoadLevel() => new(LevelString, compressed: true);
@@ -138,5 +138,50 @@ namespace GeometryDashAPI.Data.Models
         {
             return $"{Name}";
         }
+
+        /// <summary>
+        /// Creates a empty local levels instance, like Geometry Dash does in first time start
+        /// </summary>
+        public static LevelCreatorModel CreateNew(string name, string authorName, Level level)
+        {
+            var model = new LevelCreatorModel(null, new Plist
+            {
+                ["kCEK"] = 4,
+                ["k13"] = true,
+                ["k21"] = 2,
+                ["kI1"] = 0,
+                ["kI2"] = 0,
+                ["kI3"] = 0,
+                ["kI6"] = new Plist()
+            })
+            {
+                Name = name,
+                AuthorName = authorName,
+                Version = 1,
+                BinaryVersion = GeometryDashApi.BinaryVersion
+            };
+
+            model.SaveLevel(level);
+
+            return model;
+        }
+
+        /// <summary>
+        /// Creates a empty local levels instance, like Geometry Dash does in first time start
+        /// </summary>
+        public static LevelCreatorModel CreateNew(string name, string authorName)
+            => CreateNew(name, authorName, new Level());
+
+        /// <summary>
+        /// Creates a empty local levels instance, like Geometry Dash does in first time start
+        /// </summary>
+        public static LevelCreatorModel CreateNew(string name, GameManager manager)
+            => CreateNew(name, manager.PlayerName);
+
+        /// <summary>
+        /// Creates a empty local levels instance, like Geometry Dash does in first time start
+        /// </summary>
+        public static LevelCreatorModel CreateNew(string name, GameManager manager, Level level)
+            => CreateNew(name, manager.PlayerName, level);
     }
 }

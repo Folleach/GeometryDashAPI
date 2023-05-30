@@ -3,8 +3,8 @@ using GeometryDashAPI.Data.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
+using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Data
 {
@@ -21,21 +21,13 @@ namespace GeometryDashAPI.Data
 
         public int LevelCount => levels.Count;
 
-        public LocalLevels() : base(GameDataType.LocalLevels)
+        protected LocalLevels() : base(GameDataType.LocalLevels)
         {
         }
 
-        public LocalLevels(string fileName) : base(fileName)
+        public override async Task Load(string fileName)
         {
-        }
-
-        private LocalLevels(string fileName, bool preventLoading) : base(fileName, preventLoading)
-        {
-        }
-
-        public override async Task Load()
-        {
-            await base.Load();
+            await base.Load(fileName);
             LoadLevels();
         }
 
@@ -100,14 +92,16 @@ namespace GeometryDashAPI.Data
             return index.ContainsKey(levelName) && index[levelName].ContainsKey(revision);
         }
 
-        public void Remove(params LevelCreatorModel[] items)
+        public bool Remove(LevelCreatorModel levelInfo)
         {
-            foreach (var level in items)
-            {
-                levels.Remove(level);
-                DataPlist["LLM_01"].Remove(level.KeyInDict);
-            }
+            if (levelInfo.KeyInDict == null)
+                return false;
+            if (!levels.Contains(levelInfo))
+                return false;
+            levels.Remove(levelInfo);
+            DataPlist["LLM_01"].Remove(levelInfo.KeyInDict);
             RecalculateIndex();
+            return true;
         }
 
         public IEnumerator<LevelCreatorModel> GetEnumerator()
@@ -123,16 +117,45 @@ namespace GeometryDashAPI.Data
 
         public static async Task<LocalLevels> LoadFileAsync(string? fileName = null)
         {
-            var local = new LocalLevels(fileName ?? ResolveFileName(GameDataType.LocalLevels), preventLoading: true);
-            await local.Load();
+            var local = new LocalLevels();
+            await local.Load(fileName ?? ResolveFileName(GameDataType.LocalLevels));
             return local;
         }
 
         public static LocalLevels LoadFile(string? fileName = null)
         {
-            var local = new LocalLevels(fileName ?? ResolveFileName(GameDataType.LocalLevels), preventLoading: true);
-            local.Load().GetAwaiter().GetResult();
+            var local = new LocalLevels();
+            local.Load(fileName ?? ResolveFileName(GameDataType.LocalLevels)).GetAwaiter().GetResult();
             return local;
+        }
+
+        /// <summary>
+        /// Creates a empty local levels instance, like Geometry Dash does in first time start
+        /// </summary>
+        public static LocalLevels CreateNew()
+        {
+            var local = new LocalLevels
+            {
+                DataPlist = new Plist()
+                {
+                    ["LLM_02"] = GeometryDashApi.BinaryVersion,
+                    ["LLM_01"] = new Plist()
+                    {
+                        ["_isArr"] = true
+                    }
+                }
+            };
+            local.LoadLevels();
+            return local;
+        }
+
+        public void AddLevel(LevelCreatorModel levelInfo)
+        {
+            var all = DataPlist["LLM_01"];
+            for (var i = LevelCount - 1; i >= 0; i--)
+                all[$"k_{i + 1}"] = all[$"k_{i}"];
+            all["k_0"] = levelInfo.DataLevel;
+            LoadLevels();
         }
     }
 }

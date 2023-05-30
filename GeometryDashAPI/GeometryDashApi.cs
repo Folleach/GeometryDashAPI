@@ -14,6 +14,8 @@ namespace GeometryDashAPI
 {
     public class GeometryDashApi
     {
+        public static readonly int BinaryVersion = 35;
+
         internal static ObjectSerializer Serializer = new();
 
         private static readonly Dictionary<int, Type> BlockTypes = new();
