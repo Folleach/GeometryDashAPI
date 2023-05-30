@@ -13,14 +13,18 @@ namespace GeometryDashAPI.Data
     {
         public Plist DataPlist { get; set; }
 
-        private readonly GameDataType type;
+        private readonly GameDataType? type;
+
+        public GameData()
+        {
+        }
 
         protected GameData(GameDataType type)
         {
             this.type = type;
         }
 
-        public virtual async Task Load(string fileName)
+        public virtual async Task LoadAsync(string fileName)
         {
             if (!File.Exists(fileName))
                 throw new FileNotFoundException($"file does not exists: '{fileName}'");
@@ -81,8 +85,10 @@ namespace GeometryDashAPI.Data
             await File.WriteAllBytesAsync(fullName ?? ResolveFileName(type), GetFileContent(memory));
         }
 
-        public static string ResolveFileName(GameDataType type)
+        public static string ResolveFileName(GameDataType? type)
         {
+            if (type == null)
+                throw new InvalidOperationException("can't resolve the directory with the saves for undefined file type. Use certain file name");
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type}.dat";
             throw new InvalidOperationException($"can't resolve the directory with the saves on your operating system: '{RuntimeInformation.OSDescription}'. Use certain file name");

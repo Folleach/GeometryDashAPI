@@ -132,14 +132,14 @@ namespace GeometryDashAPI.Data
         public static async Task<GameManager> LoadFileAsync(string? fileName = null)
         {
             var local = new GameManager();
-            await local.Load(fileName ?? ResolveFileName(GameDataType.GameManager));
+            await local.LoadAsync(fileName ?? ResolveFileName(GameDataType.GameManager));
             return local;
         }
 
         public static GameManager LoadFile(string? fileName = null)
         {
             var local = new GameManager();
-            local.Load(fileName ?? ResolveFileName(GameDataType.GameManager)).GetAwaiter().GetResult();
+            local.LoadAsync(fileName ?? ResolveFileName(GameDataType.GameManager)).GetAwaiter().GetResult();
             return local;
         }
 

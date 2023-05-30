@@ -22,7 +22,7 @@ namespace Examples
         public static void Invoke()
         {
             GeometryDashApi.RegisterBlockType(typeof(MyShakeTrigger), true);
-            var levels = new LocalLevels();
+            var levels = LocalLevels.LoadFile();
             var level = new Level(levels.GetLevel("Temp"));
         }
     }

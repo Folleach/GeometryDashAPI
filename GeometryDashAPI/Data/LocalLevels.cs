@@ -25,9 +25,9 @@ namespace GeometryDashAPI.Data
         {
         }
 
-        public override async Task Load(string fileName)
+        public override async Task LoadAsync(string fileName)
         {
-            await base.Load(fileName);
+            await base.LoadAsync(fileName);
             LoadLevels();
         }
 
@@ -118,14 +118,14 @@ namespace GeometryDashAPI.Data
         public static async Task<LocalLevels> LoadFileAsync(string? fileName = null)
         {
             var local = new LocalLevels();
-            await local.Load(fileName ?? ResolveFileName(GameDataType.LocalLevels));
+            await local.LoadAsync(fileName ?? ResolveFileName(GameDataType.LocalLevels));
             return local;
         }
 
         public static LocalLevels LoadFile(string? fileName = null)
         {
             var local = new LocalLevels();
-            local.Load(fileName ?? ResolveFileName(GameDataType.LocalLevels)).GetAwaiter().GetResult();
+            local.LoadAsync(fileName ?? ResolveFileName(GameDataType.LocalLevels)).GetAwaiter().GetResult();
             return local;
         }
 
