@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 using GeometryDashAPI.Data.Enums;
 using GeometryDashAPI.Serialization;
 
@@ -257,10 +259,17 @@ namespace GeometryDashAPI.Data
             return manager;
         }
 
-        // todo: generate a uniq id
+        // I don't know about how RobTop use this Udid and have no idea how to generate it
+        // therefore, I will generate cryptographically strong random values.
+        // Maybe it's device identifier https://en.wikipedia.org/wiki/UDID
         private static string GenerateUdid()
         {
-            return "S1521332837133215165381199444632981001";
+            var builder = new StringBuilder();
+            builder.Append("S");
+            for (var i = 0; i < 6; i++)
+                builder.Append(RandomNumberGenerator.GetInt32(0, 999999).ToString("000000"));
+            builder.Append(RandomNumberGenerator.GetInt32(0, 9));
+            return builder.ToString();
         }
     }
 }
