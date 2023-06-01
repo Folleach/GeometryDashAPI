@@ -14,7 +14,7 @@ Open `.dat`/`.plist` file for explore your own statistics, creation, downloads, 
 
 ```cs
 var manager = GameManager.LoadFile();
-manager.PlayerName = "your name :>"
+manager.PlayerName = "your name :>";
 manager.Save();
 ```
 
