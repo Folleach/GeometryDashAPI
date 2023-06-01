@@ -11,10 +11,10 @@ namespace GeometryDashAPI.Tests;
 public class GameServerTests
 {
     [Test]
-    public async Task GetFeatures()
+    public async Task GetFeatured()
     {
-        var server = new GameServer();
-        var response = await server.GetLevels(new GetLevelsQuery(SearchType.Featured));
+        var server = new GameClient();
+        var response = await server.SearchLevelsAsync(new GetLevelsQuery(SearchType.Featured));
         var result = response.GetResultOrDefault();
 
         response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
@@ -30,8 +30,8 @@ public class GameServerTests
     [Test]
     public async Task SearchAccount()
     {
-        var server = new GameServer();
-        var response = await server.GetUserByName("Folleach");
+        var server = new GameClient();
+        var response = await server.SearchUserAsync("Folleach");
         var result = response.GetResultOrDefault();
 
         response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
@@ -40,7 +40,7 @@ public class GameServerTests
         result.WithoutLoaded.Should().HaveCount(0);
         result.User.WithoutLoaded.Should().HaveCount(0);
 
-        var accountResponse = await server.GetAccountInfo(result.User.AccountId);
+        var accountResponse = await server.GetAccountAsync(result.User.AccountId);
         var accountResult = accountResponse.GetResultOrDefault();
 
         accountResponse.HttpStatusCode.Should().Be(HttpStatusCode.OK);

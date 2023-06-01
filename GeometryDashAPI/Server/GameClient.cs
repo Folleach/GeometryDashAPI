@@ -7,24 +7,24 @@ using GeometryDashAPI.Server.Responses;
 
 namespace GeometryDashAPI.Server
 {
-    public class GameServer
+    public class GameClient
     {
         private readonly IdentifierQuery identifierQuery;
         private readonly OnlineQuery onlineQuery;
         private readonly Network network;
 
-        public GameServer() : this(null)
+        public GameClient() : this(null)
         {
         }
         
-        public GameServer(IdentifierQuery identifierQuery = null, OnlineQuery onlineQuery = null, Network network = null)
+        public GameClient(IdentifierQuery identifierQuery = null, OnlineQuery onlineQuery = null, Network network = null)
         {
             this.identifierQuery = identifierQuery;
             this.onlineQuery = onlineQuery;
             this.network = network ?? new Network();
         }
 
-        public async Task<ServerResponse<TopResponse>> GetTop(TopType type, int count)
+        public async Task<ServerResponse<TopResponse>> GetTopAsync(TopType type, int count)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -34,7 +34,7 @@ namespace GeometryDashAPI.Server
             return await Get<TopResponse>("/getGJScores20.php", query);
         }
 
-        public async Task<ServerResponse<LevelPageResponse>> GetLevels(GetLevelsQuery getLevelsQuery)
+        public async Task<ServerResponse<LevelPageResponse>> SearchLevelsAsync(GetLevelsQuery getLevelsQuery)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -42,16 +42,16 @@ namespace GeometryDashAPI.Server
             return await Get<LevelPageResponse>("/getGJLevels21.php", query);
         }
 
-        public async Task<ServerResponse<LevelPageResponse>> GetFeatureLevels(int page)
+        public async Task<ServerResponse<LevelPageResponse>> GetFeaturedLevelsAsync(int page)
         {
-            return await GetLevels(new GetLevelsQuery(SearchType.Featured)
+            return await SearchLevelsAsync(new GetLevelsQuery(SearchType.Featured)
             {
                 QueryString = "",
                 Page = page,
             });
         }
 
-        public async Task<ServerResponse<LoginResponse>> Login(string username, string password)
+        public async Task<ServerResponse<LoginResponse>> LoginAsync(string username, string password)
         {
             var query = new FlexibleQuery()
                 .AddProperty(new Property("udid", Guid.NewGuid()))
@@ -62,7 +62,7 @@ namespace GeometryDashAPI.Server
             return await Get<LoginResponse>("/accounts/loginGJAccount.php", query);
         }
 
-        public async Task<ServerResponse<AccountCommentPageResponse>> GetAccountComments(int accountId, int page)
+        public async Task<ServerResponse<AccountCommentPageResponse>> GetAccountCommentsAsync(int accountId, int page)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -72,7 +72,7 @@ namespace GeometryDashAPI.Server
             return await Get<AccountCommentPageResponse>("/getGJAccountComments20.php", query);
         }
 
-        public async Task<ServerResponse<UserResponse>> GetUserByName(string name)
+        public async Task<ServerResponse<UserResponse>> SearchUserAsync(string name)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -82,7 +82,7 @@ namespace GeometryDashAPI.Server
             return await Get<UserResponse>("/getGJUsers20.php", query);
         }
 
-        public async Task<ServerResponse<LevelResponse>> DownloadLevel(int id)
+        public async Task<ServerResponse<LevelResponse>> DownloadLevelAsync(int id)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -92,7 +92,7 @@ namespace GeometryDashAPI.Server
             return await Get<LevelResponse>("/downloadGJLevel22.php", query);
         }
 
-        public async Task<ServerResponse<AccountInfoResponse>> GetAccountInfo(int accountId)
+        public async Task<ServerResponse<AccountInfoResponse>> GetAccountAsync(int accountId)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -101,7 +101,7 @@ namespace GeometryDashAPI.Server
             return await Get<AccountInfoResponse>("/getGJUserInfo20.php", query);
         }
 
-        public async Task<ServerResponse<LevelPageResponse>> GetMyLevels(PasswordQuery account, int userId, int page)
+        public async Task<ServerResponse<LevelPageResponse>> GetMyLevelsAsync(PasswordQuery account, int userId, int page)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
