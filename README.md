@@ -10,7 +10,13 @@ Edit your own level from the stored data, or download from the server and... edi
 [learn more](https://github.com/Folleach/GeometryDashAPI/wiki/Levels)
 
 ## Stored data
-Open `.dat` file for explore your own statistics, creation, downloads, achievements and more 
+Open `.dat`/`.plist` file for explore your own statistics, creation, downloads, achievements and more 
+
+```cs
+var manager = GameManager.LoadFile();
+manager.PlayerName = "your name :>"
+manager.Save();
+```
 
 [learn more](https://github.com/Folleach/GeometryDashAPI/wiki/Game-saves-(wip:-0.2-and-above))
 
@@ -19,9 +25,16 @@ Open `.dat` file for explore your own statistics, creation, downloads, achieveme
 Don't think about communicates with the server.  
 Ready-made methods are at your disposal for
 
-- serach
+- search
 - account
-- ... ~~to be honest there are few methods~~ (todo: add new items when make more methods)
+- ... ~~to be honest there are few methods.~~ todo: add a new items when make more methods ;)
+
+```cs
+var client = new GameClient();
+var user = await client.SearchUserAsync("Folleach");
+```
+
+You can even interact with unofficial servers too
 
 [learn more](https://github.com/Folleach/GeometryDashAPI/wiki/Network)
 
@@ -44,10 +57,6 @@ Major 0 will be change to 1 when library will support most features of game
 
 Every version should contains a tag, with prefix `v`.  
 Example: `v1.2.3-alpha`
-
-## Examples
-Now you can see examples [here](https://github.com/Folleach/GeometryDashAPI/tree/master/Examples).
-
 
 ## Used libraries
 | Name        | Link                                                 |
