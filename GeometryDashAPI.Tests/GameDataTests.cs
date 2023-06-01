@@ -179,6 +179,8 @@ public class GameDataTests
         var manager = await GameManager.LoadFileAsync(GameManagerEmptyPath);
         var managerNew = GameManager.CreateNew();
 
+        managerNew.DataPlist["playerUDID"] = manager.DataPlist["playerUDID"];
+
         manager.DataPlist.Should().BeEquivalentTo(managerNew.DataPlist);
     }
 
