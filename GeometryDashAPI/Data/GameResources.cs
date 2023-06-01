@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Serialization;
 
@@ -16,12 +18,16 @@ public class GameResources
         this.path = path;
     }
 
-    public Level GetLevel(OfficialLevel officialLevel)
+    public async Task<Level> GetLevelAsync(OfficialLevel officialLevel)
     {
         var gameType = officialLevel.GetGameType();
-        var plist = levels.GetOrCreate(
-            gameType,
-            version => new Plist(File.ReadAllBytes(Path.Combine(path, GetLevelDataPath(version)))));
+        if (gameType == GameType.Meltdown)
+            throw new InvalidEnumArgumentException("meltdown levels is not supported");
+        if (!levels.TryGetValue(gameType, out var plist))
+        {
+            var bytes = await File.ReadAllBytesAsync(Path.Combine(path, GetLevelDataPath(gameType)));
+            levels.TryAdd(gameType, plist = new Plist(bytes));
+        }
 
         var content = plist[((int)officialLevel).ToString()].ToString();
         if (gameType == GameType.Default)
