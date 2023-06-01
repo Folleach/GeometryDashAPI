@@ -1,5 +1,4 @@
 ﻿using GeometryDashAPI.Data.Enums;
-using GeometryDashAPI.Memory;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -35,26 +34,6 @@ namespace GeometryDashAPI.Data
             var resultPlist = Crypt.GZipDecompress(GameConvert.FromBase64(dataZip));
 
             DataPlist = new Plist(Encoding.ASCII.GetBytes(resultPlist));
-        }
-
-        public virtual bool TrySave(bool checkRunningGame, string? fullName = null)
-        {
-            if (checkRunningGame && GameProcess.GameCount() > 0)
-                return false;
-
-            return TrySave(fullName);
-        }
-
-        public virtual bool TrySave(string? fullName = null)
-        {
-            //Plist > ToString > GetBytes > Gzip > Base64 > Replace > GetBytes > XOR > File
-            using var memory = new MemoryStream();
-            DataPlist.SaveToStreamAsync(memory).GetAwaiter().GetResult();
-
-            var base64 = GameConvert.ToBase64(Crypt.GZipCompress(memory.ToArray()));
-
-            File.WriteAllBytesAsync(fullName ?? ResolveFileName(type), Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB)).GetAwaiter().GetResult();
-            return true;
         }
 
         /// <summary>
