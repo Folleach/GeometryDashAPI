@@ -1,5 +1,5 @@
 
-![image](https://github.com/Folleach/GeometryDashAPI/blob/93730095a9602181524fa104ef35f5b1d1e5d831/Images/banner.png)
+![image](https://raw.githubusercontent.com/Folleach/GeometryDashAPI/master/Images/banner.png)
 
 So, **GeometryDashAPI** is the library for edit _everything_ that you imagine  
 Amooong things...
