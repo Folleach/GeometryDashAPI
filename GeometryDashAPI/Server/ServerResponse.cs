@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 
 namespace GeometryDashAPI.Server
 {
@@ -29,7 +30,7 @@ namespace GeometryDashAPI.Server
                 GeometryDashStatusCode = int.Parse(match.Value);
                 return;
             }
-            value = GeometryDashApi.Serializer.Decode<T>(body);
+            value = GeometryDashApi.Serializer.Decode<T>(body.AsSpan());
         }
 
         public T GetResultOrDefault()

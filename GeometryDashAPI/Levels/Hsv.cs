@@ -30,10 +30,10 @@ namespace GeometryDashAPI.Levels
         {
             var result = new Hsv();
             var dataArray = raw.Split(SEPARATOR);
-            result.Hue = GameConvert.StringToSingle(dataArray[0]);
-            result.Saturation = GameConvert.StringToSingle(dataArray[1]);
-            result.Brightness = GameConvert.StringToSingle(dataArray[2]);
-            result.DeltaSaturation = GameConvert.StringToBool(dataArray[3]);
+            result.Hue = GameConvert.StringToSingle(dataArray[0].AsSpan());
+            result.Saturation = GameConvert.StringToSingle(dataArray[1].AsSpan());
+            result.Brightness = GameConvert.StringToSingle(dataArray[2].AsSpan());
+            result.DeltaSaturation = GameConvert.StringToBool(dataArray[3].AsSpan());
             result.DeltaBrightness = GameConvert.StringToBool(dataArray[4]);
 
             return result;

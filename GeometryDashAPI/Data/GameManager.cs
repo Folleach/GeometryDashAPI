@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Buffers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using GeometryDashAPI.Data.Enums;
@@ -266,9 +268,26 @@ namespace GeometryDashAPI.Data
         {
             var builder = new StringBuilder();
             builder.Append("S");
+#if !NETSTANDARD2_1
+            var c = RandomNumberGenerator.Create();
+#endif
+
             for (var i = 0; i < 6; i++)
+#if NETSTANDARD2_1
                 builder.Append(RandomNumberGenerator.GetInt32(0, 999999).ToString("000000"));
             builder.Append(RandomNumberGenerator.GetInt32(0, 9));
+#else
+            {
+                var buffer = ArrayPool<byte>.Shared.Rent(4);
+                c.GetBytes(buffer, 0, 4);
+                builder.Append((Math.Abs(BitConverter.ToInt32(buffer, 0)) % 1000000).ToString("000000"));
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
+            var buffer2 = ArrayPool<byte>.Shared.Rent(1);
+            c.GetBytes(buffer2, 0, 4);
+            builder.Append((Math.Abs(BitConverter.ToInt32(buffer2, 0)) % 10).ToString("000000"));
+            ArrayPool<byte>.Shared.Return(buffer2);
+#endif
             return builder.ToString();
         }
     }

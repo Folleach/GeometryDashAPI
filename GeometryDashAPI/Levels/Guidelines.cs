@@ -22,7 +22,7 @@ namespace GeometryDashAPI.Levels
             var guidelines = new Guidelines();
 
             ReadOnlySpan<char> value;
-            var parser = new LLParserSpan(SEPERATOR, raw);
+            var parser = new LLParserSpan(SEPERATOR.AsSpan(), raw);
 
             int index = 0;
             double timestamp = 0;
@@ -59,10 +59,10 @@ namespace GeometryDashAPI.Levels
         public static GuidelineColor GetGuidelineColorFromString(ReadOnlySpan<char> color)
         {
             return
-                color.CompareTo("0", StringComparison.Ordinal) == 0 ? GuidelineColor.Orange :
-                color.CompareTo("0.8", StringComparison.Ordinal) == 0 ? GuidelineColor.Orange :
-                color.CompareTo("0.9", StringComparison.Ordinal) == 0 ? GuidelineColor.Yellow :
-                color.CompareTo("1", StringComparison.Ordinal) == 0 ? GuidelineColor.Green : throw new IndexOutOfRangeException("unknown color");
+                color.CompareTo("0".AsSpan(), StringComparison.Ordinal) == 0 ? GuidelineColor.Orange :
+                color.CompareTo("0.8".AsSpan(), StringComparison.Ordinal) == 0 ? GuidelineColor.Orange :
+                color.CompareTo("0.9".AsSpan(), StringComparison.Ordinal) == 0 ? GuidelineColor.Yellow :
+                color.CompareTo("1".AsSpan(), StringComparison.Ordinal) == 0 ? GuidelineColor.Green : throw new IndexOutOfRangeException("unknown color");
         }
     }
 }

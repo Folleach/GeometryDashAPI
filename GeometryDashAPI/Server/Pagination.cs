@@ -31,7 +31,7 @@ namespace GeometryDashAPI.Server
 
         public static Pagination Parse(string raw)
         {
-            var parser = new LLParserSpan(":", raw);
+            var parser = new LLParserSpan(":".AsSpan(), raw.AsSpan());
             var result = new Pagination();
 #if NETSTANDARD2_1
             result.TotalCount = int.Parse(parser.Next());

@@ -25,8 +25,13 @@ public class GameResources
             throw new InvalidEnumArgumentException("meltdown levels is not supported");
         if (!levels.TryGetValue(gameType, out var plist))
         {
+#if NETSTANDARD2_1
             var bytes = await File.ReadAllBytesAsync(Path.Combine(path, GetLevelDataPath(gameType)));
             levels.TryAdd(gameType, plist = new Plist(bytes));
+#else
+            var bytes = File.ReadAllBytes(Path.Combine(path, GetLevelDataPath(gameType)));
+            levels.Add(gameType, plist = new Plist(bytes));
+#endif
         }
 
         var content = plist[((int)officialLevel).ToString()].ToString();

@@ -56,9 +56,16 @@ namespace GeometryDashAPI.Levels
         public static string RgbToHex(RgbColor rgb) => $"{rgb.Red:X2}{rgb.Green:X2}{rgb.Blue:X2}";
         public static RgbColor HexToRgb(ReadOnlySpan<char> hex) => new()
         {
+#if NETSTANDARD2_1
             Red = (byte)((byte.Parse(hex.Slice(1, 2)) >> 16) & 0xFF),
             Green = (byte)((byte.Parse(hex.Slice(3, 2)) >> 8) & 0xFF),
             Blue = (byte)(byte.Parse(hex.Slice(5, 2)) & 0xFF)
+#else
+            Red = (byte)((byte.Parse(hex.Slice(1, 2).ToString()) >> 16) & 0xFF),
+            Green = (byte)((byte.Parse(hex.Slice(3, 2).ToString()) >> 8) & 0xFF),
+            Blue = (byte)(byte.Parse(hex.Slice(5, 2).ToString()) & 0xFF)
+#endif
+            
         };
     }
 }

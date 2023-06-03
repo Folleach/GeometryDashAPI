@@ -69,7 +69,7 @@ namespace GeometryDashAPI.Serialization
         public T Create(ReadOnlySpan<char> raw)
         {
             var instance = create();
-            var parser = new LLParserSpan(sense, raw);
+            var parser = new LLParserSpan(sense.AsSpan(), raw);
 
             if (isStruct)
             {
@@ -85,7 +85,11 @@ namespace GeometryDashAPI.Serialization
             {
                 while (parser.TryParseNext(out var key, out var value))
                 {
+#if NETSTANDARD2_1
                     if (!int.TryParse(key, out var index))
+#else
+                    if (!int.TryParse(key.ToString(), out var index))
+#endif
                     {
                         var keyString = key.ToString();
                         if (!mappings.TryGetValue(keyString, out var mapped))
@@ -215,7 +219,7 @@ namespace GeometryDashAPI.Serialization
 
             if (mappings != null)
             {
-                var values = mappings.Select(x => x.Value).ToHashSet();
+                var values = new HashSet<int>(mappings.Select(x => x.Value));
                 for (var i = 0; i < mappings.Count; i++)
                 {
                     if (!values.Contains(i))
