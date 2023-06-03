@@ -32,7 +32,7 @@ namespace GeometryDashAPI.Data
 #if NETSTANDARD2_1
             var data = await File.ReadAllBytesAsync(fileName);
 #else
-            using var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true);
             var data = new byte[file.Length];
             var read = await file.ReadAsync(data, 0, data.Length);
 #endif
@@ -70,7 +70,7 @@ namespace GeometryDashAPI.Data
 #if NETSTANDARD2_1
             await File.WriteAllBytesAsync(fileName ?? ResolveFileName(type), GetFileContent(memory));
 #else
-            using var file = new FileStream(fileName ?? ResolveFileName(type), FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+            using var file = new FileStream(fileName ?? ResolveFileName(type), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, useAsync: true);
             var data = GetFileContent(memory);
             await file.WriteAsync(data, 0, data.Length);
 #endif
