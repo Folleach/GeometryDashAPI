@@ -1,9 +1,9 @@
 
 ![image](https://raw.githubusercontent.com/Folleach/GeometryDashAPI/master/Images/banner.png)
 
-![Tests](https://img.shields.io/github/actions/workflow/status/Folleach/GeometryDashAPI/tests.yml?label=tests&logo=github&style=flat-square)
-![Version](https://img.shields.io/nuget/v/GeometryDashAPI?label=version&logo=nuget&style=flat-square)
-![Downloads](https://img.shields.io/nuget/dt/GeometryDashAPI?logo=nuget&style=flat-square)
+[![Tests](https://img.shields.io/github/actions/workflow/status/Folleach/GeometryDashAPI/tests.yml?label=tests&logo=github&style=flat-square)](https://github.com/Folleach/GeometryDashAPI/actions/workflows/tests.yml)
+[![Version](https://img.shields.io/nuget/v/GeometryDashAPI?label=version&logo=nuget&style=flat-square)](https://www.nuget.org/packages/GeometryDashAPI)
+[![Downloads](https://img.shields.io/nuget/dt/GeometryDashAPI?logo=nuget&style=flat-square)](https://www.nuget.org/packages/GeometryDashAPI)
 
 So, **GeometryDashAPI** is the library for edit _everything_ that you imagine  
 Amooong things...
