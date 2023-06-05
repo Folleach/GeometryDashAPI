@@ -96,7 +96,7 @@ namespace GeometryDashAPI.Server.Dtos
         public bool Epic { get; set; }
         
         [GameProperty("43")]
-        public int DemonDifficulty { get; set; }
+        public DemonDifficulty DemonDifficulty { get; set; }
         
         [GameProperty("45")]
         public int Objects { get; set; }

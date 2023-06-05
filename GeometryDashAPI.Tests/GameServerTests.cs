@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using GeometryDashAPI.Server;
 using GeometryDashAPI.Server.Enums;
+using GeometryDashAPI.Server.Queries;
 using NUnit.Framework;
 
 namespace GeometryDashAPI.Tests;
