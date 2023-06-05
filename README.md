@@ -24,6 +24,9 @@ manager.Save();
 
 [learn more](https://github.com/Folleach/GeometryDashAPI/wiki/Game-saves-(wip:-0.2-and-above))
 
+For editing `.dat` files with a text editor, you can use [CLI tool](https://github.com/Folleach/GeometryDash.Console) for unpacking them
+
+
 ## Network
 
 Don't think about communicates with the server.  
