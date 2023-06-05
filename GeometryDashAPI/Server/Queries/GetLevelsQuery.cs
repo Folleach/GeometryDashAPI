@@ -11,7 +11,7 @@ namespace GeometryDashAPI.Server
         public int SongID { get; private set; }
         public SearchType SearchType { get; set; } = SearchType.MostLiked;
         public List<LengthType> Lengths { get; set; } = new List<LengthType>();
-        public List<Difficult> Difficults { get; set; } = new List<Difficult>();
+        public List<SearchDifficulty> Difficults { get; set; } = new List<SearchDifficulty>();
         public DemonDifficult DemonDifficult { get; set; }
         public int Page { get; set; } = 0;
         public int Total { get; set; } = 0;
@@ -52,7 +52,7 @@ namespace GeometryDashAPI.Server
             string difficultsString = "";
             if (Difficults.Count > 0)
             {
-                foreach (Difficult diff in Difficults)
+                foreach (SearchDifficulty diff in Difficults)
                     difficultsString += ((int)diff).ToString();
             }
             else
@@ -80,9 +80,9 @@ namespace GeometryDashAPI.Server
             parameters.Add(new Property("coins", GameConvert.BoolToString(HasCoins)));
             parameters.Add(new Property("epic", GameConvert.BoolToString(Epic)));
 
-            foreach (Difficult diff in Difficults)
+            foreach (SearchDifficulty diff in Difficults)
             {
-                if (diff == Difficult.Demon)
+                if (diff == SearchDifficulty.Demon)
                     parameters.Add(new Property("demonFilter", (int)DemonDifficult));
             }
             if (Feautured >= 0)

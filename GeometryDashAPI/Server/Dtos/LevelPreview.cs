@@ -38,7 +38,7 @@ namespace GeometryDashAPI.Server.Dtos
         public int AuthorUserId { get; set; }
         
         [GameProperty("8")]
-        public int Difficulty { get; set; }
+        public Difficulty Difficulty { get; set; }
         
         [GameProperty("9")]
         public DifficultyIcon DifficultyIcon { get; set; }
