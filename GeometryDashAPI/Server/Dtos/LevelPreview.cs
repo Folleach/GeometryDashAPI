@@ -41,7 +41,7 @@ namespace GeometryDashAPI.Server.Dtos
         public int Difficulty { get; set; }
         
         [GameProperty("9")]
-        public int SlaveDifficulty { get; set; }
+        public DifficultyIcon DifficultyIcon { get; set; }
         
         [GameProperty("10")]
         public int Downloads { get; set; }
