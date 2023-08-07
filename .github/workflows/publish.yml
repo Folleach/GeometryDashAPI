@@ -23,7 +23,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal ./GeometryDashAPI.sln
   publish:
     needs: tests
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
