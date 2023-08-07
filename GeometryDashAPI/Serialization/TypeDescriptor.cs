@@ -253,6 +253,14 @@ namespace GeometryDashAPI.Serialization
         internal delegate void Printer<in TI>(TI instance, StringBuilder builder);
         internal delegate TOut Getter<in TI, out TOut>(TI instance);
 
+        private static readonly MethodInfo? StringAsSpanMethod = typeof(MemoryExtensions).GetMethod("AsSpan", new[] { typeof(string) });
+        private static readonly MethodInfo? ReadOnlySpanToArrayMethod = typeof(ReadOnlySpan<char>).GetMethod("ToArray");
+#if NETSTANDARD2_1
+        private static readonly MethodInfo? StringBuilderAppendTextMethod = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(ReadOnlySpan<char>) });
+#else
+        private static readonly MethodInfo? StringBuilderAppendTextMethod = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(char[]) });
+#endif
+
         internal static Expression<Setter<TInstance>> CreateSetter<TProp, TInstance>(MemberInfo member)
         {
             var target = Expression.Parameter(typeof(TInstance));
@@ -274,22 +282,16 @@ namespace GeometryDashAPI.Serialization
 
             var memberType = member.GetMemberType();
             var field = CreateField(member, printerParameterInstance);
-            
-            
-#if NETSTANDARD2_1
-            var append = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(ReadOnlySpan<char>) });
-#else
-            var append = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(char[]) });
-#endif
-            if (append == null)
+
+            if (StringBuilderAppendTextMethod == null)
                 throw new InvalidOperationException($"method '{nameof(StringBuilder.Append)}' is not contains in {typeof(StringBuilder)}");
 
             // destination.Append(key);
-            var appendKeyCall = UniversalAppend(Expression.Constant(attribute.Key), printerParameterBuilder, append);
-// destination.Append(separator);
-            var appendSenseCall = UniversalAppend(Expression.Constant(sense), printerParameterBuilder, append);
+            var appendKeyCall = UniversalAppend(Expression.Constant(attribute.Key), printerParameterBuilder, StringBuilderAppendTextMethod);
+            // destination.Append(separator);
+            var appendSenseCall = UniversalAppend(Expression.Constant(sense), printerParameterBuilder, StringBuilderAppendTextMethod);
             // destination.Append(value);
-            var appendValueCall = CreateAppendValueCall(memberType, field, printerParameterBuilder, append, member);
+            var appendValueCall = CreateAppendValueCall(memberType, field, printerParameterBuilder, StringBuilderAppendTextMethod, member);
 
             Expression print = Expression.Block(appendKeyCall, appendSenseCall, appendValueCall);
             return Expression.Lambda<Printer<TInstance>>(
@@ -301,18 +303,16 @@ namespace GeometryDashAPI.Serialization
         private static MethodCallExpression UniversalAppend(Expression value,
             ParameterExpression printerParameterBuilder, MethodInfo append)
         {
-            var asSpan = typeof(MemoryExtensions).GetMethod("AsSpan", new[] { typeof(string) });
-            if (asSpan == null)
+            if (StringAsSpanMethod == null)
                 throw new InvalidOperationException($"failed to find 'AsSpan' method in '{nameof(MemoryExtensions)}'. If you can see this, please create an issue: https://github.com/Folleach/GeometryDashAPI/issues with information about your dotnet version.");
             if (value.Type == typeof(string))
-                value = Expression.Call(null, asSpan, value);
+                value = Expression.Call(null, StringAsSpanMethod, value);
 #if NETSTANDARD2_1
             var appendKeyCall = Expression.Call(printerParameterBuilder, append, value);
 #else
-            var toCharArray = typeof(ReadOnlySpan<char>).GetMethod("ToArray");
-            if (toCharArray == null)
+            if (ReadOnlySpanToArrayMethod == null)
                 throw new InvalidOperationException($"failed to find 'ToArray' method in '{nameof(Enumerable)}.");
-            var appendKeyCall = Expression.Call(printerParameterBuilder, append, Expression.Call(value, toCharArray));
+            var appendKeyCall = Expression.Call(printerParameterBuilder, append, Expression.Call(value, ReadOnlySpanToArrayMethod));
 #endif
             return appendKeyCall;
         }
