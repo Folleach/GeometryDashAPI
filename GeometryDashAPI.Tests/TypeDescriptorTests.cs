@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 using TestObjects;
@@ -23,7 +24,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<AllTypes>();
 
-        var instance = descriptor.Create("1,abc,2,200");
+        var instance = descriptor.Create("1,abc,2,200".AsSpan());
         
         Assert.AreEqual("abc", instance.String);
         Assert.AreEqual(200, instance.Byte);
@@ -34,7 +35,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectSample>();
 
-        var instance = descriptor.Create("33:1.9");
+        var instance = descriptor.Create("33:1.9".AsSpan());
         
         Assert.AreEqual(1.9, instance.X);
     }
@@ -44,7 +45,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectSample>();
         
-        var instance = descriptor.Create("11:abc!");
+        var instance = descriptor.Create("11:abc!".AsSpan());
         
         Assert.AreEqual(1, instance.WithoutLoaded.Count);
         Assert.AreEqual("11:abc!", instance.WithoutLoaded.FirstOrDefault());
@@ -55,7 +56,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectWithEnum>();
         
-        var instance = descriptor.Create("1:33");
+        var instance = descriptor.Create("1:33".AsSpan());
         
         Assert.AreEqual(SimpleEnum.X, instance.Value);
     }

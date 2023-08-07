@@ -276,14 +276,18 @@ namespace GeometryDashAPI.Serialization
             var field = CreateField(member, printerParameterInstance);
             
             
+#if NETSTANDARD2_1
             var append = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(ReadOnlySpan<char>) });
+#else
+            var append = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(char[]) });
+#endif
             if (append == null)
                 throw new InvalidOperationException($"method '{nameof(StringBuilder.Append)}' is not contains in {typeof(StringBuilder)}");
 
             // destination.Append(key);
-            var appendKeyCall = Expression.Call(printerParameterBuilder, append, Expression.Convert(Expression.Constant(attribute.Key), typeof(ReadOnlySpan<char>)));
-            // destination.Append(separator);
-            var appendSenseCall = Expression.Call(printerParameterBuilder, append, Expression.Convert(Expression.Constant(sense), typeof(ReadOnlySpan<char>)));
+            var appendKeyCall = UniversalAppend(Expression.Constant(attribute.Key), printerParameterBuilder, append);
+// destination.Append(separator);
+            var appendSenseCall = UniversalAppend(Expression.Constant(sense), printerParameterBuilder, append);
             // destination.Append(value);
             var appendValueCall = CreateAppendValueCall(memberType, field, printerParameterBuilder, append, member);
 
@@ -292,6 +296,25 @@ namespace GeometryDashAPI.Serialization
                 print,
                 printerParameterInstance,
                 printerParameterBuilder);
+        }
+
+        private static MethodCallExpression UniversalAppend(Expression value,
+            ParameterExpression printerParameterBuilder, MethodInfo append)
+        {
+            var asSpan = typeof(MemoryExtensions).GetMethod("AsSpan", new[] { typeof(string) });
+            if (asSpan == null)
+                throw new InvalidOperationException($"failed to find 'AsSpan' method in '{nameof(MemoryExtensions)}'. If you can see this, please create an issue: https://github.com/Folleach/GeometryDashAPI/issues with information about your dotnet version.");
+            if (value.Type == typeof(string))
+                value = Expression.Call(null, asSpan, value);
+#if NETSTANDARD2_1
+            var appendKeyCall = Expression.Call(printerParameterBuilder, append, value);
+#else
+            var toCharArray = typeof(ReadOnlySpan<char>).GetMethod("ToArray");
+            if (toCharArray == null)
+                throw new InvalidOperationException($"failed to find 'ToArray' method in '{nameof(Enumerable)}.");
+            var appendKeyCall = Expression.Call(printerParameterBuilder, append, Expression.Call(value, toCharArray));
+#endif
+            return appendKeyCall;
         }
 
         internal static Expression<Getter<TInstance, bool>> CreateIsDefaultFunction<TInstance>(MemberInfo member, GamePropertyAttribute attribute)
@@ -392,7 +415,7 @@ namespace GeometryDashAPI.Serialization
             ParameterExpression printerParameterBuilder)
         {
             var valuePrinter = typeof(Printers).GetMethod($"{PredefinedMethodPrefix}_{nameof(Int32)}__", BindingFlags.Static | BindingFlags.Public);
-            return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, Expression.Convert(field, typeof(int))));
+            return UniversalAppend(Expression.Call(valuePrinter, Expression.Convert(field, typeof(int))), printerParameterBuilder, append);
         }
 
         private static Expression CreateArrayPrinter(Type type, Expression array, ParameterExpression destination,
@@ -416,7 +439,7 @@ namespace GeometryDashAPI.Serialization
                 destination,
                 appendValueLambda);
             if (arraySense.SeparatorAtTheEnd)
-                body = Expression.Block(body, Expression.Call(destination, append, Expression.Convert(separator, typeof(ReadOnlySpan<char>))));
+                body = Expression.Block(body, UniversalAppend(separator, destination, append));
             return body;
         }
 
@@ -429,7 +452,7 @@ namespace GeometryDashAPI.Serialization
             var valuePrinter = typeof(Printers).GetMethod(GeneratePredefinedName(type), BindingFlags.Static | BindingFlags.Public);
             if (valuePrinter == null)
                 throw new InvalidOperationException($"can't find predefined method '{GeneratePredefinedName(type)}' in {nameof(Printers)}");
-            return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, getValue));
+            return UniversalAppend(Expression.Call(valuePrinter, getValue), printerParameterBuilder, append);
         }
 
         #endregion
