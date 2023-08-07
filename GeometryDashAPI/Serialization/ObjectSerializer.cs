@@ -12,10 +12,20 @@ namespace GeometryDashAPI.Serialization
 
         private static ConcurrentDictionary<Type, Action<IGameObject, StringBuilder>> copiersCache = new();
 
+#if NETSTANDARD2_1
         public T Decode<T>(ReadOnlySpan<char> raw) where T : IGameObject
         {
             return (T)Decode(typeof(T), raw);
         }
+#else
+        public unsafe T Decode<T>(ReadOnlySpan<char> raw) where T : IGameObject
+        {
+            fixed (char* a = raw)
+            {
+                return (T)Decode(typeof(T), raw);
+            }
+        }
+#endif
 
         public ReadOnlySpan<char> Encode<T>(T value) where T : IGameObject
         {

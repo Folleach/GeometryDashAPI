@@ -1,3 +1,4 @@
+using System;
 using FluentAssertions;
 using GeometryDashAPI.Levels.GameObjects.Triggers;
 using GeometryDashAPI.Serialization;
@@ -42,7 +43,7 @@ public class BlockTests
         var raw = "1,999,2,0,3,0";
         var descriptor = new TypeDescriptor<TouchTrigger>();
 
-        var trigger = descriptor.Create(raw);
+        var trigger = descriptor.Create(raw.AsSpan());
 
         trigger.MultiTrigger.Should().BeTrue();
     }
@@ -53,7 +54,7 @@ public class BlockTests
         var raw = "1,999,2,0,3,0,87,0";
         var descriptor = new TypeDescriptor<TouchTrigger>();
 
-        var trigger = descriptor.Create(raw);
+        var trigger = descriptor.Create(raw.AsSpan());
 
         trigger.MultiTrigger.Should().BeTrue();
     }
@@ -64,7 +65,7 @@ public class BlockTests
         var raw = "1,999,2,0,3,0,87,1";
         var descriptor = new TypeDescriptor<TouchTrigger>();
 
-        var trigger = descriptor.Create(raw);
+        var trigger = descriptor.Create(raw.AsSpan());
 
         trigger.MultiTrigger.Should().BeFalse();
     }

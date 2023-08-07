@@ -17,7 +17,7 @@ namespace GeometryDashAPI.Tests
         [TestCase("..", 2)]
         public void Next_CallNumbers(string input, int expectedCallNumber)
         {
-            var parser = new LLParserSpan(".", input);
+            var parser = new LLParserSpan(".".AsSpan(), input.AsSpan());
 
             var calls = 0;
             while (parser.Next() != null)
@@ -32,7 +32,7 @@ namespace GeometryDashAPI.Tests
         [TestCase("1.2", "1", "2")]
         public void Next_ValidResult(string input, params string[] expected)
         {
-            var parser = new LLParserSpan(".", input);
+            var parser = new LLParserSpan(".".AsSpan(), input.AsSpan());
 
             var result = new List<string>();
 
@@ -55,7 +55,7 @@ namespace GeometryDashAPI.Tests
         [TestCase("a...", 3)]
         public void CountOfSense(string input, int expected)
         {
-            var parser = new LLParserSpan(".", input);
+            var parser = new LLParserSpan(".".AsSpan(), input.AsSpan());
 
             var actual = parser.GetCountOfValues();
             

@@ -44,7 +44,7 @@ namespace GeometryDashAPI.Tests
         [TestCase(1.33f, "1.33")]
         public void StringToSingle(float expected, string value)
         {
-            Assert.AreEqual(expected, GameConvert.StringToSingle(value));
+            Assert.AreEqual(expected, GameConvert.StringToSingle(value.AsSpan()));
         }
     }
 }

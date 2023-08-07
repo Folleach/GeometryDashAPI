@@ -76,9 +76,9 @@ public class LevelResponseTestBase
 
     private static IEnumerable<Dictionary<string, string>> GetColorsAsDictionary(string level)
     {
-        var levelParser = new LLParserSpan(";", level);
+        var levelParser = new LLParserSpan(";".AsSpan(), level.AsSpan());
         var header = levelParser.Next().ToString();
-        var headerParser = new LLParserSpan(",", header);
+        var headerParser = new LLParserSpan(",".AsSpan(), header.AsSpan());
         string colors = null;
         while (headerParser.TryParseNext(out var key, out var valueSpan) && key.ToString() == "kS38" && !string.IsNullOrEmpty(colors = valueSpan.ToString()))
         {
@@ -87,7 +87,7 @@ public class LevelResponseTestBase
         if (colors == null)
             return null;
 
-        var colorsParser = new LLParserSpan("|", colors);
+        var colorsParser = new LLParserSpan("|".AsSpan(), colors.AsSpan());
         var list = new List<Dictionary<string, string>>();
         while (true)
         {
@@ -167,8 +167,12 @@ expected: '{string.Join(",", expected.Select(x => new[] {x.Key, x.Value}).Select
     private static Dictionary<string, string> CreateDictionary(IEnumerable<KeyValuePair<string, string>> values)
     {
         var dict = new Dictionary<string, string>();
-        foreach (var (key, value) in values)
+        foreach (var v in values)
+        {
+            var key = v.Key;
+            var value = v.Value;
             dict[key] = value;
+        }
         return dict;
     }
 
