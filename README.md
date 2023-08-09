@@ -57,6 +57,8 @@ See [wiki](https://github.com/Folleach/GeometryDashAPI/wiki) for learn more info
 - .NET Core 2.2
 - .NET Framework 4.8
 
+[learn more](https://github.com/Folleach/GeometryDashAPI/blob/master/GeometryDashAPI.Tests/GeometryDashAPI.Tests.csproj#L5)
+
 ## Versions convention
 
 The main version pattern is `0.x.y`  
