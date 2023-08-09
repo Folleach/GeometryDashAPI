@@ -51,6 +51,12 @@ You can even interact with unofficial servers too
 
 See [wiki](https://github.com/Folleach/GeometryDashAPI/wiki) for learn more information
 
+## Tested on
+
+- .NET 6
+- .NET Core 2.2
+- .NET Framework 4.8
+
 ## Versions convention
 
 The main version pattern is `0.x.y`  
