@@ -15,7 +15,7 @@ public class Message : IQuery
         return new Message()
         {
             Subject = DeserializeSubject(subject),
-            Body = Crypt.XOR(Encoding.UTF8.GetString(Convert.FromBase64String(body)), BodyXorKey)
+            Body = DeserializeBody(body)
         };
     }
 
@@ -29,9 +29,12 @@ public class Message : IQuery
     public void BuildQuery(Parameters parameters)
     {
         parameters.Add(new Property("subject", SerializeSubject(Subject)));
-        parameters.Add(new Property("body", Convert.ToBase64String(Encoding.ASCII.GetBytes(Crypt.XOR(Body, BodyXorKey)))));
+        parameters.Add(new Property("body", SerializeBody(Body)));
     }
 
     internal static string DeserializeSubject(string raw) => Encoding.UTF8.GetString(Convert.FromBase64String(raw));
     internal static string SerializeSubject(string subject) => Convert.ToBase64String(Encoding.ASCII.GetBytes(subject));
+
+    internal static string DeserializeBody(string raw) => Crypt.XOR(Encoding.UTF8.GetString(Convert.FromBase64String(raw)), BodyXorKey);
+    internal static string SerializeBody(string body) => Convert.ToBase64String(Encoding.ASCII.GetBytes(Crypt.XOR(body, BodyXorKey)));
 }

@@ -20,7 +20,7 @@ public class MessagePreview : GameObject
     public string Subject
     {
         get => Message.DeserializeSubject(subject);
-        set => Message.SerializeSubject(subject);
+        set => Message.SerializeSubject(value);
     }
 
     [GameProperty("6")]

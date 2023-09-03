@@ -138,6 +138,16 @@ namespace GeometryDashAPI.Server
             return Get<MessagesPageResponse>("/getGJMessages20.php", query);
         }
 
+        public Task<ServerResponse<MessageContent>> ReadMessageAsync(PasswordQuery account, int messageId)
+        {
+            var query = new FlexibleQuery()
+                .AddToChain(GetOnlineQuery())
+                .AddToChain(account)
+                .AddProperty(new Property("messageID", messageId));
+
+            return Get<MessageContent>("/downloadGJMessage20.php", query);
+        }
+
         private async Task<ServerResponse<T>> Get<T>(string path, IQuery query) where T : IGameObject
         {
             var (statusCode, body) = await network.GetAsync(path, query);
