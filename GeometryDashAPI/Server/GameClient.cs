@@ -3,6 +3,7 @@ using GeometryDashAPI.Server.Queries;
 using System;
 using System.Threading.Tasks;
 using GeometryDashAPI.Attributes;
+using GeometryDashAPI.Server.Dtos;
 using GeometryDashAPI.Server.Responses;
 
 namespace GeometryDashAPI.Server
@@ -112,6 +113,17 @@ namespace GeometryDashAPI.Server
                 Page = page
             });
             return await Get<LevelPageResponse>("/getGJLevels21.php", query);
+        }
+
+        public async Task<ServerResponse<NoneResponse>> SendMessageAsync(PasswordQuery fromAccount, int toAccountId, Message message)
+        {
+            var query = new FlexibleQuery()
+                .AddToChain(GetOnlineQuery())
+                .AddToChain(fromAccount)
+                .AddProperty(new Property("toAccountID", toAccountId))
+                .AddToChain(message);
+
+            return await Get<NoneResponse>("/uploadGJMessage20.php", query);
         }
 
         private async Task<ServerResponse<T>> Get<T>(string path, IQuery query) where T : IGameObject
