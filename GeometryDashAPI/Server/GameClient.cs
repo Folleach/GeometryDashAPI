@@ -1,6 +1,7 @@
 ﻿using GeometryDashAPI.Server.Enums;
 using GeometryDashAPI.Server.Queries;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Server.Dtos;
@@ -124,6 +125,17 @@ namespace GeometryDashAPI.Server
                 .AddToChain(message);
 
             return await Get<NoneResponse>("/uploadGJMessage20.php", query);
+        }
+
+        public Task<ServerResponse<MessagesPageResponse>> GetMessagesAsync(PasswordQuery account, int page)
+        {
+            var query = new FlexibleQuery()
+                .AddToChain(GetOnlineQuery())
+                .AddToChain(account)
+                .AddProperty(new Property("page", page))
+                .AddProperty(new Property("total", 0));
+
+            return Get<MessagesPageResponse>("/getGJMessages20.php", query);
         }
 
         private async Task<ServerResponse<T>> Get<T>(string path, IQuery query) where T : IGameObject

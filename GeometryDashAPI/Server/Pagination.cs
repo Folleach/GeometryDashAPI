@@ -34,11 +34,11 @@ namespace GeometryDashAPI.Server
             var parser = new LLParserSpan(":".AsSpan(), raw.AsSpan());
             var result = new Pagination();
 #if NETSTANDARD2_1
-            result.TotalCount = int.Parse(parser.Next());
+            result.TotalCount = int.TryParse(parser.Next(), out var total) ? total : 0;
             result.RangeIn = int.Parse(parser.Next());
             result.RangeOut = int.Parse(parser.Next());
 #else
-            result.TotalCount = int.Parse(parser.Next().ToString());
+            result.TotalCount = int.TryParse(parser.Next().ToString(), out var total) ? total : 0;
             result.RangeIn = int.Parse(parser.Next().ToString());
             result.RangeOut = int.Parse(parser.Next().ToString());
 #endif
