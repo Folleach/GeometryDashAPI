@@ -1,7 +1,6 @@
 ﻿using GeometryDashAPI.Server.Enums;
 using GeometryDashAPI.Server.Queries;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Server.Dtos;
@@ -9,7 +8,7 @@ using GeometryDashAPI.Server.Responses;
 
 namespace GeometryDashAPI.Server
 {
-    public class GameClient
+    public class GameClient : IGameClient
     {
         private readonly IdentifierQuery identifierQuery;
         private readonly OnlineQuery onlineQuery;
