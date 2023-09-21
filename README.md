@@ -11,9 +11,6 @@ Amooong things...
 ## Levels
 Edit your own level from the stored data, or download from the server and... edit it!
 
-<table>
-<th>
-
 ```cs
 var local = await LocalLevels.LoadFileAsync();
 var level = local.GetLevel("MyLevel", revision: 0).LoadLevel();
@@ -36,11 +33,7 @@ local.GetLevel("MyLevel", revision: 0).SaveLevel(level);
 await local.SaveAsync();
 ```
 
-</th>
-<th style="background-image: url(Images/wave.png); background-repeat: no-repeat; background-size: 100%; background-position: center center; width: 50%">
-</th>
-</table>
-
+![](/Images/wave.png)
 
 [learn more](https://github.com/Folleach/GeometryDashAPI/wiki/Levels)
 
