@@ -9,10 +9,6 @@ namespace GeometryDashAPI.Levels.Structures
         public byte Green { get; set; }
         public byte Blue { get; set; }
 
-        public RgbColor()
-        {
-        }
-
         public RgbColor(byte red, byte green, byte blue)
         {
             Red = red;
