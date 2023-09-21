@@ -45,7 +45,7 @@ namespace Examples
             Console.WriteLine("Top 100:");
             for (var i = 0; i < top.Users.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {top.Users[i].Name}\t{top.Users[i].Starts}★");
+                Console.WriteLine($"{i + 1}. {top.Users[i].Name}\t{top.Users[i].Stars}★");
             }
         }
 
@@ -80,7 +80,7 @@ namespace Examples
         {
             var account = accountInfo.Account;
             Console.WriteLine(accountInfo.Account.Name);
-            Console.WriteLine($"{account.Starts}★\t{account.Demons}👾\t{account.CreatorPoints}🛠");
+            Console.WriteLine($"{account.Stars}★\t{account.Demons}👾\t{account.CreatorPoints}🛠");
             Console.WriteLine(new string('=', 24));
             Console.WriteLine();
         }

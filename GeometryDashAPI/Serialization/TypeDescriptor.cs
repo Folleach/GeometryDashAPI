@@ -226,7 +226,7 @@ namespace GeometryDashAPI.Serialization
                         throw new InvalidOperationException($"Be careful with your memory! Use incremental keyOverride property which starts with 0. Miss take on: {i}");
                 }
             }
-            
+
             var baseIndex = mappings?.Count ?? 0;
             return (new SetterInfo<T>[baseIndex + maxKeyValue + 1], baseIndex, mappings);
         }

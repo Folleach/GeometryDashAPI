@@ -7,7 +7,7 @@ namespace GeometryDashAPI.Server.Dtos
     {
         [GameProperty("1")] public string Name { get; set; }
         [GameProperty("2")] public int UserId { get; set; }
-        [GameProperty("3")] public int Starts { get; set; }
+        [GameProperty("3")] public int Stars { get; set; }
         [GameProperty("4")] public int Demons { get; set; }
         [GameProperty("6")] public string K6 { get; set; }
         [GameProperty("8")] public int CreatorPoints { get; set; }

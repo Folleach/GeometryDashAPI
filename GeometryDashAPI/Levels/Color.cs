@@ -1,6 +1,5 @@
 ﻿using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Levels.Structures;
-using System;
 
 namespace GeometryDashAPI.Levels
 {
@@ -27,8 +26,19 @@ namespace GeometryDashAPI.Levels
         [GameProperty("8", 1, true, Order = 17)] public int K8 { get; set; } = 1;
 
         [GameProperty("17")] public bool CopyOpacity { get; set; }
-        [GameProperty("10")] public Hsv ColorHSV { get; set; }
-        [GameProperty("9")] public int TargetChannelID { get; set; }
+        [GameProperty("10")] public Hsv? ColorHsv { get; set; }
+        [GameProperty("9")] public int TargetChannelId { get; set; }
+
+        public RgbColor Rgb
+        {
+            get => new(Red, Green, Blue);
+            set
+            {
+                Red = value.Red;
+                Green = value.Green;
+                Blue = value.Blue;
+            }
+        }
 
         public Color()
         {
@@ -46,26 +56,9 @@ namespace GeometryDashAPI.Levels
             Blue = b;
         }
 
-        public string AsHex() => $"#{Red:X2}{Green:X2}{Blue:X2}";
-
         public override string ToString()
         {
-            return $"(id = {Id}, color = {AsHex()})";
+            return $"(id = {Id}, color = {Rgb})";
         }
-
-        public static string RgbToHex(RgbColor rgb) => $"{rgb.Red:X2}{rgb.Green:X2}{rgb.Blue:X2}";
-        public static RgbColor HexToRgb(ReadOnlySpan<char> hex) => new()
-        {
-#if NETSTANDARD2_1
-            Red = (byte)((byte.Parse(hex.Slice(1, 2)) >> 16) & 0xFF),
-            Green = (byte)((byte.Parse(hex.Slice(3, 2)) >> 8) & 0xFF),
-            Blue = (byte)(byte.Parse(hex.Slice(5, 2)) & 0xFF)
-#else
-            Red = (byte)((byte.Parse(hex.Slice(1, 2).ToString()) >> 16) & 0xFF),
-            Green = (byte)((byte.Parse(hex.Slice(3, 2).ToString()) >> 8) & 0xFF),
-            Blue = (byte)(byte.Parse(hex.Slice(5, 2).ToString()) & 0xFF)
-#endif
-            
-        };
     }
 }
