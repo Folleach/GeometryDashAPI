@@ -177,6 +177,7 @@ namespace GeometryDashAPI.Serialization
                         x.attribute)
 #if DEBUG
                         {
+                            Name = x.member.Name,
                             PrinterExp = printerExp,
                             IsDefaultExp = isDefaultExp
                         }
@@ -233,7 +234,7 @@ namespace GeometryDashAPI.Serialization
 
         private static IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
         {
-            foreach (var property in type.GetProperties())
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
                 yield return property;
             var current = type;
             while (current != null && current != typeof(object))
