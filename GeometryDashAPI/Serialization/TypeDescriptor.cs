@@ -232,7 +232,7 @@ namespace GeometryDashAPI.Serialization
             var current = type;
             while (current != null && current != typeof(object))
             {
-                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
                     yield return field;
                 current = current.BaseType;
             }
