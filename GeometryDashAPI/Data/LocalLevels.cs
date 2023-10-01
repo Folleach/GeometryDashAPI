@@ -155,7 +155,7 @@ namespace GeometryDashAPI.Data
         public void AddLevel(LevelCreatorModel levelInfo)
         {
             var all = DataPlist["LLM_01"];
-            for (var i = LevelCount - 1; i >= 0; i--)
+            for (var i = Count - 1; i >= 0; i--)
                 all[$"k_{i + 1}"] = all[$"k_{i}"];
             all["k_0"] = levelInfo.DataLevel;
             LoadLevels();
