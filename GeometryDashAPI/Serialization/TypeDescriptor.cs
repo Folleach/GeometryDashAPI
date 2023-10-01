@@ -230,8 +230,6 @@ namespace GeometryDashAPI.Serialization
 
         private static IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
         {
-            if (type == typeof(MoveTrigger))
-                Console.WriteLine(type.Name);
             foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
                 yield return property;
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
