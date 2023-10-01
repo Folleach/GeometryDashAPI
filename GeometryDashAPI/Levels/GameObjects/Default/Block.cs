@@ -19,11 +19,13 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("36", false, Order = Trigger.OrderTriggerBase)] public bool IsTrigger { get; set; }
 
         [GameProperty("6", 0)] public int Rotation { get; set; }
+        
         public bool Glow
         {
             get => !glow;
             set => glow = !value;
         }
+
         [GameProperty("96", true)] private bool glow = true;
         [GameProperty("108", 0)] public int LinkControl { get; set; }
         [GameProperty("20", (short)0)] public short EditorL { get; set; }
@@ -32,11 +34,13 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("57")] [ArraySeparator(".")] public int[] Groups { get; set; }
         [GameProperty("67", false)] public bool DontEnter { get; set; }
         [GameProperty("25", 2)] public virtual int ZOrder { get; set; } = 2;
+
         public Layer ZLayer
         {
             get => (Layer)zLayer;
             set => zLayer = (short)value;
         }
+
         [GameProperty("24", (short)Layer.T1)] protected virtual short zLayer { get; set; } = (int)Layer.T1;
         [GameProperty("32", 1f)] public float Scale { get; set; } = 1f;
         [GameProperty("34", false)] public bool GroupParent { get; set; }
