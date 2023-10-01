@@ -14,7 +14,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("87", false, Order = 102)]
         private bool multiTrigger;
 
-        [GameProperty("87", false, Order = 102, IgnoreField = true)]
         public override bool MultiTrigger
         {
             get => !multiTrigger;
