@@ -12,10 +12,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("82", ToggleMode.None, false, Order = OrderTriggerBase + 3)] public ToggleMode ToggleMode { get; set; } = ToggleMode.None;
         [GameProperty("89", false, false, Order = OrderTriggerBase + 4)] public bool DualMode { get; set; } = false;
 
-        // robtop 300iq coder
-        [GameProperty("87", false, Order = 102)]
-        private bool multiTrigger;
-
         public override bool MultiTrigger
         {
             get => !multiTrigger;

@@ -10,10 +10,6 @@ namespace GeometryDashAPI.Levels.GameObjects.Triggers
         [GameProperty("75", 0f, false, Order = OrderTriggerBase + 2)] public float Strength { get; set; }
         [GameProperty("84", 0f, false, Order = OrderTriggerBase + 3)] public float Interval { get; set; }
 
-        // robtop 300iq coder
-        [GameProperty("87", false, Order = 102)]
-        private bool multiTrigger;
-
         public override bool MultiTrigger
         {
             get => !multiTrigger;
