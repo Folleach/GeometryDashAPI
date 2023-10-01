@@ -5,6 +5,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using GeometryDashAPI.Attributes;
+using GeometryDashAPI.Levels.GameObjects;
+using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Levels.GameObjects.Triggers;
 
 namespace GeometryDashAPI.Serialization
 {
@@ -227,15 +230,12 @@ namespace GeometryDashAPI.Serialization
 
         private static IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
         {
-            foreach (var property in type.GetProperties())
+            if (type == typeof(MoveTrigger))
+                Console.WriteLine(type.Name);
+            foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
                 yield return property;
-            var current = type;
-            while (current != null && current != typeof(object))
-            {
-                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
-                    yield return field;
-                current = current.BaseType;
-            }
+            foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+                yield return field;
         }
     }
 
