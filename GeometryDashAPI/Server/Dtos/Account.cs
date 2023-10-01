@@ -1,4 +1,6 @@
-﻿using GeometryDashAPI.Attributes;
+﻿using System;
+
+using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Server.Enums;
 
 namespace GeometryDashAPI.Server.Dtos
@@ -51,6 +53,13 @@ namespace GeometryDashAPI.Server.Dtos
         { 
             get => (GameModeratorType)moderatorType;
             set => moderatorType = (int)value;
+        }
+
+        [Obsolete("Use ModeratorType instead.")]
+        public int Moderator 
+        {
+            get => moderatorType;
+            set => moderatorType = value;
         }
 
         [GameProperty("50")] public int CommentHistoryState { get; set; }
