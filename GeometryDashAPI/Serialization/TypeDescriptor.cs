@@ -21,7 +21,7 @@ namespace GeometryDashAPI.Serialization
         public TypeDescriptor()
         {
             var type = typeof(T);
-            create = CreateInstanceExpression<T>(type).Compile();
+            create = CreateInstanceExpression<T>().Compile();
 
             var senseAttribute = type.GetCustomAttribute<SenseAttribute>();
             if (senseAttribute == null)
@@ -32,8 +32,7 @@ namespace GeometryDashAPI.Serialization
 
             var members = GetPropertiesAndFields(type)
                 .Select(member => (member, attribute: member.GetCustomAttribute<GamePropertyAttribute>()))
-                .Where(x => x.attribute != null)
-                .Where(x => !x.attribute.IgnoreField)
+                .Where(x => x.attribute != null && !x.attribute.IgnoreField)
                 .ToArray();
             var createSetter = typeof(TypeDescriptorHelper)
                 .GetMethod(nameof(TypeDescriptorHelper.CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);
@@ -182,9 +181,9 @@ namespace GeometryDashAPI.Serialization
                 .ToArray();
         }
 
-        private static Expression<Func<TB>> CreateInstanceExpression<TB>(Type type)
+        private static Expression<Func<TB>> CreateInstanceExpression<TB>()
         {
-            var ctor = Expression.New(type);
+            var ctor = Expression.New(typeof(TB));
             var memberInit = Expression.MemberInit(ctor);
 
             return Expression.Lambda<Func<TB>>(memberInit);
@@ -194,7 +193,7 @@ namespace GeometryDashAPI.Serialization
         {
             var keys = new HashSet<string>();
             var maxKeyValue = 0;
-            Dictionary<string, int> mappings = null;
+            Dictionary<string, int> mappings = new();
             foreach (var (member, attribute) in members)
             {
                 if (int.TryParse(attribute.Key, out var key))
@@ -207,13 +206,12 @@ namespace GeometryDashAPI.Serialization
                     continue;
                 }
 
-                mappings ??= new Dictionary<string, int>();
                 if (attribute.KeyOverride == -1)
                     throw new InvalidOperationException($"Key override for member '{attribute.Key}' in {type.Name} is not set");
                 mappings.Add(attribute.Key, attribute.KeyOverride);
             }
 
-            if (mappings != null)
+            if (mappings.Any())
             {
                 var values = mappings.Select(x => x.Value).ToHashSet();
                 for (var i = 0; i < mappings.Count; i++)
@@ -222,8 +220,8 @@ namespace GeometryDashAPI.Serialization
                         throw new InvalidOperationException($"Be careful with your memory! Use incremental keyOverride property which starts with 0. Miss take on: {i}");
                 }
             }
-            
-            var baseIndex = mappings?.Count ?? 0;
+
+            var baseIndex = mappings.Count;
             return (new SetterInfo<T>[baseIndex + maxKeyValue + 1], baseIndex, mappings);
         }
 
@@ -491,12 +489,12 @@ namespace GeometryDashAPI.Serialization
             );
         }
 
-        private static MethodInfo GetParserMethod<TProp>(out Expression instanceExpression)
+        private static MethodInfo GetParserMethod<TProp>(out Expression? instanceExpression)
         {
             return GetParserMethod(typeof(TProp), out instanceExpression);
         }
 
-        private static MethodInfo GetParserMethod(Type propType, out Expression serializerExp)
+        private static MethodInfo GetParserMethod(Type propType, out Expression? serializerExp)
         {
             if (typeof(IGameObject).IsAssignableFrom(propType))
             {
