@@ -1,4 +1,5 @@
 ﻿using GeometryDashAPI.Attributes;
+using GeometryDashAPI.Server.Enums;
 
 namespace GeometryDashAPI.Server.Dtos
 {
@@ -44,7 +45,14 @@ namespace GeometryDashAPI.Server.Dtos
         [GameProperty("45")] public string TwitchId { get; set; }
         [GameProperty("46")] public int Diamonds { get; set; }
         [GameProperty("48")] public int ExplosionId { get; set; }
-        [GameProperty("49")] public int Moderator { get; set; }
+        [GameProperty("49")] private int moderatorType;
+
+        public GameModeratorType ModeratorType
+        { 
+            get => (GameModeratorType)moderatorType;
+            set => moderatorType = (int)value;
+        }
+
         [GameProperty("50")] public int CommentHistoryState { get; set; }
     }
 }
