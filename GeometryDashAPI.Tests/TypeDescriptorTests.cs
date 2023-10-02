@@ -140,4 +140,16 @@ public class TypeDescriptorTests
 
         block.ZLayer.Should().Be(Layer.B4);
     }
+
+    [Test]
+    public void PrivateFieldFromInheritedClass()
+    {
+        var input = "1,10,2,20";
+        var descriptor = new TypeDescriptor<InheritField>();
+
+        var actual = descriptor.Create(input.AsSpan());
+
+        actual.X.Should().Be(10);
+        actual.Y.Should().Be(20);
+    }
 }

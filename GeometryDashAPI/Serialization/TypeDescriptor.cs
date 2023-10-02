@@ -234,8 +234,13 @@ namespace GeometryDashAPI.Serialization
         {
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
                 yield return property;
-            foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
-                yield return field;
+            var current = type;
+            while (current != null && current != typeof(object))
+            {
+                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+                    yield return field;
+                current = current.BaseType;
+            }
         }
     }
 
