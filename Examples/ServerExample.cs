@@ -15,8 +15,8 @@ namespace Examples
 
         public async void Start()
         {
-            var server = new GameServer();
-            var accountResponse = server.Login(USERNAME, PASSWORD).Result;
+            var server = new GameClient();
+            var accountResponse = server.LoginAsync(USERNAME, PASSWORD).Result;
             
             if (accountResponse.GeometryDashStatusCode != 0)
             {
@@ -27,16 +27,16 @@ namespace Examples
 
             var account = accountResponse.GetResultOrDefault();
 
-            var accountInfo = await server.GetAccountInfo(account.AccountId);
+            var accountInfo = await server.GetAccountAsync(account.AccountId);
             ShowAccount(accountInfo.GetResultOrDefault());
             
-            var comments = await server.GetAccountComments(account.AccountId, 0);
+            var comments = await server.GetAccountCommentsAsync(account.AccountId, 0);
             ShowComment(comments.GetResultOrDefault()?.Comments);
             
-            var myLevels = await server.GetMyLevels(new PasswordQuery(account.AccountId, PASSWORD), account.UserId, 0);
+            var myLevels = await server.GetMyLevelsAsync(new PasswordQuery(account.AccountId, PASSWORD), account.UserId, 0);
             ShowLevels(myLevels.GetResultOrDefault());
             
-            var top = await server.GetTop(TopType.Top, 100);
+            var top = await server.GetTopAsync(TopType.Top, 100);
             ShowTop(top.GetResultOrDefault());
         }
 
@@ -45,7 +45,7 @@ namespace Examples
             Console.WriteLine("Top 100:");
             for (var i = 0; i < top.Users.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {top.Users[i].Name}\t{top.Users[i].Starts}★");
+                Console.WriteLine($"{i + 1}. {top.Users[i].Name}\t{top.Users[i].Stars}★");
             }
         }
 
@@ -80,7 +80,7 @@ namespace Examples
         {
             var account = accountInfo.Account;
             Console.WriteLine(accountInfo.Account.Name);
-            Console.WriteLine($"{account.Starts}★\t{account.Demons}👾\t{account.CreatorPoints}🛠");
+            Console.WriteLine($"{account.Stars}★\t{account.Demons}👾\t{account.CreatorPoints}🛠");
             Console.WriteLine(new string('=', 24));
             Console.WriteLine();
         }

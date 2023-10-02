@@ -43,7 +43,7 @@ namespace GeometryDashAPI.Serialization
 
                         if (isSense)
                         {
-                            var span = new ReadOnlySpan<char>(current, index - startIndex);
+                            var span = value.Slice(startIndex, index - startIndex);
                             index += senseLength;
                             return span;
                         }
@@ -52,7 +52,7 @@ namespace GeometryDashAPI.Serialization
                     }
 
                     if (index != startIndex)
-                        return new Span<char>(current, index - startIndex);
+                        return value.Slice(startIndex, index - startIndex);
                 }
             }
 

@@ -24,7 +24,7 @@ namespace GeometryDashAPI.Serialization
                 throw new InvalidOperationException($"descriptor is not implement '{typeof(ICopyDescriptor<T>)}'");
             var builder = new StringBuilder();
             copyDescriptor.CopyTo(value, builder);
-            return builder.ToString();
+            return builder.ToString().AsSpan();
         }
 
         public Action<IGameObject, StringBuilder> GetCopier(Type type) => copiersCache.GetOrAdd(type, CreateCopier);
@@ -46,7 +46,7 @@ namespace GeometryDashAPI.Serialization
 
         public List<T> DecodeList<T>(ReadOnlySpan<char> raw, string separator) where T : IGameObject
         {
-            var parser = new LLParserSpan(separator, raw);
+            var parser = new LLParserSpan(separator.AsSpan(), raw);
             ReadOnlySpan<char> value;
             var list = new List<T>();
             while ((value = parser.Next()) != null)
@@ -56,7 +56,7 @@ namespace GeometryDashAPI.Serialization
 
         public T[] GetArray<T>(ReadOnlySpan<char> raw, string separator, IGameSerializer.Parser<T> getValue)
         {
-            var parser = new LLParserSpan(separator, raw);
+            var parser = new LLParserSpan(separator.AsSpan(), raw);
             var length = parser.GetCountOfValues();
             ReadOnlySpan<char> rawValue;
             var array = new T[length];
@@ -68,17 +68,21 @@ namespace GeometryDashAPI.Serialization
 
         public IGameObject DecodeBlock(ReadOnlySpan<char> raw)
         {
-            var parser = new LLParserSpan(",", raw);
+            var parser = new LLParserSpan(",".AsSpan(), raw);
             ReadOnlySpan<char> key;
             ReadOnlySpan<char> blockId;
             while (parser.TryParseNext(out key, out blockId))
             {
-                if (key.SequenceEqual("1"))
+                if (key.SequenceEqual("1".AsSpan()))
                     goto FoundKey;
             }
             throw new Exception("Raw data doesn't contains id component");
             FoundKey:
+#if NETSTANDARD2_1
             if (!int.TryParse(blockId, out var id))
+#else
+            if (!int.TryParse(blockId.ToString(), out var id))
+#endif
                 throw new Exception("Id is not a number");
             var type = GeometryDashApi.GetBlockType(id);
 

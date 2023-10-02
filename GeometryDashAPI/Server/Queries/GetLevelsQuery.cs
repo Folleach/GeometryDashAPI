@@ -1,18 +1,17 @@
-using GeometryDashAPI.Server.Enums;
-using GeometryDashAPI.Server.Queries;
 using System.Collections.Generic;
+using GeometryDashAPI.Server.Enums;
 
-namespace GeometryDashAPI.Server
+namespace GeometryDashAPI.Server.Queries
 {
     public class GetLevelsQuery : IQuery
     {
         public string QueryString { get; set; } = "-";
         public bool IsOfficialSong { get; private set; }
-        public int SongID { get; private set; }
+        public int SongId { get; private set; }
         public SearchType SearchType { get; set; } = SearchType.MostLiked;
         public List<LengthType> Lengths { get; set; } = new List<LengthType>();
-        public List<Difficult> Difficults { get; set; } = new List<Difficult>();
-        public DemonDifficult DemonDifficult { get; set; }
+        public List<SearchDifficulty> Difficults { get; set; } = new List<SearchDifficulty>();
+        public SearchDemonDifficulty SearchDemonDifficulty { get; set; }
         public int Page { get; set; } = 0;
         public int Total { get; set; } = 0;
         public int Feautured { get; set; } = -1;
@@ -31,13 +30,13 @@ namespace GeometryDashAPI.Server
         public void SetSong(int id)
         {
             IsOfficialSong = false;
-            SongID = id;
+            SongId = id;
         }
 
         public void SetSong(OfficialSong song)
         {
             IsOfficialSong = true;
-            SongID = (int)song;
+            SongId = (int)song;
         }
 
         public Parameters BuildQuery()
@@ -52,7 +51,7 @@ namespace GeometryDashAPI.Server
             string difficultsString = "";
             if (Difficults.Count > 0)
             {
-                foreach (Difficult diff in Difficults)
+                foreach (SearchDifficulty diff in Difficults)
                     difficultsString += ((int)diff).ToString();
             }
             else
@@ -80,10 +79,10 @@ namespace GeometryDashAPI.Server
             parameters.Add(new Property("coins", GameConvert.BoolToString(HasCoins)));
             parameters.Add(new Property("epic", GameConvert.BoolToString(Epic)));
 
-            foreach (Difficult diff in Difficults)
+            foreach (SearchDifficulty diff in Difficults)
             {
-                if (diff == Difficult.Demon)
-                    parameters.Add(new Property("demonFilter", (int)DemonDifficult));
+                if (diff == SearchDifficulty.Demon)
+                    parameters.Add(new Property("demonFilter", (int)SearchDemonDifficulty));
             }
             if (Feautured >= 0)
                 parameters.Add(new Property("featured", Feautured));

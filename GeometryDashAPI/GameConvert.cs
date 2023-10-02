@@ -18,7 +18,7 @@ namespace GeometryDashAPI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StringToBool(ReadOnlySpan<char> value, bool isReverse = false)
         {
-            return (value.CompareTo("1", StringComparison.Ordinal) == 0) ^ isReverse;
+            return (value.CompareTo("1".AsSpan(), StringComparison.Ordinal) == 0) ^ isReverse;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

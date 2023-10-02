@@ -71,7 +71,7 @@ namespace GeometryDashAPI.Serialization
         public T Create(ReadOnlySpan<char> raw)
         {
             var instance = create();
-            var parser = new LLParserSpan(sense, raw);
+            var parser = new LLParserSpan(sense.AsSpan(), raw);
 
             if (isStruct)
             {
@@ -87,7 +87,11 @@ namespace GeometryDashAPI.Serialization
             {
                 while (parser.TryParseNext(out var key, out var value))
                 {
+#if NETSTANDARD2_1
                     if (!int.TryParse(key, out var index))
+#else
+                    if (!int.TryParse(key.ToString(), out var index))
+#endif
                     {
                         var keyString = key.ToString();
                         if (!mappings.TryGetValue(keyString, out var mapped))
@@ -175,6 +179,7 @@ namespace GeometryDashAPI.Serialization
                         x.attribute)
 #if DEBUG
                         {
+                            Name = x.member.Name,
                             PrinterExp = printerExp,
                             IsDefaultExp = isDefaultExp
                         }
@@ -216,7 +221,7 @@ namespace GeometryDashAPI.Serialization
 
             if (mappings.Any())
             {
-                var values = mappings.Select(x => x.Value).ToHashSet();
+                var values = new HashSet<int>(mappings.Select(x => x.Value));
                 for (var i = 0; i < mappings.Count; i++)
                 {
                     if (!values.Contains(i))
@@ -224,13 +229,13 @@ namespace GeometryDashAPI.Serialization
                 }
             }
 
-            var baseIndex = mappings.Count;
+            var baseIndex = mappings?.Count ?? 0;
             return (new SetterInfo<T>[baseIndex + maxKeyValue + 1], baseIndex, mappings);
         }
 
         private static IEnumerable<MemberInfo> GetPropertiesAndFields(Type type)
         {
-            foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
                 yield return property;
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
                 yield return field;
@@ -244,6 +249,14 @@ namespace GeometryDashAPI.Serialization
         internal delegate void Setter<in TI>(TI instance, ReadOnlySpan<char> raw);
         internal delegate void Printer<in TI>(TI instance, StringBuilder builder);
         internal delegate TOut Getter<in TI, out TOut>(TI instance);
+
+        private static readonly MethodInfo? StringAsSpanMethod = typeof(MemoryExtensions).GetMethod("AsSpan", new[] { typeof(string) });
+        private static readonly MethodInfo? ReadOnlySpanToArrayMethod = typeof(ReadOnlySpan<char>).GetMethod("ToArray");
+#if NETSTANDARD2_1
+        private static readonly MethodInfo? StringBuilderAppendTextMethod = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(ReadOnlySpan<char>) });
+#else
+        private static readonly MethodInfo? StringBuilderAppendTextMethod = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(char[]) });
+#endif
 
         internal static Expression<Setter<TInstance>> CreateSetter<TProp, TInstance>(MemberInfo member)
         {
@@ -266,24 +279,39 @@ namespace GeometryDashAPI.Serialization
 
             var memberType = member.GetMemberType();
             var field = CreateField(member, printerParameterInstance);
-            
-            
-            var append = typeof(StringBuilder).GetMethod(nameof(StringBuilder.Append), new[] { typeof(ReadOnlySpan<char>) });
-            if (append == null)
+
+            if (StringBuilderAppendTextMethod == null)
                 throw new InvalidOperationException($"method '{nameof(StringBuilder.Append)}' is not contains in {typeof(StringBuilder)}");
 
             // destination.Append(key);
-            var appendKeyCall = Expression.Call(printerParameterBuilder, append, Expression.Convert(Expression.Constant(attribute.Key), typeof(ReadOnlySpan<char>)));
+            var appendKeyCall = UniversalAppend(Expression.Constant(attribute.Key), printerParameterBuilder, StringBuilderAppendTextMethod);
             // destination.Append(separator);
-            var appendSenseCall = Expression.Call(printerParameterBuilder, append, Expression.Convert(Expression.Constant(sense), typeof(ReadOnlySpan<char>)));
+            var appendSenseCall = UniversalAppend(Expression.Constant(sense), printerParameterBuilder, StringBuilderAppendTextMethod);
             // destination.Append(value);
-            var appendValueCall = CreateAppendValueCall(memberType, field, printerParameterBuilder, append, member);
+            var appendValueCall = CreateAppendValueCall(memberType, field, printerParameterBuilder, StringBuilderAppendTextMethod, member);
 
             Expression print = Expression.Block(appendKeyCall, appendSenseCall, appendValueCall);
             return Expression.Lambda<Printer<TInstance>>(
                 print,
                 printerParameterInstance,
                 printerParameterBuilder);
+        }
+
+        private static MethodCallExpression UniversalAppend(Expression value,
+            ParameterExpression printerParameterBuilder, MethodInfo append)
+        {
+            if (StringAsSpanMethod == null)
+                throw new InvalidOperationException($"failed to find 'AsSpan' method in '{nameof(MemoryExtensions)}'. If you can see this, please create an issue: https://github.com/Folleach/GeometryDashAPI/issues with information about your dotnet version.");
+            if (value.Type == typeof(string))
+                value = Expression.Call(null, StringAsSpanMethod, value);
+#if NETSTANDARD2_1
+            var appendKeyCall = Expression.Call(printerParameterBuilder, append, value);
+#else
+            if (ReadOnlySpanToArrayMethod == null)
+                throw new InvalidOperationException($"failed to find 'ToArray' method in '{nameof(Enumerable)}.");
+            var appendKeyCall = Expression.Call(printerParameterBuilder, append, Expression.Call(value, ReadOnlySpanToArrayMethod));
+#endif
+            return appendKeyCall;
         }
 
         internal static Expression<Getter<TInstance, bool>> CreateIsDefaultFunction<TInstance>(MemberInfo member, GamePropertyAttribute attribute)
@@ -384,7 +412,7 @@ namespace GeometryDashAPI.Serialization
             ParameterExpression printerParameterBuilder)
         {
             var valuePrinter = typeof(Printers).GetMethod($"{PredefinedMethodPrefix}_{nameof(Int32)}__", BindingFlags.Static | BindingFlags.Public);
-            return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, Expression.Convert(field, typeof(int))));
+            return UniversalAppend(Expression.Call(valuePrinter, Expression.Convert(field, typeof(int))), printerParameterBuilder, append);
         }
 
         private static Expression CreateArrayPrinter(Type type, Expression array, ParameterExpression destination,
@@ -408,7 +436,7 @@ namespace GeometryDashAPI.Serialization
                 destination,
                 appendValueLambda);
             if (arraySense.SeparatorAtTheEnd)
-                body = Expression.Block(body, Expression.Call(destination, append, Expression.Convert(separator, typeof(ReadOnlySpan<char>))));
+                body = Expression.Block(body, UniversalAppend(separator, destination, append));
             return body;
         }
 
@@ -421,7 +449,7 @@ namespace GeometryDashAPI.Serialization
             var valuePrinter = typeof(Printers).GetMethod(GeneratePredefinedName(type), BindingFlags.Static | BindingFlags.Public);
             if (valuePrinter == null)
                 throw new InvalidOperationException($"can't find predefined method '{GeneratePredefinedName(type)}' in {nameof(Printers)}");
-            return Expression.Call(printerParameterBuilder, append, Expression.Call(valuePrinter, getValue));
+            return UniversalAppend(Expression.Call(valuePrinter, getValue), printerParameterBuilder, append);
         }
 
         #endregion

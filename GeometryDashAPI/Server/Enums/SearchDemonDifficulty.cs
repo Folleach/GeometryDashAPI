@@ -1,11 +1,11 @@
 ﻿namespace GeometryDashAPI.Server.Enums
 {
-    public enum DemonDifficult
+    public enum SearchDemonDifficulty
     {
         Easy = 1,
         Medium,
         Hard,
         Insane,
-        Extrime
+        Extreme
     }
 }

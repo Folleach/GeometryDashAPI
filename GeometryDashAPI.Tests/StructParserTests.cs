@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 using TestObjects;
@@ -15,7 +16,7 @@ public class StructParserTests
     {
         var input = "33:1~8:444";
 
-        var actual = serializer.Decode<StructSample>(input);
+        var actual = serializer.Decode<StructSample>(input.AsSpan());
 
         var expected = new StructSample()
         {
@@ -38,7 +39,7 @@ public class StructParserTests
         var input = ComplexParserObject.ExampleInput;
         var expected = ComplexParserObject.ExampleExpected;
 
-        var actual = serializer.Decode<ComplexParserObject>(input);
+        var actual = serializer.Decode<ComplexParserObject>(input.AsSpan());
 
         actual.Should().BeEquivalentTo(expected);
     }

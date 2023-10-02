@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Levels.Enums;
 using NUnit.Framework;
@@ -13,7 +14,7 @@ namespace GeometryDashAPI.Tests
         {
             var input = "1.000~0.9~1.255~1~4.525~0.8~6.665~0~";
 
-            Guidelines actual = Guidelines.Parse(input);
+            Guidelines actual = Guidelines.Parse(input.AsSpan());
 
             actual.Should().BeEquivalentTo(new Guidelines()
             {

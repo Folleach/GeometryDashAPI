@@ -3,17 +3,18 @@ using GeometryDashAPI.Server.Queries;
 using System;
 using System.Threading.Tasks;
 using GeometryDashAPI.Attributes;
+using GeometryDashAPI.Server.Dtos;
 using GeometryDashAPI.Server.Responses;
 
 namespace GeometryDashAPI.Server
 {
-    public class GameServer
+    public class GameClient : IGameClient
     {
         private readonly IdentifierQuery? identifierQuery;
         private readonly OnlineQuery? onlineQuery;
         private readonly Network network;
 
-        public GameServer() : this(null)
+        public GameClient() : this(null)
         {
         }
         
@@ -24,7 +25,7 @@ namespace GeometryDashAPI.Server
             this.network = network ?? new Network();
         }
 
-        public async Task<ServerResponse<TopResponse>> GetTop(TopType type, int count)
+        public async Task<ServerResponse<TopResponse>> GetTopAsync(TopType type, int count)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -34,7 +35,7 @@ namespace GeometryDashAPI.Server
             return await Get<TopResponse>("/getGJScores20.php", query);
         }
 
-        public async Task<ServerResponse<LevelPageResponse>> GetLevels(GetLevelsQuery getLevelsQuery)
+        public async Task<ServerResponse<LevelPageResponse>> SearchLevelsAsync(GetLevelsQuery getLevelsQuery)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -42,16 +43,16 @@ namespace GeometryDashAPI.Server
             return await Get<LevelPageResponse>("/getGJLevels21.php", query);
         }
 
-        public async Task<ServerResponse<LevelPageResponse>> GetFeatureLevels(int page)
+        public async Task<ServerResponse<LevelPageResponse>> GetFeaturedLevelsAsync(int page)
         {
-            return await GetLevels(new GetLevelsQuery(SearchType.Featured)
+            return await SearchLevelsAsync(new GetLevelsQuery(SearchType.Featured)
             {
                 QueryString = "",
                 Page = page,
             });
         }
 
-        public async Task<ServerResponse<LoginResponse>> Login(string username, string password)
+        public async Task<ServerResponse<LoginResponse>> LoginAsync(string username, string password)
         {
             var query = new FlexibleQuery()
                 .AddProperty(new Property("udid", Guid.NewGuid()))
@@ -62,7 +63,7 @@ namespace GeometryDashAPI.Server
             return await Get<LoginResponse>("/accounts/loginGJAccount.php", query);
         }
 
-        public async Task<ServerResponse<AccountCommentPageResponse>> GetAccountComments(int accountId, int page)
+        public async Task<ServerResponse<AccountCommentPageResponse>> GetAccountCommentsAsync(int accountId, int page)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -72,7 +73,7 @@ namespace GeometryDashAPI.Server
             return await Get<AccountCommentPageResponse>("/getGJAccountComments20.php", query);
         }
 
-        public async Task<ServerResponse<UserResponse>> GetUserByName(string name)
+        public async Task<ServerResponse<UserResponse>> SearchUserAsync(string name)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -82,7 +83,7 @@ namespace GeometryDashAPI.Server
             return await Get<UserResponse>("/getGJUsers20.php", query);
         }
 
-        public async Task<ServerResponse<LevelResponse>> DownloadLevel(int id)
+        public async Task<ServerResponse<LevelResponse>> DownloadLevelAsync(int id)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -92,7 +93,7 @@ namespace GeometryDashAPI.Server
             return await Get<LevelResponse>("/downloadGJLevel22.php", query);
         }
 
-        public async Task<ServerResponse<AccountInfoResponse>> GetAccountInfo(int accountId)
+        public async Task<ServerResponse<AccountInfoResponse>> GetAccountAsync(int accountId)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -101,7 +102,7 @@ namespace GeometryDashAPI.Server
             return await Get<AccountInfoResponse>("/getGJUserInfo20.php", query);
         }
 
-        public async Task<ServerResponse<LevelPageResponse>> GetMyLevels(PasswordQuery account, int userId, int page)
+        public async Task<ServerResponse<LevelPageResponse>> GetMyLevelsAsync(PasswordQuery account, int userId, int page)
         {
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
@@ -112,6 +113,38 @@ namespace GeometryDashAPI.Server
                 Page = page
             });
             return await Get<LevelPageResponse>("/getGJLevels21.php", query);
+        }
+
+        public async Task<ServerResponse<NoneResponse>> SendMessageAsync(PasswordQuery fromAccount, int toAccountId, Message message)
+        {
+            var query = new FlexibleQuery()
+                .AddToChain(GetOnlineQuery())
+                .AddToChain(fromAccount)
+                .AddProperty(new Property("toAccountID", toAccountId))
+                .AddToChain(message);
+
+            return await Get<NoneResponse>("/uploadGJMessage20.php", query);
+        }
+
+        public Task<ServerResponse<MessagesPageResponse>> GetMessagesAsync(PasswordQuery account, int page)
+        {
+            var query = new FlexibleQuery()
+                .AddToChain(GetOnlineQuery())
+                .AddToChain(account)
+                .AddProperty(new Property("page", page))
+                .AddProperty(new Property("total", 0));
+
+            return Get<MessagesPageResponse>("/getGJMessages20.php", query);
+        }
+
+        public Task<ServerResponse<MessageContent>> ReadMessageAsync(PasswordQuery account, int messageId)
+        {
+            var query = new FlexibleQuery()
+                .AddToChain(GetOnlineQuery())
+                .AddToChain(account)
+                .AddProperty(new Property("messageID", messageId));
+
+            return Get<MessageContent>("/downloadGJMessage20.php", query);
         }
 
         private async Task<ServerResponse<T>> Get<T>(string path, IQuery query) where T : IGameObject

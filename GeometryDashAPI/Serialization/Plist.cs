@@ -49,8 +49,8 @@ namespace GeometryDashAPI.Serialization
 
         private void Parse(Plist dict, IEnumerable<XElement> elements)
         {
-            foreach (var (key, value) in elements.Pairs())
-                dict[key.Value] = ParseValue(value);
+            foreach (var item in elements.Pairs())
+                dict[item.Key.Value] = ParseValue(item.Value);
         }
 
         private dynamic ParseValue(XElement val)
@@ -104,7 +104,11 @@ namespace GeometryDashAPI.Serialization
         public async Task SaveToStreamAsync(Stream stream)
         {
             var document = CreateDocumentFromThis();
+#if NETSTANDARD2_1
             await document.SaveAsync(stream, SaveOptions.DisableFormatting, CancellationToken.None);
+#else
+            await Task.Run(() => document.Save(stream, SaveOptions.DisableFormatting));
+#endif
         }
 
         private XDocument CreateDocumentFromThis()

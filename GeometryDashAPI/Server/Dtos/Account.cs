@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Server.Enums;
@@ -10,7 +10,7 @@ namespace GeometryDashAPI.Server.Dtos
     {
         [GameProperty("1")] public string Name { get; set; }
         [GameProperty("2")] public int UserId { get; set; }
-        [GameProperty("3")] public int Starts { get; set; }
+        [GameProperty("3")] public int Stars { get; set; }
         [GameProperty("4")] public int Demons { get; set; }
         [GameProperty("6")] public int Rank { get; set; }
         [GameProperty("7")] public int Highlight { get; set; }
@@ -23,7 +23,7 @@ namespace GeometryDashAPI.Server.Dtos
         [GameProperty("15")] public int Special { get; set; }
         [GameProperty("16")] public int AccountId { get; set; }
         [GameProperty("17")] public int UserCoins { get; set; }
-        [GameProperty("18")] public int MessageState { get; set; }
+        [GameProperty("18")] public AllowMessagesFrom MessageState { get; set; }
         [GameProperty("19")] public int FriendsState { get; set; }
         [GameProperty("20")] public string YouTubeId { get; set; }
         [GameProperty("21")] public int CubeId { get; set; }

@@ -12,6 +12,7 @@ namespace GeometryDashAPI.Serialization
 #if DEBUG
         public Expression<TypeDescriptorHelper.Printer<T>> PrinterExp { get; set; }
         public Expression<TypeDescriptorHelper.Getter<T, bool>> IsDefaultExp { get; set; }
+        public string Name { get; set; }
 #endif
 
         public PrinterInfo(
@@ -23,5 +24,9 @@ namespace GeometryDashAPI.Serialization
             IsDefault = isDefault;
             Attribute = attribute;
         }
+
+#if DEBUG
+        public override string ToString() => Name;
+#endif
     }
 }

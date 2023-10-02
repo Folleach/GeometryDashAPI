@@ -47,7 +47,7 @@ namespace Examples
 
         private static void F()
         {
-            var loginResponse = new GameServer().Login("folleach", "***********").Result;
+            var loginResponse = new GameClient().LoginAsync("folleach", "***********").Result;
             Console.WriteLine($"HttpStatusCode: {loginResponse.HttpStatusCode}");
             Console.WriteLine($"GdStatusCode: {loginResponse.GeometryDashStatusCode}");
             Console.WriteLine($"Result: " + (loginResponse.GetResultOrDefault() == null

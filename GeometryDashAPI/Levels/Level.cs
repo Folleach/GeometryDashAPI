@@ -65,7 +65,7 @@ namespace GeometryDashAPI.Levels
         {
             if (compressed)
                 data = Decompress(data);
-            var parser = new LLParserSpan(";", data);
+            var parser = new LLParserSpan(";".AsSpan(), data.AsSpan());
             var header = parser.Next();
             Options = Level.Serializer.Decode<LevelOptions>(header);
             LoadBlocks(parser);
@@ -84,7 +84,11 @@ namespace GeometryDashAPI.Levels
         public string SaveAsString(bool compress = true)
         {
             var builder = new StringBuilder();
+#if NETSTANDARD2_1
             builder.Append(GeometryDashApi.Serializer.Encode(Options));
+#else
+            builder.Append(GeometryDashApi.Serializer.Encode(Options).ToString());
+#endif
 
             foreach (var block in Blocks)
             {

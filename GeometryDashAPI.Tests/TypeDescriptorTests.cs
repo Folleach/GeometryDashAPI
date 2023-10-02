@@ -1,4 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text;
+using FluentAssertions;
+using GeometryDashAPI.Levels.Enums;
+using GeometryDashAPI.Levels.GameObjects.Default;
+using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 using TestObjects;
@@ -23,7 +29,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<AllTypes>();
 
-        var instance = descriptor.Create("1,abc,2,200");
+        var instance = descriptor.Create("1,abc,2,200".AsSpan());
         
         Assert.AreEqual("abc", instance.String);
         Assert.AreEqual(200, instance.Byte);
@@ -34,7 +40,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectSample>();
 
-        var instance = descriptor.Create("33:1.9");
+        var instance = descriptor.Create("33:1.9".AsSpan());
         
         Assert.AreEqual(1.9, instance.X);
     }
@@ -44,7 +50,7 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectSample>();
         
-        var instance = descriptor.Create("11:abc!");
+        var instance = descriptor.Create("11:abc!".AsSpan());
         
         Assert.AreEqual(1, instance.WithoutLoaded.Count);
         Assert.AreEqual("11:abc!", instance.WithoutLoaded.FirstOrDefault());
@@ -55,8 +61,83 @@ public class TypeDescriptorTests
     {
         var descriptor = new TypeDescriptor<ObjectWithEnum>();
         
-        var instance = descriptor.Create("1:33");
+        var instance = descriptor.Create("1:33".AsSpan());
         
         Assert.AreEqual(SimpleEnum.X, instance.Value);
+    }
+
+    [Test]
+    public void ProtectedVirtualFieldGet()
+    {
+        var descriptor = new TypeDescriptor<BaseBlock>();
+
+        var builder = new StringBuilder();
+        descriptor.CopyTo(new BaseBlock(1)
+        {
+            ZLayer = Layer.B4
+        }, builder);
+
+        builder.ToString().Should().Be("1,1,2,0,3,0,24,-3");
+    }
+
+    [Test]
+    public void ProtectedVirtualFieldSet()
+    {
+        var input = "1,1,2,0,3,0,24,-3";
+        var descriptor = new TypeDescriptor<BaseBlock>();
+
+        var block = descriptor.Create(input.AsSpan());
+
+        block.ZLayer.Should().Be(Layer.B4);
+    }
+
+    [Test]
+    public void OverrideVirtualFieldGet_Default()
+    {
+        var descriptor = new TypeDescriptor<JumpPlate>();
+
+        var builder = new StringBuilder();
+        descriptor.CopyTo(new JumpPlate(JumpPlateId.Red)
+        {
+            ZLayer = Layer.B1
+        }, builder);
+
+        builder.ToString().Should().Be("1,1332,2,0,3,0");
+    }
+
+    [Test]
+    public void OverrideVirtualFieldGet_Specific()
+    {
+        var descriptor = new TypeDescriptor<JumpPlate>();
+
+        var builder = new StringBuilder();
+        descriptor.CopyTo(new JumpPlate(JumpPlateId.Red)
+        {
+            ZLayer = Layer.B4
+        }, builder);
+
+        builder.ToString().Should().Be("1,1332,2,0,3,0,24,-3");
+    }
+
+    [Test]
+    public void OverrideVirtualFieldSet_Default()
+    {
+        var input = "1,1332,2,0,3,0";
+        var descriptor = new TypeDescriptor<JumpPlate>();
+
+        var block = descriptor.Create(input.AsSpan());
+
+        block.ZLayer.Should().Be(Layer.B1);
+    }
+
+    [Test]
+    public void OverrideVirtualFieldSet_Specific()
+    {
+        var input = "1,1332,2,0,3,0,24,-3";
+        var descriptor = new TypeDescriptor<JumpPlate>();
+
+        var block = descriptor.Create(input.AsSpan());
+
+        block.ZLayer.Should().Be(Layer.B4);
     }
 }

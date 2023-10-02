@@ -1,6 +1,6 @@
 ﻿namespace GeometryDashAPI.Server.Enums
 {
-    public enum Difficult
+    public enum SearchDifficulty
     {
         Auto = -3,
         Demon,

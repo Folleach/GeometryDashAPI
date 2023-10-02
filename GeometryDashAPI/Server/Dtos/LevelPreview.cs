@@ -39,10 +39,10 @@ namespace GeometryDashAPI.Server.Dtos
         public int AuthorUserId { get; set; }
         
         [GameProperty("8")]
-        public int Difficulty { get; set; }
+        public Difficulty Difficulty { get; set; }
         
         [GameProperty("9")]
-        public int SlaveDifficulty { get; set; }
+        public DifficultyIcon DifficultyIcon { get; set; }
         
         [GameProperty("10")]
         public int Downloads { get; set; }
@@ -97,7 +97,7 @@ namespace GeometryDashAPI.Server.Dtos
         public bool Epic { get; set; }
         
         [GameProperty("43")]
-        public int DemonDifficulty { get; set; }
+        public DemonDifficulty DemonDifficulty { get; set; }
         
         [GameProperty("45")]
         public int Objects { get; set; }

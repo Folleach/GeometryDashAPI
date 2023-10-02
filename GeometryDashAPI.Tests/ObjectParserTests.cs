@@ -16,7 +16,7 @@ public class ObjectParserTests
     [TestCase("11:1:33:4", 4)]
     public void Decode_SampleObject_ShouldDecodeCorrect(string raw, double expected)
     {
-        var actual = serializer.Decode<ObjectSample>(raw);
+        var actual = serializer.Decode<ObjectSample>(raw.AsSpan());
 
         Assert.AreEqual(expected, actual.X);
     }
@@ -26,7 +26,7 @@ public class ObjectParserTests
     {
         var input = "10:hello:33:9";
 
-        var actual = serializer.Decode<ObjectSample>(input);
+        var actual = serializer.Decode<ObjectSample>(input.AsSpan());
             
         Assert.AreEqual(9, actual.X);
         Assert.AreEqual(1, actual.WithoutLoaded.Count);
@@ -37,14 +37,14 @@ public class ObjectParserTests
     [TestCase("1")]
     public void Decode_SampleObject_ThrowExceptionIfHaveError(string input)
     {
-        Assert.Throws(typeof(Exception), () => serializer.Decode<ObjectSample>(input));
+        Assert.Throws(typeof(Exception), () => serializer.Decode<ObjectSample>(input.AsSpan()));
     }
         
     [TestCase("33:1.4")]
     [TestCase("33:4:11:1")]
     public void Decode_SampleObject_ShouldEncodeCorrect(string raw)
     {
-        var decoded = serializer.Decode<ObjectSample>(raw);
+        var decoded = serializer.Decode<ObjectSample>(raw.AsSpan());
         var encoded = serializer.Encode(decoded).ToString();
         Assert.AreEqual(raw, encoded);
     }
@@ -59,7 +59,7 @@ public class ObjectParserTests
         };
         const string input = "1~33:1.3~2~33:11";
             
-        var decoded = serializer.Decode<SampleContainer>(input);
+        var decoded = serializer.Decode<SampleContainer>(input.AsSpan());
             
         decoded.Should().BeEquivalentTo(expected);
     }
@@ -101,7 +101,7 @@ public class ObjectParserTests
             X1 = 2
         };
 
-        var actual = serializer.Decode<MultipleSense>(input);
+        var actual = serializer.Decode<MultipleSense>(input.AsSpan());
 
         actual.Should().BeEquivalentTo(expected);
     }
@@ -109,7 +109,7 @@ public class ObjectParserTests
     [Test]
     public void GetArray()
     {
-        var actual = serializer.GetArray("33,1,33,2,33,3,33,4,33,5,33,6,33,7,33,8,33,9", ",", Parsers.GetOrDefault_Int32__);
+        var actual = serializer.GetArray("33,1,33,2,33,3,33,4,33,5,33,6,33,7,33,8,33,9".AsSpan(), ",", Parsers.GetOrDefault_Int32__);
 
         var expected = new[] { 33,1,33,2,33,3,33,4,33,5,33,6,33,7,33,8,33,9 };
 
@@ -134,7 +134,7 @@ public class ObjectParserTests
     {
         var input = "3:44";
 
-        var actual = serializer.Decode<WithNullable>(input);
+        var actual = serializer.Decode<WithNullable>(input.AsSpan());
 
         actual.Value.Should().Be(44);
     }
