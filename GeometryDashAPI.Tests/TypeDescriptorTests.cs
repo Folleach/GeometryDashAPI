@@ -144,7 +144,7 @@ public class TypeDescriptorTests
     [Test]
     public void PrivateFieldFromInheritedClass()
     {
-        var input = "1,10,2,20";
+        var input = "1,10,2,20,3,333";
         var descriptor = new TypeDescriptor<InheritField>();
 
         var actual = descriptor.Create(input.AsSpan());

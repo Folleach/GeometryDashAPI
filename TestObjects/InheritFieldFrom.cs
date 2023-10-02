@@ -9,6 +9,9 @@ public class InheritFieldFrom : GameObject
     [GameProperty("1")]
     private int x;
 
+    [GameProperty("3")]
+    protected int Id;
+
     public int X => x;
 }
 
