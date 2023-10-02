@@ -237,7 +237,7 @@ namespace GeometryDashAPI.Serialization
             var current = type;
             while (current != null && current != typeof(object))
             {
-                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic).Where(x => x.DeclaringType == current))
+                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
                     yield return field;
                 current = current.BaseType;
             }
