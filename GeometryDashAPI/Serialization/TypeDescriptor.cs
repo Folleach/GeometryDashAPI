@@ -5,9 +5,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using GeometryDashAPI.Attributes;
-using GeometryDashAPI.Levels.GameObjects;
-using GeometryDashAPI.Levels.GameObjects.Default;
-using GeometryDashAPI.Levels.GameObjects.Triggers;
 
 namespace GeometryDashAPI.Serialization
 {
@@ -15,7 +12,7 @@ namespace GeometryDashAPI.Serialization
     {
         private readonly SetterInfo<T>[] setters;
         private readonly PrinterInfo<T>[] printers;
-        private readonly Dictionary<string, int> mappings;
+        private readonly Dictionary<string, int>? mappings;
         private readonly string sense;
         private readonly Func<T> create;
         private readonly bool isStruct;
@@ -93,14 +90,13 @@ namespace GeometryDashAPI.Serialization
                     if (!int.TryParse(key.ToString(), out var index))
 #endif
                     {
-                        var keyString = key.ToString();
-                        if (!mappings.TryGetValue(keyString, out var mapped))
+                        if (mappings == null || !mappings.TryGetValue(key.ToString(), out var mapped))
                         {
                             instance.WithoutLoaded.Add($"{key.ToString()}{sense}{value.ToString()}");
                             continue;
                         }
                         if (!TrySet(instance, mapped, value))
-                            instance.WithoutLoaded.Add($"{keyString}{sense}{value.ToString()}");
+                            instance.WithoutLoaded.Add($"{key.ToString()}{sense}{value.ToString()}");
                         continue;
                     }
                     if (!TrySet(instance, baseIndex + index, value))
@@ -197,11 +193,11 @@ namespace GeometryDashAPI.Serialization
             return Expression.Lambda<Func<TB>>(memberInit);
         }
 
-        private static (SetterInfo<T>[], int baseIndex, Dictionary<string, int> mappings) InitSetters(Type type, IEnumerable<(MemberInfo member, GamePropertyAttribute attribute)> members)
+        private static (SetterInfo<T>[], int baseIndex, Dictionary<string, int>? mappings) InitSetters(Type type, IEnumerable<(MemberInfo member, GamePropertyAttribute attribute)> members)
         {
             var keys = new HashSet<string>();
             var maxKeyValue = 0;
-            Dictionary<string, int> mappings = new();
+            Dictionary<string, int>? mappings = null;
             foreach (var (member, attribute) in members)
             {
                 if (int.TryParse(attribute.Key, out var key))
@@ -216,10 +212,11 @@ namespace GeometryDashAPI.Serialization
 
                 if (attribute.KeyOverride == -1)
                     throw new InvalidOperationException($"Key override for member '{attribute.Key}' in {type.Name} is not set");
+                mappings ??= new Dictionary<string, int>();
                 mappings.Add(attribute.Key, attribute.KeyOverride);
             }
 
-            if (mappings.Any())
+            if (mappings != null)
             {
                 var values = new HashSet<int>(mappings.Select(x => x.Value));
                 for (var i = 0; i < mappings.Count; i++)
