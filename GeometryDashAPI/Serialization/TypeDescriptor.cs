@@ -35,7 +35,7 @@ namespace GeometryDashAPI.Serialization
 
             var members = GetPropertiesAndFields(type)
                 .Select(member => (member, attribute: member.GetCustomAttribute<GamePropertyAttribute>()))
-                .Where(x => x.attribute != null && !x.attribute.IgnoreField)
+                .Where(x => x.attribute != null)
                 .ToArray();
             var createSetter = typeof(TypeDescriptorHelper)
                 .GetMethod(nameof(TypeDescriptorHelper.CreateSetter), BindingFlags.Static | BindingFlags.NonPublic);
