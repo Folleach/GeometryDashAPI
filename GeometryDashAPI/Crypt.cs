@@ -48,8 +48,8 @@ namespace GeometryDashAPI
             using var memory = new MemoryStream();
             using (var destination = new GZipStream(memory, CompressionMode.Compress))
             {
-                using (var memoryStream2 = new MemoryStream(data))
-                    memoryStream2.CopyTo(destination);
+                using var memoryStream2 = new MemoryStream(data);
+                memoryStream2.CopyTo(destination);
             }
             return memory.ToArray();
         }

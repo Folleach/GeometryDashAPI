@@ -10,12 +10,11 @@ namespace GeometryDashAPI.Attributes
         public bool AlwaysSet { get; }
         public int KeyOverride { get; set; }
         public int Order { get; set; } = int.MaxValue;
-        public bool IgnoreField = false;
 
-        public GamePropertyAttribute(string key, object defaultDefaultValue = null, bool alwaysSet = false)
+        public GamePropertyAttribute(string key, object defaultValue = null, bool alwaysSet = false)
         {
             Key = key;
-            DefaultValue = defaultDefaultValue;
+            DefaultValue = defaultValue;
             AlwaysSet = alwaysSet;
         }
     }

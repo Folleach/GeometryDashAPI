@@ -10,15 +10,15 @@ namespace GeometryDashAPI.Server
 {
     public class GameClient : IGameClient
     {
-        private readonly IdentifierQuery identifierQuery;
-        private readonly OnlineQuery onlineQuery;
+        private readonly IdentifierQuery? identifierQuery;
+        private readonly OnlineQuery? onlineQuery;
         private readonly Network network;
 
         public GameClient() : this(null)
         {
         }
-        
-        public GameClient(IdentifierQuery identifierQuery = null, OnlineQuery onlineQuery = null, Network network = null)
+
+        public GameClient(IdentifierQuery? identifierQuery = null, OnlineQuery? onlineQuery = null, Network? network = null)
         {
             this.identifierQuery = identifierQuery;
             this.onlineQuery = onlineQuery;
@@ -30,7 +30,7 @@ namespace GeometryDashAPI.Server
             var query = new FlexibleQuery()
                 .AddToChain(OnlineQuery.Default)
                 .AddToChain(GetIdentifier())
-                .AddProperty(new Property("type", type.GetAttributeOfSelected<OriginalNameAttribute>().OriginalName))
+                .AddProperty(new Property("type", type.GetAttributeOfSelected<OriginalNameAttribute>()!.OriginalName))
                 .AddProperty(new Property("count", count));
             return await Get<TopResponse>("/getGJScores20.php", query);
         }

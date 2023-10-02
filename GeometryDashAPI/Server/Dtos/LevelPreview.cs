@@ -15,6 +15,7 @@ namespace GeometryDashAPI.Server.Dtos
 
         [GameProperty("3")]
         private string description;
+
         public string Description
         {
             get
