@@ -17,8 +17,8 @@ namespace GeometryDashAPI.Server
         public GameClient() : this(null)
         {
         }
-        
-        public GameServer(IdentifierQuery? identifierQuery = null, OnlineQuery? onlineQuery = null, Network? network = null)
+
+        public GameClient(IdentifierQuery? identifierQuery = null, OnlineQuery? onlineQuery = null, Network? network = null)
         {
             this.identifierQuery = identifierQuery;
             this.onlineQuery = onlineQuery;
