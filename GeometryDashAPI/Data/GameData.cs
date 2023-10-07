@@ -37,7 +37,7 @@ namespace GeometryDashAPI.Data
             await file.ReadAsync(data, 0, data.Length);
 
             var xor = Crypt.XOR(data, 0xB);
-            var index = xor.GetIndexOfNullByte();
+            var index = xor.AsSpan().IndexOf((byte)0);
             var gZipDecompress = Crypt.GZipDecompress(GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index)));
 
             DataPlist = new Plist(Encoding.ASCII.GetBytes(gZipDecompress));

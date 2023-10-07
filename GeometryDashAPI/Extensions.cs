@@ -92,18 +92,5 @@ namespace GeometryDashAPI
             if (first)
                 yield return new KeyValuePair<T, T>(firstItem, default);
         }
-
-        public static int GetIndexOfNullByte(this byte[] buffer)
-        {
-            for (int i = 0; i < buffer.Length; i++)
-            {
-                var currentByte = buffer[i];
-
-                if (currentByte == '\0')
-                    return i;
-            }
-
-            return buffer.Length - 1;
-        }
     }
 }
