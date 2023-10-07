@@ -148,10 +148,10 @@ namespace GeometryDashAPI.Data
             get => ((Plist)DataPlist["valueKeeper"]).TryGetValue("gv_0030", out var value) ? GameConvert.StringToBool(value) : false;
             set => DataPlist["valueKeeper"]["gv_0030"] = GameConvert.BoolToString(value);
         }
-        public GDResolution Resolution
+        public GdResolution Resolution
         {
-            get => DataPlist.TryGetValue("resolution", out var value) ? GDResolution.ToGDResolution(value) : new GDResolution(0,0);
-            set => DataPlist["resolution"] = GDResolution.FromGDResolution(value);
+            get => DataPlist.TryGetValue("resolution", out var value) ? GdResolution.ToGdResolution(value) : new GdResolution(0,0);
+            set => DataPlist["resolution"] = GdResolution.FromGdResolution(value);
         }
         public int RawResolution
         {
