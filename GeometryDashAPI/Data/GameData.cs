@@ -38,7 +38,7 @@ namespace GeometryDashAPI.Data
 
             var xor = Crypt.XOR(data, 0xB);
             var index = xor.AsSpan().IndexOf((byte)0);
-            var gZipDecompress = Crypt.GZipDecompress(GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index)));
+            var gZipDecompress = Crypt.GZipDecompress(GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index >= 0 ? index : xor.Length)));
 
             DataPlist = new Plist(Encoding.ASCII.GetBytes(gZipDecompress));
         }
