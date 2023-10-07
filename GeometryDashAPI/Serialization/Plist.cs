@@ -97,8 +97,9 @@ namespace GeometryDashAPI.Serialization
         public void SaveToStream(Stream stream)
         {
             var document = CreateDocumentFromThis();
-            document.Save(stream, SaveOptions.DisableFormatting); 
+            document.Save(stream, SaveOptions.DisableFormatting);
         }
+
         public async Task SaveToStreamAsync(Stream stream)
         {
             var document = CreateDocumentFromThis();
