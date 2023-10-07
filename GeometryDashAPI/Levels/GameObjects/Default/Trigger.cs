@@ -8,7 +8,13 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
 
         [GameProperty("11", false, Order = 100)] public bool TouchTrigger { get; set; } = false;
         [GameProperty("62", false, Order = 101)] public bool SpawnTrigger { get; set; } = false;
-        [GameProperty("87", false, Order = 102)] public virtual bool MultiTrigger { get; set; } = false;
+        [GameProperty("87", false, Order = 102)] protected bool multiTrigger;
+
+        public virtual bool MultiTrigger
+        {
+            get => multiTrigger;
+            set => multiTrigger = value;
+        }
 
         public Trigger()
         {

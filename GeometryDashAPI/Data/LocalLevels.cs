@@ -8,7 +8,7 @@ using GeometryDashAPI.Serialization;
 
 namespace GeometryDashAPI.Data
 {
-    public class LocalLevels : GameData, IEnumerable<LevelCreatorModel>
+    public class LocalLevels : GameData, IReadOnlyCollection<LevelCreatorModel>
     {
         private List<LevelCreatorModel> levels { get; set; }
         private Dictionary<string, Dictionary<int, int>> index;
@@ -19,6 +19,7 @@ namespace GeometryDashAPI.Data
             set => DataPlist["LLM_02"] = value;
         }
 
+        [Obsolete("Use Count instead", true)]
         public int LevelCount => levels.Count;
 
         protected LocalLevels() : base(GameDataType.LocalLevels)
@@ -104,6 +105,8 @@ namespace GeometryDashAPI.Data
             return true;
         }
 
+        public int Count => levels.Count;
+
         public IEnumerator<LevelCreatorModel> GetEnumerator()
         {
             foreach (var level in levels)
@@ -152,7 +155,7 @@ namespace GeometryDashAPI.Data
         public void AddLevel(LevelCreatorModel levelInfo)
         {
             var all = DataPlist["LLM_01"];
-            for (var i = LevelCount - 1; i >= 0; i--)
+            for (var i = Count - 1; i >= 0; i--)
                 all[$"k_{i + 1}"] = all[$"k_{i}"];
             all["k_0"] = levelInfo.DataLevel;
             LoadLevels();
