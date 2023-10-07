@@ -43,4 +43,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Serialization\Enums" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Serialization\Enums\PaddingPolicy.cs" />
+    <Compile Remove="Attributes\GameManagerPropertyAttribute.cs" />
+  </ItemGroup>
+
 </Project>

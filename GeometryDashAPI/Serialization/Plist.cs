@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using csFastFloat;
 
 namespace GeometryDashAPI.Serialization
 {
@@ -19,12 +20,10 @@ namespace GeometryDashAPI.Serialization
         };
 
         public Plist()
-        {
-        }
+        { }
 
         public Plist(byte[] bytes) : this(new MemoryStream(bytes))
-        {
-        }
+        { }
 
         public Plist(Stream stream)
         {
@@ -65,7 +64,7 @@ namespace GeometryDashAPI.Serialization
                     return int.Parse(val.Value);
                 case "real":
                 case "r":
-                    return float.Parse(val.Value, NumberStyles.Any, Culture.FormatProvider);
+                    return FastFloatParser.ParseFloat(val.Value, NumberStyles.Any);
                 case "true":
                 case "t":
                     return true;
@@ -98,9 +97,8 @@ namespace GeometryDashAPI.Serialization
         public void SaveToStream(Stream stream)
         {
             var document = CreateDocumentFromThis();
-            document.Save(stream, SaveOptions.DisableFormatting);
+            document.Save(stream, SaveOptions.DisableFormatting); 
         }
-
         public async Task SaveToStreamAsync(Stream stream)
         {
             var document = CreateDocumentFromThis();
