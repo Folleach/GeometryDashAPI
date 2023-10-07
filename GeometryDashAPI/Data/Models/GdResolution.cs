@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GeometryDashAPI.Data.Classes
+namespace GeometryDashAPI.Data.Models
 {
     public sealed class GdResolution
     {
