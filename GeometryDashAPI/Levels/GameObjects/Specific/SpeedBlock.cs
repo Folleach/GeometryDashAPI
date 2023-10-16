@@ -1,6 +1,6 @@
-﻿using GeometryDashAPI.Attributes;
+﻿using System;
+using GeometryDashAPI.Attributes;
 using GeometryDashAPI.Levels.Enums;
-using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
@@ -14,18 +14,21 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
     }
 
     [GameBlock(200, 201, 202, 203, 1334)]
-    public class SpeedBlock : Block
+    public class SpeedBlock : Portal, IComparable<SpeedBlock>
     {
         [GameProperty("24", (short)Layer.B2)] protected override short zLayer { get; set; } = (short)Layer.B2;
         [GameProperty("25", -6)] public override int ZOrder { get; set; } = -6;
-
-        [GameProperty("13", true, true)]
-        public bool Using { get; set; } = true;
 
         public SpeedBlockId BlockType
         {
             get => (SpeedBlockId)Id;
             set => Id = (int)value;
+        }
+
+        public SpeedType SpeedType
+        {
+            get => FromBlockIdToSpeedType(BlockType);
+            set => BlockType = FromSpeedTypeToBlockId(value);
         }
 
         public SpeedBlock() : base(201)
@@ -35,5 +38,35 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
         public SpeedBlock(SpeedBlockId type) : base((int)type)
         {
         }
+
+        public SpeedBlock(SpeedType type) : base((int)FromSpeedTypeToBlockId(type))
+        {
+        }
+
+        public static SpeedType FromBlockIdToSpeedType(SpeedBlockId id)
+        {
+            return id switch
+            {
+                SpeedBlockId.Orange => SpeedType.Half,
+                SpeedBlockId.Default => SpeedType.Default,
+                SpeedBlockId.Green => SpeedType.X2,
+                SpeedBlockId.Purple => SpeedType.X3,
+                SpeedBlockId.Red => SpeedType.X4
+            };
+        }
+
+        public static SpeedBlockId FromSpeedTypeToBlockId(SpeedType speedType)
+        {
+            return speedType switch
+            {
+                SpeedType.Half => SpeedBlockId.Orange,
+                SpeedType.Default => SpeedBlockId.Default,
+                SpeedType.X2 => SpeedBlockId.Green,
+                SpeedType.X3 => SpeedBlockId.Purple,
+                SpeedType.X4 => SpeedBlockId.Red
+            };
+        }
+
+        public int CompareTo(SpeedBlock other) => PositionX.CompareTo(other.PositionX);
     }
 }

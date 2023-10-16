@@ -23,6 +23,8 @@ namespace GeometryDashAPI.Levels
             set => Options.Guidelines = value;
         }
 
+        public LevelLength LevelLength => LevelLength.Measure(this);
+        
         public int CountBlock => Blocks.Count;
         public int CountColor => Options.Colors.Count;
 
