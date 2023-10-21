@@ -14,7 +14,7 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
     }
 
     [GameBlock(200, 201, 202, 203, 1334)]
-    public class SpeedBlock : Portal, IComparable<SpeedBlock>
+    public class SpeedBlock : Portal
     {
         [GameProperty("24", (short)Layer.B2)] protected override short zLayer { get; set; } = (short)Layer.B2;
         [GameProperty("25", -6)] public override int ZOrder { get; set; } = -6;
@@ -66,7 +66,5 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
                 SpeedType.X4 => SpeedBlockId.Red
             };
         }
-
-        public int CompareTo(SpeedBlock other) => PositionX.CompareTo(other.PositionX);
     }
 }
