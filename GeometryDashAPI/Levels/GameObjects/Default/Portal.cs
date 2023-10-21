@@ -1,7 +1,6 @@
 ﻿using GeometryDashAPI.Attributes;
-using GeometryDashAPI.Levels.GameObjects.Default;
 
-namespace GeometryDashAPI.Levels
+namespace GeometryDashAPI.Levels.GameObjects.Default
 {
     public class Portal : Block
     {
