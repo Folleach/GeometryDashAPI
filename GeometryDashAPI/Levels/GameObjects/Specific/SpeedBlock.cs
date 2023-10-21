@@ -4,6 +4,11 @@ using GeometryDashAPI.Levels.Enums;
 
 namespace GeometryDashAPI.Levels.GameObjects.Specific
 {
+    /// <summary>
+    /// Represents the id of the speed block.<br/><br/>
+    /// Not to be confused with <see cref="SpeedType"/>.<br/>
+    /// Because it is responsible for a specific speed, instead of a specific block id
+    /// </summary>
     public enum SpeedBlockId
     {
         Orange = 200,
@@ -51,7 +56,8 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
                 SpeedBlockId.Default => SpeedType.Default,
                 SpeedBlockId.Green => SpeedType.X2,
                 SpeedBlockId.Purple => SpeedType.X3,
-                SpeedBlockId.Red => SpeedType.X4
+                SpeedBlockId.Red => SpeedType.X4,
+                _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
             };
         }
 
@@ -63,7 +69,8 @@ namespace GeometryDashAPI.Levels.GameObjects.Specific
                 SpeedType.Default => SpeedBlockId.Default,
                 SpeedType.X2 => SpeedBlockId.Green,
                 SpeedType.X3 => SpeedBlockId.Purple,
-                SpeedType.X4 => SpeedBlockId.Red
+                SpeedType.X4 => SpeedBlockId.Red,
+                _ => throw new ArgumentOutOfRangeException(nameof(speedType), speedType, null)
             };
         }
     }
