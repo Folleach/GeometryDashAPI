@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using GeometryDashAPI.Levels.Comparers;
 using GeometryDashAPI.Levels.GameObjects.Specific;
 
 namespace GeometryDashAPI.Levels
@@ -10,24 +8,27 @@ namespace GeometryDashAPI.Levels
     {
         public static TimeSpan Measure(Level level)
         {
-            var x = level.Blocks.Max(x => x.PositionX);
+            var maxX = level.Blocks.Max(x => x.PositionX);
             var portals = GetSpeedBlocks(level);
 
-            double seconds = 0;
+            var seconds = 0d;
             var i = 1;
-            for (; i < portals.Count && portals.ElementAt(i).PositionX < x; i++)
-                seconds += (portals.ElementAt(i).PositionX - portals.ElementAt(i - 1).PositionX) / portals.ElementAt(i - 1).SpeedType.GetSpeed();
+            for (; i < portals.Length; i++)
+                seconds += (portals[i].PositionX - portals[i - 1].PositionX) / portals[i - 1].SpeedType.GetSpeed();
 
-            var final = Math.Min(i, portals.Count - 1);
-            var total = seconds + (x - portals.ElementAt(final).PositionX) / portals.ElementAt(final).SpeedType.GetSpeed();
+            var final = Math.Min(i, portals.Length - 1);
+            var total = seconds + (maxX - portals[final].PositionX) / portals[final].SpeedType.GetSpeed();
 
             return TimeSpan.FromSeconds(total);
         }
 
-        private static SortedSet<SpeedBlock> GetSpeedBlocks(Level level)
+        private static SpeedBlock[] GetSpeedBlocks(Level level)
         {
-            var speedPortals = new SpeedBlock[] { new SpeedBlock(level.Options.PlayerSpeed) }.Concat(level.Blocks.OfType<SpeedBlock>().Where(x => x.Checked).OrderBy(x => x.PositionX));
-            return new SortedSet<SpeedBlock>(speedPortals, BlockPositionXComparer.Instance);
+            return new[] { new SpeedBlock(level.Options.PlayerSpeed) }
+                .Concat(level.Blocks.OfType<SpeedBlock>()
+                    .Where(x => x.Checked)
+                    .OrderBy(x => x.PositionX)
+                ).ToArray();
         }
     }
 }
