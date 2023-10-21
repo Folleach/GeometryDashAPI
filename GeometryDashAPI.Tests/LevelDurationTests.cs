@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace GeometryDashAPI.Tests;
 
 [TestFixture]
-public class LevelLengthTests
+public class LevelDurationTests
 {
     [TestCase("12034598_Conclusion", 57)]
     [TestCase("28755513_TheFinalLair", 154)]
@@ -19,6 +19,6 @@ public class LevelLengthTests
         var responseBody = File.ReadAllText(Path.Combine("data", "levels", fileName));
         var response = new ServerResponse<LevelResponse>(HttpStatusCode.OK, responseBody);
         var level = new Level(response.GetResultOrDefault().Level.LevelString, compressed: true);
-        level.LevelLength.TotalSeconds.Should().BeApproximately(expectedSeconds, precision: 1);
+        level.Duration.TotalSeconds.Should().BeApproximately(expectedSeconds, precision: 1);
     }
 }
