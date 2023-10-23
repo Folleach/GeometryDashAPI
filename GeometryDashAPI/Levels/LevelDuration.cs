@@ -4,7 +4,7 @@ using GeometryDashAPI.Levels.GameObjects.Specific;
 
 namespace GeometryDashAPI.Levels
 {
-    public static class LevelLength
+    public static class LevelDuration
     {
         public static TimeSpan Measure(Level level)
         {
