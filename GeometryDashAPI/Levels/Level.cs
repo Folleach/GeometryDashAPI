@@ -108,7 +108,7 @@ namespace GeometryDashAPI.Levels
         // see signatures https://en.wikipedia.org/wiki/List_of_file_signatures
         public static string Decompress(string data)
         {
-            var bytes = GameConvert.FromBase64(data);
+            var bytes = GameConvert.FromBase64(data.AsSpan());
             if (bytes[0] == 0x78)
                 return Crypt.ZLibDecompress(bytes);
             if (bytes[0] == 0x1F && bytes[1] == 0x8B)

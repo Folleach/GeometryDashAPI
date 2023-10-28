@@ -33,19 +33,19 @@ namespace GeometryDashAPI.Data
 
 #if NETSTANDARD2_1
             await using var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true);
+            await using var xorStream = new XorStream(file, 0xB);
+            await using var base64Stream = new AsciiBase64Stream(xorStream);
+            await using var gzip = new GZipStream(base64Stream, CompressionMode.Decompress);
 #else
             using var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true);
+            using var xorStream = new XorStream(file, 0xB);
+            using var base64Stream = new AsciiBase64Stream(xorStream);
+            using var gzip = new GZipStream(base64Stream, CompressionMode.Decompress);
 #endif
-            var data = new byte[file.Length];
-            await file.ReadAsync(data, 0, data.Length);
 
-            var xor = Crypt.XOR(data, 0xB);
-            var index = xor.AsSpan().IndexOf((byte)0);
-            var gZipDecompress = Crypt.GZipDecompress(GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index >= 0 ? index : xor.Length)));
-
-            DataPlist = new Plist(Encoding.ASCII.GetBytes(gZipDecompress));
+            DataPlist = new Plist(gzip);
         }
-    
+
         /// <summary>
         /// Saves class data to a file as a game save<br/><br/>
         /// Before saving, make sure that you have closed the game. Otherwise, after closing, the game will overwrite the file<br/>
@@ -179,8 +179,8 @@ public class XorStream : Stream
 public class AsciiBase64Stream : Stream
 {
     private readonly Stream inner;
-    private byte[] tail = new byte[4];
-    private int tailSize = 0;
+    private byte[] writeTail = new byte[4];
+    private int writeTailSize = 0;
 
     public AsciiBase64Stream(Stream inner)
     {
@@ -189,15 +189,27 @@ public class AsciiBase64Stream : Stream
 
     public override void Flush()
     {
-        if (tailSize > 0)
-            inner.Write(tail, 0, tailSize);
+        if (writeTailSize > 0)
+            inner.Write(writeTail, 0, writeTailSize);
         inner.Flush();
     }
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        var read = inner.Read(buffer, offset, count);
-        return read;
+#if NETSTANDARD2_1
+        var overflow = count % 4;
+        count -= overflow;
+        var transform = ArrayPool<byte>.Shared.Rent(count);
+        var read = inner.Read(transform);
+        overflow = read % 4;
+        read -= overflow;
+        var str = Encoding.ASCII.GetString(transform.AsSpan(0, read));
+        var result = GameConvert.FromBase64(str);
+        result.CopyTo(buffer.AsSpan(offset));
+        ArrayPool<byte>.Shared.Return(transform);
+        return result.Length;
+#endif
+        return 0;
     }
 
     public override long Seek(long offset, SeekOrigin origin)
@@ -213,20 +225,20 @@ public class AsciiBase64Stream : Stream
     public override void Write(byte[] buffer, int offset, int count)
     {
 #if NETSTANDARD2_1
-        var data = tailSize > 0
-            ? ArrayPool<byte>.Shared.Rent(count - offset + tailSize)
+        var data = writeTailSize > 0
+            ? ArrayPool<byte>.Shared.Rent(count - offset + writeTailSize)
             : ArrayPool<byte>.Shared.Rent(count - offset);
 
-        var dataLength = tailSize > 0 ? count - offset + tailSize : count - offset;
+        var dataLength = writeTailSize > 0 ? count - offset + writeTailSize : count - offset;
 
-        if (tailSize > 0)
-            tail.CopyTo(data, 0);
-        buffer.AsSpan(offset, count).CopyTo(data.AsSpan(tailSize, dataLength - tailSize));
+        if (writeTailSize > 0)
+            writeTail.CopyTo(data, 0);
+        buffer.AsSpan(offset, count).CopyTo(data.AsSpan(writeTailSize, dataLength - writeTailSize));
 
-        tailSize = dataLength % 3;
-        if (tailSize != 0)
-            data.AsSpan(dataLength - tailSize, tailSize).CopyTo(tail);
-        var base64 = GameConvert.ToBase64(data.AsSpan(0, dataLength - tailSize));
+        writeTailSize = dataLength % 3;
+        if (writeTailSize != 0)
+            data.AsSpan(dataLength - writeTailSize, writeTailSize).CopyTo(writeTail);
+        var base64 = GameConvert.ToBase64(data.AsSpan(0, dataLength - writeTailSize));
         var transform = ArrayPool<byte>.Shared.Rent(base64.Length);
         var bytes = Encoding.ASCII.GetBytes(base64, transform);
         inner.Write(transform, 0, bytes);

@@ -58,7 +58,7 @@ namespace GeometryDashAPI
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] FromBase64(string base64)
+        public static byte[] FromBase64(ReadOnlySpan<char> base64)
         {
             if (base64 == null)
                 return null;
