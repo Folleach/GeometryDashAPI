@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeometryDashAPI;
 using GeometryDashAPI.Serialization;
+using NeoSmart.Utils;
 
 namespace GeometryDashAPI.Data
 {
@@ -204,9 +205,7 @@ public class AsciiBase64Stream : Stream
         var read = inner.Read(transform);
         overflow = read % 4;
         read -= overflow;
-        var str = Encoding.ASCII.GetString(transform.AsSpan(0, read));
-        var result = GameConvert.FromBase64(str);
-        result.CopyTo(buffer.AsSpan(offset));
+        var result = UrlBase64.Decode(transform.AsSpan(0, read), buffer);
         ArrayPool<byte>.Shared.Return(transform);
         return result.Length;
 #endif

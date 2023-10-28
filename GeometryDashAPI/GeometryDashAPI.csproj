@@ -28,7 +28,7 @@
     <PackageReference Include="csFastFloat" Version="4.1.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="UrlBase64" Version="1.0.1" />
+    <PackageReference Include="UrlBase64" Version="2.0.0-preview1" />
   </ItemGroup>
 
   <ItemGroup>
