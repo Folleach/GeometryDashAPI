@@ -163,6 +163,7 @@ public class XorStream : Stream
         buffer.AsSpan(offset, count).CopyTo(data);
         Crypt.InlineXor(data, xor);
         inner.Write(data, 0, length);
+        ArrayPool<byte>.Shared.Return(data);
     }
 
     public override bool CanRead => inner.CanRead;
