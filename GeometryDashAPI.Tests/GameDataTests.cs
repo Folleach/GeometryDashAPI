@@ -9,6 +9,7 @@ using GeometryDashAPI.Data.Models;
 using GeometryDashAPI.Levels;
 using GeometryDashAPI.Serialization;
 using NUnit.Framework;
+using TestObjects;
 
 namespace GeometryDashAPI.Tests;
 
@@ -203,25 +204,11 @@ public class GameDataTests
     [Test]
     public void Data_SaveAndLoadLargeFile()
     {
-        const int stringLength = 1024;
-        var keyZero = GenerateString(stringLength);
-        var expectedManager = GameManager.CreateNew();
-        for (var i = 0; i < 10; i++)
-            expectedManager.DataPlist[$"KEY{i}"] = i == 0 ? keyZero : GenerateString(stringLength);
         using var file = FileContext.Create(removeAfterDispose: false);
-
+        var expectedManager = GameManagerObjects.CreateSample(1024, 10);
         expectedManager.Save(file.Name);
         var actualManager = GameManager.LoadFile(file.Name);
 
-        Assert.AreEqual(keyZero, actualManager.DataPlist["KEY0"]);
-    }
-
-    private string GenerateString(int length)
-    {
-        var builder = new StringBuilder();
-        var rand = new Random(123);
-        for (var i = 0; i < length; i++)
-            builder.Append((char)('a' + rand.Next('z' - 'a')));
-        return builder.ToString();
+        Assert.AreEqual(expectedManager.DataPlist["KEY0"], actualManager.DataPlist["KEY0"]);
     }
 }
