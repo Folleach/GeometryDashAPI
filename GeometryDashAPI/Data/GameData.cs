@@ -58,8 +58,6 @@ namespace GeometryDashAPI.Data
             using var memory = new MemoryStream();
             DataPlist.SaveToStream(memory);
             WriteContent(fullName ?? ResolveFileName(type), memory).GetAwaiter().GetResult();
-            var writed = File.ReadAllBytes(fullName ?? ResolveFileName(type));
-            var expected = GetFileContent(memory);
         }
 
         /// <summary>
@@ -160,10 +158,11 @@ public class XorStream : Stream
 
     public override void Write(byte[] buffer, int offset, int count)
     {
+        var length = count - offset;
         var data = ArrayPool<byte>.Shared.Rent(count - offset);
         buffer.AsSpan(offset, count).CopyTo(data);
         Crypt.InlineXor(data, xor);
-        inner.Write(data, 0, data.Length);
+        inner.Write(data, 0, length);
     }
 
     public override bool CanRead => inner.CanRead;
@@ -218,19 +217,19 @@ public class AsciiBase64Stream : Stream
             ? ArrayPool<byte>.Shared.Rent(count - offset + tailSize)
             : ArrayPool<byte>.Shared.Rent(count - offset);
 
+        var dataLength = tailSize > 0 ? count - offset + tailSize : count - offset;
+
         if (tailSize > 0)
             tail.CopyTo(data, 0);
-        buffer.AsSpan(offset, count).CopyTo(data.AsSpan(tailSize, data.Length - tailSize));
+        buffer.AsSpan(offset, count).CopyTo(data.AsSpan(tailSize, dataLength - tailSize));
 
-        if (data.Length % 3 != 0)
-        {
-            tailSize = data.Length % 3;
-            data.AsSpan(data.Length - tailSize, tailSize).CopyTo(tail);
-        }
-        var base64 = GameConvert.ToBase64(data.AsSpan(0, data.Length - tailSize));
+        tailSize = dataLength % 3;
+        if (tailSize != 0)
+            data.AsSpan(dataLength - tailSize, tailSize).CopyTo(tail);
+        var base64 = GameConvert.ToBase64(data.AsSpan(0, dataLength - tailSize));
         var transform = ArrayPool<byte>.Shared.Rent(base64.Length);
-        Encoding.ASCII.GetBytes(base64, transform);
-        inner.Write(transform);
+        var bytes = Encoding.ASCII.GetBytes(base64, transform);
+        inner.Write(transform, 0, bytes);
         ArrayPool<byte>.Shared.Return(transform);
         ArrayPool<byte>.Shared.Return(data);
 #endif

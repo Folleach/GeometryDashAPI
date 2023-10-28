@@ -203,7 +203,7 @@ public class GameDataTests
     [Test]
     public void Data_SaveAndLoadLargeFile()
     {
-        const int stringLength = 1024;
+        const int stringLength = 1024 * 1024;
         var keyZero = GenerateString(stringLength);
         var expectedManager = GameManager.CreateNew();
         for (var i = 0; i < 10; i++)
