@@ -52,7 +52,7 @@ namespace GeometryDashAPI
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToBase64(byte[] value)
+        public static string ToBase64(ReadOnlySpan<byte> value)
         {
             return UrlBase64.Encode(value, PaddingPolicy.Preserve);
         }

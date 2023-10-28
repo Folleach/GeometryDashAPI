@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -13,6 +14,12 @@ namespace GeometryDashAPI
             for (var i = 0; i < data.Length; i++)
                 result[i] = (byte)(data[i] ^ key);
             return result;
+        }
+
+        public static void InlineXor(Span<byte> data, int key)
+        {
+            for (var i = 0; i < data.Length; i++)
+                data[i] = (byte)(data[i] ^ key);
         }
 
         public static string XOR(string text, string key)
@@ -32,7 +39,7 @@ namespace GeometryDashAPI
             using var reader = new StreamReader(zip);
             return reader.ReadToEnd();
         }
-        
+
         public static string ZLibDecompress(byte[] data)
         {
             if (data == null || data.Length <= 0)

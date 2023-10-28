@@ -1,12 +1,12 @@
+using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using GeometryDashAPI.Data;
 using GeometryDashAPI.Data.Models;
 using GeometryDashAPI.Levels;
-using GeometryDashAPI.Levels.GameObjects.Default;
-using GeometryDashAPI.Levels.GameObjects.Specific;
 using GeometryDashAPI.Serialization;
 using NUnit.Framework;
 
@@ -198,5 +198,30 @@ public class GameDataTests
 
         local.Remove(local.GetLevel("test1")).Should().BeTrue();
         local.LevelExists("test1").Should().BeFalse();
+    }
+
+    [Test]
+    public void Data_SaveAndLoadLargeFile()
+    {
+        const int stringLength = 1024;
+        var keyZero = GenerateString(stringLength);
+        var expectedManager = GameManager.CreateNew();
+        for (var i = 0; i < 10; i++)
+            expectedManager.DataPlist[$"KEY{i}"] = i == 0 ? keyZero : GenerateString(stringLength);
+        using var file = FileContext.Create(removeAfterDispose: false);
+
+        expectedManager.Save(file.Name);
+        var actualManager = GameManager.LoadFile(file.Name);
+
+        Assert.AreEqual(keyZero, actualManager.DataPlist["KEY0"]);
+    }
+
+    private string GenerateString(int length)
+    {
+        var builder = new StringBuilder();
+        var rand = new Random(123);
+        for (var i = 0; i < length; i++)
+            builder.Append((char)('a' + rand.Next('z' - 'a')));
+        return builder.ToString();
     }
 }
