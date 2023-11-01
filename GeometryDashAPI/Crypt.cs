@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Numerics;
 using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
@@ -16,10 +17,30 @@ namespace GeometryDashAPI
             return result;
         }
 
-        public static void InlineXor(Span<byte> data, int key)
+        public static void NaiveXor(Span<byte> data, byte key)
         {
             for (var i = 0; i < data.Length; i++)
                 data[i] = (byte)(data[i] ^ key);
+        }
+
+        public static void InlineXor(Span<byte> data, byte key)
+        {
+#if NET6_0_OR_GREATER
+            var startIndex = 0;
+            var vKey = new Vector<byte>(key);
+            while (startIndex + Vector<byte>.Count < data.Length)
+            {
+                var vData = new Vector<byte>(data.Slice(startIndex));
+                var r = Vector.Xor(vData, vKey);
+                r.CopyTo(data.Slice(startIndex));
+                startIndex += Vector<byte>.Count;
+            }
+
+            for (var i = startIndex; i < data.Length; i++)
+                data[i] = (byte)(data[i] ^ key);
+#else
+            NaiveXor(data, key);
+#endif
         }
 
         public static string XOR(string text, string key)
