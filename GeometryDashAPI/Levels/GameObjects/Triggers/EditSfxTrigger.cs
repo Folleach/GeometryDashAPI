@@ -12,7 +12,7 @@ public class EditSfxTrigger : Trigger
     [GameProperty("404", 0)]
     public int Speed { get; set; }
 
-    [GameProperty("406", 1f)]
+    [GameProperty("406", 1f, alwaysSet: true)]
     public float Volume { get; set; } = 1f;
 
     [GameProperty("414", false)]

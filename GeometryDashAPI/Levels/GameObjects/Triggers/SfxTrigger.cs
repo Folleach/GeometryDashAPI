@@ -39,8 +39,8 @@ public class SfxTrigger : Trigger
     [GameProperty("405", 0)]
     public int Pitch { get; set; }
 
-    [GameProperty("406", 1f)]
-    public float Volume { get; set; }
+    [GameProperty("406", 1f, alwaysSet: true)]
+    public float Volume { get; set; } = 1f;
 
     [GameProperty("407", false)]
     public bool Reverb { get; set; }
