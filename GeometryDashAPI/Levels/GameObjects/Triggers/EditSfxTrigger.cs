@@ -3,8 +3,8 @@ using GeometryDashAPI.Levels.GameObjects.Default;
 
 namespace GeometryDashAPI.Levels.GameObjects.Triggers;
 
-[GameBlock(3605)]
-public class EditSongTrigger : Trigger
+[GameBlock(3603)]
+public class EditSfxTrigger : Trigger
 {
     [GameProperty("10", 0.5f)]
     public float Duration { get; set; } = 0.5f;
@@ -18,6 +18,9 @@ public class EditSongTrigger : Trigger
     [GameProperty("414", false)]
     public bool StopLoop { get; set; }
 
+    [GameProperty("416", 0)]
+    public int UniqueId { get; set; }
+
     [GameProperty("417", false)]
     public bool Stop { get; set; }
 
@@ -27,10 +30,13 @@ public class EditSongTrigger : Trigger
     [GameProperty("419", false)]
     public bool ChangeSpeed { get; set; }
 
-    [GameProperty("432", 0)]
-    public int Channel { get; set; }
+    [GameProperty("455", 0)]
+    public int SfxGroup { get; set; }
 
-    public EditSongTrigger() : base(3605)
+    [GameProperty("457", 0)]
+    public int GroupId { get; set; }
+
+    public EditSfxTrigger() : base(3603)
     {
     }
 }
