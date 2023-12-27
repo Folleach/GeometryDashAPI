@@ -36,11 +36,20 @@ namespace GeometryDashAPI.Data
             var data = new byte[file.Length];
             await file.ReadAsync(data, 0, data.Length);
 
-            var xor = Crypt.XOR(data, 0xB);
-            var index = xor.AsSpan().IndexOf((byte)0);
-            var gZipDecompress = Crypt.GZipDecompress(GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index >= 0 ? index : xor.Length)));
-
-            DataPlist = new Plist(Encoding.ASCII.GetBytes(gZipDecompress));
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                string decryptedData = Crypt.LoadSaveAsMacOS(data);
+                DataPlist = new Plist(Encoding.ASCII.GetBytes(decryptedData));
+            }
+            else
+            {
+                var xor = Crypt.XOR(data, 0xB);
+                var index = xor.AsSpan().IndexOf((byte)0);
+                var gZipDecompress =
+                    Crypt.GZipDecompress(
+                        GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index >= 0 ? index : xor.Length)));
+                DataPlist = new Plist(Encoding.ASCII.GetBytes(gZipDecompress));
+            }
         }
     
         /// <summary>
@@ -83,13 +92,22 @@ namespace GeometryDashAPI.Data
                 throw new InvalidOperationException("can't resolve the directory with the saves for undefined file type. Use certain file name");
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return $@"{Environment.GetEnvironmentVariable("LocalAppData")}\GeometryDash\CC{type}.dat";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                return $@"/Users/{Environment.GetEnvironmentVariable("USER")}/Library/Application Support/GeometryDash/CC{type}.dat";
             throw new InvalidOperationException($"can't resolve the directory with the saves on your operating system: '{RuntimeInformation.OSDescription}'. Use certain file name");
         }
 
         private static byte[] GetFileContent(MemoryStream memory)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                var encrypted = Crypt.SavingSaveAsMacOS(memory.ToArray());
+                return encrypted;
+            }
+
             var base64 = GameConvert.ToBase64(Crypt.GZipCompress(memory.ToArray()));
             return Crypt.XOR(Encoding.ASCII.GetBytes(base64), 0xB);
+
         }
     }
 }
