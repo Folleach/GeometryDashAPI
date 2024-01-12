@@ -10,11 +10,12 @@ namespace GeometryDashAPI.Data.Models
         internal string? KeyInDict { get; private set; }
         public Plist DataLevel { get; set; }
 
-        public string Name
+        public string? Name
         {
-            get => DataLevel["k2"];
-            set => DataLevel["k2"] = value;
+            get => DataLevel.TryGetValue("k2", out var name) ? name : null;
+            set => DataLevel["k2"] = value!;
         }
+
         public string Description
         {
             get => DataLevel.ContainsKey("k3") ? Encoding.ASCII.GetString(Convert.FromBase64String(DataLevel["k3"])) : "";
@@ -23,11 +24,12 @@ namespace GeometryDashAPI.Data.Models
 
         public string LevelString => DataLevel.ContainsKey("k4") ? DataLevel["k4"] : Level.DefaultLevelString;
 
-        public string AuthorName
+        public string? AuthorName
         {
-            get => DataLevel["k5"];
-            set => DataLevel["k5"] = value;
+            get => DataLevel.TryGetValue("k5", out var name) ? name : null;
+            set => DataLevel["k5"] = value!;
         }
+
         public bool Verified
         {
             get => DataLevel.ContainsKey("k14") ? DataLevel["k14"] : false;
