@@ -15,6 +15,7 @@ jobs:
         dotnet-version: |
           2.2.x
           6.0.x
+          8.0.x
     - name: Restore dependencies
       run: dotnet restore ./GeometryDashAPI.sln
     - name: Build
@@ -29,7 +30,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
     - name: Set Version
       run: echo ${{ github.ref_name }} | sed -r "s/^v/GDAPI_VERSION=/" >> $GITHUB_ENV
     - name: Restore dependencies
