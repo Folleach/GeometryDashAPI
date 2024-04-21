@@ -19,6 +19,7 @@ jobs:
         dotnet-version: |
           2.2.x
           6.0.x
+          8.0.x
     - name: Restore dependencies
       run: dotnet restore ./GeometryDashAPI.sln
     - name: Build
