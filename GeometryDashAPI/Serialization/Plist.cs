@@ -15,6 +15,7 @@ namespace GeometryDashAPI.Serialization
     {
         private static readonly XmlReaderSettings xmlSettings = new XmlReaderSettings()
         {
+            CheckCharacters = false, // to skip XML reserved characters
             DtdProcessing = DtdProcessing.Ignore,
             XmlResolver = null
         };

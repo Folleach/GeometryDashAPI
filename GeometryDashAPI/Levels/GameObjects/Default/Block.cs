@@ -45,6 +45,40 @@ namespace GeometryDashAPI.Levels.GameObjects.Default
         [GameProperty("32", 1f)] public float Scale { get; set; } = 1f;
         [GameProperty("34", false)] public bool GroupParent { get; set; }
 
+        [GameProperty("43", null)]
+        private Hsv? hsv;
+
+        [GameProperty("44", null)]
+        private Hsv? additionalHsv;
+
+        [GameProperty("41", false)]
+        public bool HasHsv { get; protected set; }
+
+        [GameProperty("42", false)]
+        public bool HasAdditionalHsv { get; protected set; }
+
+        /// <inheritdoc />
+        public Hsv? Hsv
+        {
+            get => hsv;
+            set
+            {
+                hsv = value;
+                HasHsv = value != null;
+            }
+        }
+
+        /// <inheritdoc />
+        public Hsv? AdditionalHsv
+        {
+            get => additionalHsv;
+            set
+            {
+                additionalHsv = value;
+                HasAdditionalHsv = value != null;
+            }
+        }
+
         public Block()
         {
         }
