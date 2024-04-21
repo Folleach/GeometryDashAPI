@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 namespace GeometryDashAPI
@@ -73,6 +74,12 @@ namespace GeometryDashAPI
                 OfficialLevel.MonsterDanceOff => GameType.World,
                 _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
             };
+        }
+
+        internal static string StreamToString(this Stream stream)
+        {
+            using var streamReader = new StreamReader(stream);
+            return streamReader.ReadToEnd();
         }
 
         internal static IEnumerable<KeyValuePair<T, T>> Pairs<T>(this IEnumerable<T> source)

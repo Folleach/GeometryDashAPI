@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
@@ -34,24 +35,22 @@ namespace GeometryDashAPI
             return result.ToString();
         }
 
-        public static string GZipDecompress(byte[] data)
+        public static Stream? GZipDecompress(byte[] data)
         {
             if (data == null || data.Length <= 0)
-                return string.Empty;
-            using var stream = new MemoryStream(data);
-            using var zip = new GZipStream(stream, CompressionMode.Decompress);
-            using var reader = new StreamReader(zip);
-            return reader.ReadToEnd();
+                return null;
+
+            var stream = new MemoryStream(data);
+            return new GZipStream(stream, CompressionMode.Decompress);
         }
         
-        public static string ZLibDecompress(byte[] data)
+        public static Stream? ZLibDecompress(byte[] data)
         {
             if (data == null || data.Length <= 0)
-                return string.Empty;
-            using var stream = new MemoryStream(data);
-            using var zip = new InflaterInputStream(stream);
-            using var reader = new StreamReader(zip);
-            return reader.ReadToEnd();
+                return null;
+
+            var stream = new MemoryStream(data);
+            return new InflaterInputStream(stream);
         }
 
         public static byte[] GZipCompress(byte[] data)

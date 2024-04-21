@@ -54,7 +54,11 @@ namespace GeometryDashAPI.Data
             var gZipDecompress =
                 Crypt.GZipDecompress(
                     GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index >= 0 ? index : xor.Length)));
-            DataPlist = new Plist(Encoding.ASCII.GetBytes(gZipDecompress));
+
+            if (gZipDecompress is null)
+                throw new InvalidOperationException("Data was empty");
+
+            DataPlist = new Plist(gZipDecompress);
         }
 
         /// <summary>
