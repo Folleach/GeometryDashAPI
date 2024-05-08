@@ -14,7 +14,7 @@ namespace GeometryDashAPI.Data
         // see more https://en.wikipedia.org/wiki/Gzip
         private static readonly byte[] XorDatFileMagickBytes = [ 0x43, 0x3f ];
 
-        public Plist DataPlist { get; set; }
+        public Plist? DataPlist { get; set; }
 
         private readonly GameDataType? type;
 
@@ -51,13 +51,12 @@ namespace GeometryDashAPI.Data
             // windows files
             var xor = Crypt.XOR(data, 0xB);
             var index = xor.AsSpan().IndexOf((byte)0);
-            var gZipDecompress =
-                Crypt.GZipDecompress(
-                    GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index >= 0 ? index : xor.Length)));
-
-            if (gZipDecompress is null)
-                throw new InvalidOperationException("Data was empty");
-
+            var gZipDecompress = Crypt.GZipDecompress(GameConvert.FromBase64(Encoding.ASCII.GetString(xor, 0, index >= 0 ? index : xor.Length)));
+            if (gZipDecompress == null)
+            {
+                DataPlist = [];
+                return;
+            }
             DataPlist = new Plist(gZipDecompress);
         }
 
@@ -75,6 +74,8 @@ namespace GeometryDashAPI.Data
         public void Save(string? fullName = null, DatFileFormat? format = null)
         {
             using var memory = new MemoryStream();
+            if (DataPlist == null)
+                throw new InvalidOperationException($"nothing to save: {nameof(DataPlist)} is null");
             DataPlist.SaveToStream(memory);
             File.WriteAllBytes(fullName ?? ResolveFileName(type), GetFileContent(memory, format ?? ResolveFileFormat()));
         }
@@ -93,6 +94,8 @@ namespace GeometryDashAPI.Data
         public async Task SaveAsync(string? fileName = null, DatFileFormat? format = null)
         {
             using var memory = new MemoryStream();
+            if (DataPlist == null)
+                throw new InvalidOperationException($"nothing to save: {nameof(DataPlist)} is null");
             await DataPlist.SaveToStreamAsync(memory);
 #if NETSTANDARD2_1
             await File.WriteAllBytesAsync(fileName ?? ResolveFileName(type), GetFileContent(memory, format ?? ResolveFileFormat()));
