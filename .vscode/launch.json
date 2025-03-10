@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "playground",
+            "type": "coreclr",
+            "preLaunchTask": "dotnet: build",
+            "request": "launch",
+            "program": "${workspaceFolder}/Playground/bin/Debug/net8.0/Playground.dll",
+            "env": {
+                "DOTNET_WORKING_DIRECTORY": "${workspaceFolder}"
+            }
+        }
+    ]
+}

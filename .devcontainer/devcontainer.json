@@ -1,0 +1,25 @@
+{
+	"name": "GeometryDashAPI",
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
+
+	"features": {
+		"ghcr.io/devcontainers/features/dotnet": {
+			"version": "8.0",
+			"additionalVersions": "2.2"
+		}
+	},
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-dotnettools.csdevkit",
+				"mhutchie.git-graph"
+			]
+		},
+		"codespaces": {
+			"openFiles": [
+				"/Playground/Program.cs"
+			]
+		}
+	}
+}
